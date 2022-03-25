@@ -1,0 +1,7 @@
+section#weapon.weapon
+    h4(data-i18n='weapon')
+    +fieldset({name='weapons'})
+        +collapse()
+        +text({name:'name',class:\underlined})
+        .headed-textarea.notes.expanded
+            +h5({'data'})
