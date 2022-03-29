@@ -1,0 +1,69 @@
+<div class='sheet-tab_journal sheet-box sheet-radius_border_box'>
+    <!-- Insanity and Corruption -->
+    <!-- Make repeating sections take place outside of any CSS Grids to allow them to extend the page. -->
+    <div class='sheet-insanity_corruption_divider'>
+        <div class='sheet-insanity_side sheet-ssc'>
+            <h3 class='sheet-radius_border_top'>Insanity</h3>
+            <div class='sheet-insanity_info'>
+                <input class='sheet-insanity_gs1' type='number' name='attr_insanity_pts' value='0' />
+                <input class='sheet-insanity_gs2' type='text' name='attr_insanity_degree' readonly />
+                <div class='sheet-insanity_gs3'>Disorders</div>
+            </div>
+            <div>
+                <fieldset name="disorders" class='repeating_disorders sheet-full_width sheet-border_none'>
+                    <input name='attr_disorder_r' type='text' placeholder='Disorder Name'
+                        class='sheet-full_width_49px' />
+                    <label title='Expand' class='sheet-margin_adjust'><input type='checkbox' name='attr_collapse'
+                            value='3' class='sheet-collapsible_entity_switch sheet-select_button sheet-hidden' /><span
+                            class='sheet-select_text '>&#9660;</span></label>
+                    <label title='Send description in the chat' class='sheet-margin_adjust2'><button type='roll'
+                            value='@{to-gm}&{template:mythic} {{name=@{disorder_r} }} {{description=@{disorder_desc_r} }}'
+                            class='sheet-hidden'></button><span class='sheet-select_text'>&#128266;</span></label>
+                    <input name='attr_collapse' type='checkbox' value='3'
+                        class='sheet-collapsible_entity_switch sheet-hidden' />
+                    <textarea name='attr_disorder_desc_r' class='sheet-collapsible_entity_block'></textarea>
+                </fieldset>
+            </div>
+        </div>
+        <div class='sheet-corruption_side sheet-ssc'>
+            <h3 class='sheet-radius_border_top'>Corruption</h3>
+            <div class='sheet-corruption_info'>
+                <input class='sheet-corruption_gs1' type='number' name='attr_corruption_pts' value='0' />
+                <input class='sheet-corruption_gs2' type='text' name='attr_corruption_degree' readonly />
+                <div class='sheet-corruption_gs3'>Malignancies and Mutations</div>
+            </div>
+            <div>
+                <fieldset name='mutations' class='repeating_mutations'>
+                    <input name='attr_mutation_r' type='text' placeholder='Malignancy or Mutation Name'
+                        class='sheet-full_width_49px' />
+                    <label title='Expand' class='sheet-margin_adjust'><input type='checkbox' name='attr_collapse'
+                            value='3' class='sheet-collapsible_entity_switch sheet-select_button sheet-hidden' /><span
+                            class='sheet-select_text '>&#9660;</span></label>
+                    <label title='Send description in the chat' class='sheet-margin_adjust2'><button type='roll'
+                            value='@{to-gm}&{template:mythic} {{name=@{mutation_r} }} {{description=@{mutation_desc_r} }}'
+                            class='sheet-hidden'></button><span class='sheet-select_text'>&#128266;</span></label>
+                    <input name='attr_collapse' type='checkbox' value='3'
+                        class='sheet-collapsible_entity_switch sheet-hidden' />
+                    <textarea name='attr_mutation_desc_r' class='sheet-collapsible_entity_block'></textarea>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+    <!-- Journal -->
+    <h2>Journal: Objectives</h2>
+    <div class='sheet-edge_padding sheet-ssc'>
+        <fieldset name='objectives' class='repeating_objectives'>
+            <input name='attr_objective' type='text' class='sheet-full_width_30px' />
+            <label class='sheet-margin_adjust'><input type='checkbox' name='attr_objective_completed' value='1'
+                    class='sheet-select_button sheet-hidden' /><span class='sheet-select_text '>✔</span></label>
+        </fieldset>
+    </div>
+    <h2>Journal: Notes</h2>
+    <div class='sheet-edge_padding sheet-ssc'>
+        <fieldset name='notes' class='repeating_notes'>
+            <!-- insert new line html entity [&#10;] inside of placeholder attribute -->
+            <textarea name='attr_notes'
+                placeholder='Enter information such as plot details, unresolved mission details such as escaped targets, character relationships, et cetera here.&#10;&#10;Also feel free to write appearance details here or in Bio & Info for public viewing: age, height, weight, colors of eyes, hair, skin, more that come to mind.'></textarea>
+        </fieldset>
+    </div>
+</div>

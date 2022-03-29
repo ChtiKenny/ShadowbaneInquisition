@@ -1,0 +1,48 @@
+<div class='sheet-characteristics_size_movement_carry'>
+
+    <div class='sheet-characteristics2_size'>
+        <p class='sheet-sizegs1 sheet-unnatgs_heading'>
+            <b>Size</b>
+        </p>
+        <select name='attr_size' class='sheet-sizegs2 sheet-full_width sheet-edge_padding'>
+            <option value='-3'>Miniscule (1)</option>
+            <option value='-2'>Puny (2)</option>
+            <option value='-1'>Scrawny (3)</option>
+            <option value='0' selected='selected'>Average (4)</option>
+            <option value='1'>Hulking (5)</option>
+            <option value='2'>Enormous (6)</option>
+            <option value='3'>Massive (7)</option>
+            <option value='4'>Immense (8)</option>
+            <option value='5'>Monumental (9)</option>
+            <option value='6'>Titanic (10)</option>
+        </select>
+    </div>
+    <div class='sheet-characteristics2_movement'>
+        <p class='sheet-movementgs1 sheet-unnatgs_heading'>
+            <b>Character Movement</b>
+        </p>
+        <input name='attr_half_move' type='text' class='sheet-movementgs2 sheet-unnatgs_width' readonly />
+        <input name='attr_full_move' type='text' class='sheet-movementgs3 sheet-unnatgs_width' readonly />
+        <input name='attr_charge_move' type='text' class='sheet-movementgs4 sheet-unnatgs_width' readonly />
+        <input name='attr_run_move' type='text' class='sheet-movementgs5 sheet-unnatgs_width' readonly />
+        <input name='attr_agi_mov_mod' type='number' value='0' class='sheet-movementgs0 sheet-unnatgs_width' />
+        <!-- NOTE: this add a modifier to the AgB for movement only -->
+        <p class='sheet-movementgs6 '>Half</p>
+        <p class='sheet-movementgs7 '>Full</p>
+        <p class='sheet-movementgs8 '>Charge</p>
+        <p class='sheet-movementgs9 '>Run</p>
+        <p class='sheet-movementgs10 '>Mod</p>
+    </div>
+    <div class='sheet-characteristics2_carry'>
+        <p class='sheet-carrygs1 sheet-unnatgs_heading'>
+            <b>Weight Capacity</b>
+        </p>
+        <input name='attr_carry' type='text' class='sheet-carrygs2 sheet-unnatgs_width' readonly />
+        <input name='attr_lift' type='text' class='sheet-carrygs3 sheet-unnatgs_width' readonly />
+        <input name='attr_push' type='text' class='sheet-carrygs4 sheet-unnatgs_width' readonly />
+        <p class='sheet-carrygs5'>Carry</p>
+        <p class='sheet-carrygs6'>Lift</p>
+        <p class='sheet-carrygs7'>Push</p>
+    </div>
+
+</div>

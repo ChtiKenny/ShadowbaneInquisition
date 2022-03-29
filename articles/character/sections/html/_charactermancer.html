@@ -1,0 +1,600 @@
+<!-- CHARACTERMANCER -->
+
+<charmancer class="sheet-charmancer-intro">
+    <div class="sheet-charmancer">
+        <h2>Welcome to the Shadowbane Inquisition Charactermancer!</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sed lorem arcu. Etiam accumsan lacus tellus,
+            et iaculis ipsum interdum non. Vestibulum sit amet consequat neque. Vivamus sed justo metus. Donec feugiat
+            commodo erat. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+            Proin vestibulum metus ac arcu sagittis, non tristique turpis pharetra. Vestibulum ultrices commodo risus,
+            eu egestas magna sodales vitae. Nam ultricies, enim sed consequat gravida, lacus nunc fermentum ante, vitae
+            ultricies nulla dui eget lacus. Fusce sit amet erat velit. Class aptent taciti sociosqu ad litora torquent
+            per conubia nostra, per inceptos himenaeos. Nulla facilisi.</p>
+        <p>Curabitur scelerisque sapien in lacus tincidunt, a aliquam tellus malesuada. Nam nec consectetur ipsum. Etiam
+            bibendum tincidunt elit vitae sagittis. Nam scelerisque erat consequat, fringilla diam ac, aliquam neque.
+            Vestibulum sollicitudin, massa at interdum cursus, libero justo fringilla dui, ac pharetra velit ligula vel
+            erat. Proin placerat augue purus, vitae feugiat orci tempus euismod. Aenean tincidunt sodales odio id
+            aliquam. Sed vel tempor metus.</p>
+        <p>Get started by clicking "Next".</p>
+        <div class="bottombar">
+            <button type="cancel" value="cancel">Discard and exit</button>
+            <button type="back" value="genos">Next</button>
+            <p class="warning"><span>Discard and Exit will discard all choices you’ve made in Charactermancer and let
+                    you edit your character sheet directly.</span></p>
+            <button type="finish" value="random">Create Random Character??????</button>
+        </div>
+    </div>
+</charmancer>
+
+<charmancer class="sheet-charmancer-genos">
+    <div class="sheet-charmancer">
+        <h2>Choose Your Genos</h2>
+        <div style="
+				grid-template-columns: 50% calc(50% - 20px);
+				display: grid;
+				column-gap: 20px;">
+            <div>
+                <select name="comp_genos" class="sheet-full_width">
+                    <option value="Human" selected>Human</option>
+                    <option value="Ogryn">Ogryn</option>
+                    <option value="Ratling">Ratling</option>
+                    <option value="Squat">Squat</option>
+                    <option value="Ghul">Ghul</option>
+                </select>
+                <div class="genos_infos">
+                </div>
+            </div>
+            <div>
+            </div>
+        </div>
+        <p>Select your Genos then click "Next".</p>
+        <div class="bottombar">
+            <button type="cancel" value="cancel">Discard and exit</button>
+            <button type="submit" value="stats">Next</button>
+            <p class="warning"><span>Discard and Exit will discard all choices you’ve made in Charactermancer and let
+                    you edit your character sheet directly.</span></p>
+        </div>
+    </div>
+</charmancer>
+
+<charmancer class="sheet-charmancer-stats">
+    <div class="sheet-charmancer">
+        <h2>Generate Characteristics</h2>
+        <div>
+            <div class='rolled'>
+                <button type='roll' name='roll_standard'
+                    value="/r [[2d10]]+[[2d10]]+[[2d10]]+[[2d10]]+[[2d10]]+[[2d10]]+[[2d10]]+[[2d10]]+[[2d10]]+[[2d10]]">Standard</button>
+            </div>
+            <input type="hidden" name="comp_rolled">
+            <input type="hidden" name="comp_rerolled">
+            <input type="hidden" name="comp_points">
+            <input type="hidden" name="comp_points_spent">
+            <div class="sheet-characteristics_main">
+                <div>
+                    <button name='roll_reroll_0' type='roll'
+                        class='sheet-clear sheet-full_width sheet-characteristics_button' value='/r [[2d10}]]'> reroll
+                    </button>
+                    <input name='comp_roll_0_value' type='text' value='${roll.result}'
+                        class='sheet-characteristics_input sheet-full_width' readonly />
+                    <select name='comp_roll_0_char' class='sheet-full_width' required>
+                        <option value='' selected='selected'>N/A</option>
+                        <option value='WS'>WS</option>
+                        <option value='BS'>BS</option>
+                        <option value='STR'>STR</option>
+                        <option value='TOU'>TOU</option>
+                        <option value='AGI'>AGI</option>
+                        <option value='INT'>INT</option>
+                        <option value='PER'>PER</option>
+                        <option value='WP'>WP</option>
+                        <option value='FEL'>FEL</option>
+                        <option value='INF'>INF</option>
+                    </select>
+                </div>
+                <div>
+                    <button name='roll_reroll_1' type='roll'
+                        class='sheet-clear sheet-full_width sheet-characteristics_button' value='/r [[2d10}]]'> reroll
+                    </button>
+                    <input name='comp_roll_1_value' type='text' value='${roll.result}'
+                        class='sheet-characteristics_input sheet-full_width' readonly />
+                    <select name='comp_roll_1_char' class='sheet-full_width' required>
+                        <option value='' selected='selected'>N/A</option>
+                        <option value='WS'>WS</option>
+                        <option value='BS'>BS</option>
+                        <option value='STR'>STR</option>
+                        <option value='TOU'>TOU</option>
+                        <option value='AGI'>AGI</option>
+                        <option value='INT'>INT</option>
+                        <option value='PER'>PER</option>
+                        <option value='WP'>WP</option>
+                        <option value='FEL'>FEL</option>
+                        <option value='INF'>INF</option>
+                    </select>
+                </div>
+                <div>
+                    <button name='roll_reroll_2' type='roll'
+                        class='sheet-clear sheet-full_width sheet-characteristics_button' value='/r [[2d10}]]'> reroll
+                    </button>
+                    <input name='comp_roll_2_value' type='text' value='${roll.result}'
+                        class='sheet-characteristics_input sheet-full_width' readonly />
+                    <select name='comp_roll_2_char' class='sheet-full_width' required>
+                        <option value='' selected='selected'>N/A</option>
+                        <option value='WS'>WS</option>
+                        <option value='BS'>BS</option>
+                        <option value='STR'>STR</option>
+                        <option value='TOU'>TOU</option>
+                        <option value='AGI'>AGI</option>
+                        <option value='INT'>INT</option>
+                        <option value='PER'>PER</option>
+                        <option value='WP'>WP</option>
+                        <option value='FEL'>FEL</option>
+                        <option value='INF'>INF</option>
+                    </select>
+                </div>
+                <div>
+                    <button name='roll_reroll_3' type='roll'
+                        class='sheet-clear sheet-full_width sheet-characteristics_button' value='/r [[2d10}]]'> reroll
+                    </button>
+                    <input name='comp_roll_3_value' type='text' value='${roll.result}'
+                        class='sheet-characteristics_input sheet-full_width' readonly />
+                    <select name='comp_roll_3_char' class='sheet-full_width' required>
+                        <option value='' selected='selected'>N/A</option>
+                        <option value='WS'>WS</option>
+                        <option value='BS'>BS</option>
+                        <option value='STR'>STR</option>
+                        <option value='TOU'>TOU</option>
+                        <option value='AGI'>AGI</option>
+                        <option value='INT'>INT</option>
+                        <option value='PER'>PER</option>
+                        <option value='WP'>WP</option>
+                        <option value='FEL'>FEL</option>
+                        <option value='INF'>INF</option>
+                    </select>
+                </div>
+                <div>
+                    <button name='roll_reroll_4' type='roll'
+                        class='sheet-clear sheet-full_width sheet-characteristics_button' value='/r [[2d10}]]'> reroll
+                    </button>
+                    <input name='comp_roll_4_value' type='text' value='${roll.result}'
+                        class='sheet-characteristics_input sheet-full_width' readonly />
+                    <select name='comp_roll_4_char' class='sheet-full_width' required>
+                        <option value='' selected='selected'>N/A</option>
+                        <option value='WS'>WS</option>
+                        <option value='BS'>BS</option>
+                        <option value='STR'>STR</option>
+                        <option value='TOU'>TOU</option>
+                        <option value='AGI'>AGI</option>
+                        <option value='INT'>INT</option>
+                        <option value='PER'>PER</option>
+                        <option value='WP'>WP</option>
+                        <option value='FEL'>FEL</option>
+                        <option value='INF'>INF</option>
+                    </select>
+                </div>
+                <div>
+                    <button name='roll_reroll_5' type='roll'
+                        class='sheet-clear sheet-full_width sheet-characteristics_button' value='/r [[2d10}]]'> reroll
+                    </button>
+                    <input name='comp_roll_5_value' type='text' value='${roll.result}'
+                        class='sheet-characteristics_input sheet-full_width' readonly />
+                    <select name='comp_roll_5_char' class='sheet-full_width' required>
+                        <option value='' selected='selected'>N/A</option>
+                        <option value='WS'>WS</option>
+                        <option value='BS'>BS</option>
+                        <option value='STR'>STR</option>
+                        <option value='TOU'>TOU</option>
+                        <option value='AGI'>AGI</option>
+                        <option value='INT'>INT</option>
+                        <option value='PER'>PER</option>
+                        <option value='WP'>WP</option>
+                        <option value='FEL'>FEL</option>
+                        <option value='INF'>INF</option>
+                    </select>
+                </div>
+                <div>
+                    <button name='roll_reroll_6' type='roll'
+                        class='sheet-clear sheet-full_width sheet-characteristics_button' value='/r [[2d10}]]'> reroll
+                    </button>
+                    <input name='comp_roll_6_value' type='text' value='${roll.result}'
+                        class='sheet-characteristics_input sheet-full_width' readonly />
+                    <select name='comp_roll_6_char' class='sheet-full_width' required>
+                        <option value='' selected='selected'>N/A</option>
+                        <option value='WS'>WS</option>
+                        <option value='BS'>BS</option>
+                        <option value='STR'>STR</option>
+                        <option value='TOU'>TOU</option>
+                        <option value='AGI'>AGI</option>
+                        <option value='INT'>INT</option>
+                        <option value='PER'>PER</option>
+                        <option value='WP'>WP</option>
+                        <option value='FEL'>FEL</option>
+                        <option value='INF'>INF</option>
+                    </select>
+                </div>
+                <div>
+                    <button name='roll_reroll_7' type='roll'
+                        class='sheet-clear sheet-full_width sheet-characteristics_button' value='/r [[2d10}]]'> reroll
+                    </button>
+                    <input name='comp_roll_7_value' type='text' value='${roll.result}'
+                        class='sheet-characteristics_input sheet-full_width' readonly />
+                    <select name='comp_roll_7_char' class='sheet-full_width' required>
+                        <option value='' selected='selected'>N/A</option>
+                        <option value='WS'>WS</option>
+                        <option value='BS'>BS</option>
+                        <option value='STR'>STR</option>
+                        <option value='TOU'>TOU</option>
+                        <option value='AGI'>AGI</option>
+                        <option value='INT'>INT</option>
+                        <option value='PER'>PER</option>
+                        <option value='WP'>WP</option>
+                        <option value='FEL'>FEL</option>
+                        <option value='INF'>INF</option>
+                    </select>
+                </div>
+                <div>
+                    <button name='roll_reroll_8' type='roll'
+                        class='sheet-clear sheet-full_width sheet-characteristics_button' value='/r [[2d10}]]'> reroll
+                    </button>
+                    <input name='comp_roll_8_value' type='text' value='${roll.result}'
+                        class='sheet-characteristics_input sheet-full_width' readonly />
+                    <select name='comp_roll_8_char' class='sheet-full_width' required>
+                        <option value='' selected='selected'>N/A</option>
+                        <option value='WS'>WS</option>
+                        <option value='BS'>BS</option>
+                        <option value='STR'>STR</option>
+                        <option value='TOU'>TOU</option>
+                        <option value='AGI'>AGI</option>
+                        <option value='INT'>INT</option>
+                        <option value='PER'>PER</option>
+                        <option value='WP'>WP</option>
+                        <option value='FEL'>FEL</option>
+                        <option value='INF'>INF</option>
+                    </select>
+                </div>
+                <div>
+                    <button name='roll_reroll_9' type='roll'
+                        class='sheet-clear sheet-full_width sheet-characteristics_button' value='/r [[2d10}]]'> reroll
+                    </button>
+                    <input name='comp_roll_9_value' type='text' value='${roll.result}'
+                        class='sheet-characteristics_input sheet-full_width' readonly />
+                    <select name='comp_roll_9_char' class='sheet-full_width' required>
+                        <option value='' selected='selected'>N/A</option>
+                        <option value='WS'>WS</option>
+                        <option value='BS'>BS</option>
+                        <option value='STR'>STR</option>
+                        <option value='TOU'>TOU</option>
+                        <option value='AGI'>AGI</option>
+                        <option value='INT'>INT</option>
+                        <option value='PER'>PER</option>
+                        <option value='WP'>WP</option>
+                        <option value='FEL'>FEL</option>
+                        <option value='INF'>INF</option>
+                    </select>
+                </div>
+            </div>
+            <div class="roll_low">
+
+            </div>
+            <br />
+            <div class="points_left">
+
+            </div>
+            <div style="columns: 5;">
+                <label for="comp_WS">Weapon Skil </label><button type='action' name='act_decrease_WS'>-</button><input
+                    type="number" name="comp_WS" id="comp_WS" readonly /><button type='action'
+                    name='act_increase_WS'>+</button>
+                <input type="hidden" name="comp_WS_points">
+                <label for="comp_BS">Ballistic Skill</label><button type='action'
+                    name='act_decrease_BS'>-</button><input type="number" name="comp_BS" id="comp_BS" readonly /><button
+                    type='action' name='act_increase_BS'>+</button>
+                <input type="hidden" name="comp_BS_points">
+                <label for="comp_STR">Strength </label><button type='action' name='act_decrease_STR'>-</button><input
+                    type="number" name="comp_STR" id="comp_STR" readonly /><button type='action'
+                    name='act_increase_STR'>+</button>
+                <input type="hidden" name="comp_STR_points">
+                <label for="comp_TOU">Toughness </label><button type='action' name='act_decrease_TOU'>-</button><input
+                    type="number" name="comp_TOU" id="comp_TOU" readonly /><button type='action'
+                    name='act_increase_TOU'>+</button>
+                <input type="hidden" name="comp_TOU_points">
+                <label for="comp_AGI">Agility </label><button type='action' name='act_decrease_AGI'>-</button><input
+                    type="number" name="comp_AGI" id="comp_AGI" readonly /><button type='action'
+                    name='act_increase_AGI'>+</button>
+                <input type="hidden" name="comp_AGI_points">
+                <label for="comp_INT">Intelligence </label><button type='action'
+                    name='act_decrease_INT'>-</button><input type="number" name="comp_INT" id="comp_INT"
+                    readonly /><button type='action' name='act_increase_INT'>+</button>
+                <input type="hidden" name="comp_INT_points">
+                <label for="comp_PER">Perception </label><button type='action' name='act_decrease_PER'>-</button><input
+                    type="number" name="comp_PER" id="comp_PER" readonly /><button type='action'
+                    name='act_increase_PER'>+</button>
+                <input type="hidden" name="comp_PER_points">
+                <label for="comp_WP">Willpower </label><button type='action' name='act_decrease_WP'>-</button><input
+                    type="number" name="comp_WP" id="comp_WP" readonly /><button type='action'
+                    name='act_increase_WP'>+</button>
+                <input type="hidden" name="comp_WP_points">
+                <label for="comp_FEL">Fellowship </label><button type='action' name='act_decrease_FEL'>-</button><input
+                    type="number" name="comp_FEL" id="comp_FEL" readonly /><button type='action'
+                    name='act_increase_FEL'>+</button>
+                <input type="hidden" name="comp_FEL_points">
+                <label for="comp_INF">Influence </label><button type='action' name='act_decrease_INF'>-</button><input
+                    type="number" name="comp_INF" id="comp_INF" readonly /><button type='action'
+                    name='act_increase_INF'>+</button>
+                <input type="hidden" name="comp_INF_points">
+            </div>
+        </div>
+        <p>Get started by clicking "Next".</p>
+        <div class="bottombar">
+            <button type="cancel" value="cancel">Discard and exit</button>
+            <button type="submit" value="homeworld">Next</button>
+            <p class="warning"><span>Discard and Exit will discard all choices you’ve made in Charactermancer and let
+                    you edit your character sheet directly.</span></p>
+        </div>
+    </div>
+</charmancer>
+
+<charmancer class="sheet-charmancer-homeworld">
+    <div class="sheet-charmancer">
+        <h2>Choose Your Homeworld</h2>
+        <div style="
+				grid-template-columns: 50% calc(50% - 20px);
+				display: grid;
+				column-gap: 20px;">
+            <div>
+                <select name="comp_homeworld" class="sheet-full_width  homeworld_choices">
+                </select>
+                <div class="homeworld_infos">
+                </div>
+            </div>
+            <div>
+            </div>
+        </div>
+        <p>Select your homeworld then click "Next".</p>
+        <div class="bottombar">
+            <button type="cancel" value="cancel">Discard and exit</button>
+            <button type="submit" value="background">Next</button>
+            <p class="warning"><span>Discard and Exit will discard all choices you’ve made in Charactermancer and let
+                    you edit your character sheet directly.</span></p>
+        </div>
+    </div>
+</charmancer>
+
+<charmancer class="sheet-charmancer-background">
+    <div class="sheet-charmancer">
+        <h2>Choose Your Background</h2>
+        <div style="
+				grid-template-columns: 50% calc(50% - 20px);
+				display: grid;
+				column-gap: 20px;">
+            <div>
+                <select name="comp_background" class="sheet-full_width background_choices">
+                </select>
+                <div class="background_infos">
+                </div>
+            </div>
+            <div>
+            </div>
+        </div>
+        <p>Select your background then click "Next".</p>
+        <div class="bottombar">
+            <button type="cancel" value="cancel">Discard and exit</button>
+            <button type="submit" value="role">Next</button>
+            <p class="warning"><span>Discard and Exit will discard all choices you’ve made in Charactermancer and let
+                    you edit your character sheet directly.</span></p>
+        </div>
+    </div>
+</charmancer>
+
+<charmancer class="sheet-charmancer-role">
+    <div class="sheet-charmancer">
+        <h2>Choose Your Role</h2>
+        <div style="
+				grid-template-columns: 50% calc(50% - 20px);
+				display: grid;
+				column-gap: 20px;">
+            <div>
+                <select name="comp_role" class="sheet-full_width role_choices">
+                </select>
+                <div class="role_infos">
+                </div>
+            </div>
+            <div>
+            </div>
+        </div>
+        <p>Select your role then click "Next".</p>
+        <div class="bottombar">
+            <button type="cancel" value="cancel">Discard and exit</button>
+            <button type="submit" value="aptitudes">Next</button>
+            <p class="warning"><span>Discard and Exit will discard all choices you’ve made in Charactermancer and let
+                    you edit your character sheet directly.</span></p>
+        </div>
+    </div>
+</charmancer>
+
+<charmancer class="sheet-charmancer-aptitudes">
+    <div class="sheet-charmancer">
+        <h2>Determine your Aptitudes</h2>
+        <div style="
+				grid-template-columns: 50% calc(50% - 20px);
+				display: grid;
+				column-gap: 20px;">
+            <div class="aptitudes_block">
+            </div>
+            <div>
+            </div>
+            <input type="hidden" name="comp_aptitude_1">
+            <input type="hidden" name="comp_aptitude_2">
+            <input type="hidden" name="comp_aptitude_3">
+            <input type="hidden" name="comp_aptitude_4">
+            <input type="hidden" name="comp_aptitude_5">
+            <input type="hidden" name="comp_aptitude_6">
+            <input type="hidden" name="comp_aptitude_7">
+            <input type="hidden" name="comp_aptitude_8">
+            <input type="hidden" name="comp_aptitude_9">
+        </div>
+        <p>Select your aptitudes then click "Next".</p>
+        <div class="bottombar">
+            <button type="cancel" value="cancel">Discard and exit</button>
+            <button type="submit" value="talents">Next</button>
+            <p class="warning"><span>Discard and Exit will discard all choices you’ve made in Charactermancer and let
+                    you edit your character sheet directly.</span></p>
+        </div>
+    </div>
+</charmancer>
+
+<charmancer class="sheet-charmancer-talents">
+    <div class="sheet-charmancer">
+        <h2>Determine your Talents</h2>
+        <div style="
+				grid-template-columns: 50% calc(50% - 20px);
+				display: grid;
+				column-gap: 20px;">
+            <div class="talents_block">
+            </div>
+            <div>
+            </div>
+            <input type="hidden" name="comp_talent_1">
+            <input type="hidden" name="comp_talent_2">
+            <input type="hidden" name="comp_talent_3">
+            <input type="hidden" name="comp_talent_4">
+            <input type="hidden" name="comp_talent_5">
+            <input type="hidden" name="comp_talent_6">
+        </div>
+        <p>Select your talents then click "Next".</p>
+        <div class="bottombar">
+            <button type="cancel" value="cancel">Discard and exit</button>
+            <button type="submit" value="equipments">Next</button>
+            <p class="warning"><span>Discard and Exit will discard all choices you’ve made in Charactermancer and let
+                    you edit your character sheet directly.</span></p>
+        </div>
+    </div>
+</charmancer>
+
+<charmancer class="sheet-charmancer-equipments">
+    <div class="sheet-charmancer">
+        <h2>Determine your Equipment</h2>
+        <div style="
+				grid-template-columns: 50% calc(50% - 20px);
+				display: grid;
+				column-gap: 20px;">
+            <div class="equipments_block">
+            </div>
+            <div>
+            </div>
+            <input type="hidden" name="comp_equipment_1">
+            <input type="hidden" name="comp_equipment_2">
+            <input type="hidden" name="comp_equipment_3">
+            <input type="hidden" name="comp_equipment_4">
+            <input type="hidden" name="comp_equipment_5">
+            <input type="hidden" name="comp_equipment_6">
+            <input type="hidden" name="comp_equipment_7">
+            <input type="hidden" name="comp_equipment_8">
+            <input type="hidden" name="comp_equipment_9">
+        </div>
+        <p>Select your equipments then click "Next".</p>
+        <div class="bottombar">
+            <button type="cancel" value="cancel">Discard and exit</button>
+            <button type="submit" value="skills">Next</button>
+            <p class="warning"><span>Discard and Exit will discard all choices you’ve made in Charactermancer and let
+                    you edit your character sheet directly.</span></p>
+        </div>
+    </div>
+</charmancer>
+
+<charmancer class="sheet-charmancer-skills">
+    <div class="sheet-charmancer">
+        <h2>Determine your Skills</h2>
+        <div style="
+				grid-template-columns: 50% calc(50% - 20px);
+				display: grid;
+				column-gap: 20px;">
+            <div class="skills_block">
+            </div>
+            <div>
+            </div>
+            <input type="hidden" name="comp_skill_1">
+            <input type="hidden" name="comp_skill_2">
+            <input type="hidden" name="comp_skill_3">
+            <input type="hidden" name="comp_skill_4">
+            <input type="hidden" name="comp_skill_5">
+            <input type="hidden" name="comp_skill_6">
+            <input type="hidden" name="comp_skill_7">
+            <input type="hidden" name="comp_skill_8">
+            <input type="hidden" name="comp_skill_9">
+        </div>
+        <p>Select your skills then click "Next".</p>
+        <div class="bottombar">
+            <button type="cancel" value="cancel">Discard and exit</button>
+            <button type="submit" value="wounds">Next</button>
+            <p class="warning"><span>Discard and Exit will discard all choices you’ve made in Charactermancer and let
+                    you edit your character sheet directly.</span></p>
+        </div>
+    </div>
+</charmancer>
+
+<charmancer class="sheet-charmancer-wounds">
+    <div class="sheet-charmancer">
+        <h2>Generate Characteristics</h2>
+        <div>
+            <div>
+                <h3>Wounds</h3>
+                <p>Base Wounds: <span class="wounds"></span> <br />
+                    (Determined by Homeworld)</p>
+                <button type='roll' name='roll_wounds' value="/r [[1d5]]">1d5 wounds</button>
+                <p>Total Wounds : <span class="wounds_max"></span></p>
+            </div>
+            <div>
+                <h3>Fate Threshold</h3>
+                <p>Base Fate Threshold: <span class="fate"></span> <br />
+                    (Determined by Homeworld)
+                    <br />
+                    Emperor's Blessing: <span class="empBlessing"></span> <br />
+                    (Gain an additional 1 to Fate Threshold if you roll this number or above)</p>
+                <button type='roll' name='roll_fate' value="/r [[1d10]]">1d10 Emperor's Blessing</button>
+                <p>Total Fate : <span class="fate_max"></span></p>
+            </div>
+            <div>
+                <h3>Divination</h3>
+                <p>Divination roll: <input type="text" name="comp_divination" readonly required></p>
+                <button type='roll' name='roll_divination' value="/r [[1d100]]">1d100 Divination</button>
+            </div>
+            <input type="hidden" name="comp_wounds">
+            <input type="hidden" name="comp_fate">
+            <input type="hidden" name="comp_divination">
+        </div>
+        <p>Get started by clicking "Next".</p>
+        <div class="bottombar">
+            <button type="cancel" value="cancel">Discard and exit</button>
+            <button type="finish" value="recap">Next</button>
+            <p class="warning"><span>Discard and Exit will discard all choices you’ve made in Charactermancer and let
+                    you edit your character sheet directly.</span></p>
+        </div>
+    </div>
+</charmancer>
+
+<charmancer class="sheet-charmancer-final">
+    <div class="sheet-charmancer">
+        <h2>Finishing up</h2>
+        <div>
+            <div>
+                <div class="recap_infos">
+                </div>
+                <div class="recap_progress">
+                    <progress value="10" max="100">10%</progress>
+                </div>
+            </div>
+            <div>
+            </div>
+        </div>
+        <p>Select your recap then click "Next".</p>
+        <div class="bottombar">
+            <button type="cancel" value="cancel">Discard and exit</button>
+            <button type="submit" value="recap">Next</button>
+            <p class="warning"><span>Discard and Exit will discard all choices you’ve made in Charactermancer and let
+                    you edit your character sheet directly.</span></p>
+        </div>
+    </div>
+
+    <button type="cancel" value="example">Cancel Charactermancer</button>
+    <button type="back" value="example">Back</button>
+    <button type="submit" value="example">Next</button>
+    <button type="finish" value="example">Apply Changes</button>
+</charmancer>

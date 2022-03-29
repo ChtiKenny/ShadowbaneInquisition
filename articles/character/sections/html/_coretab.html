@@ -1,0 +1,781 @@
+	<div class='sheet-tab_core sheet-box sheet-radius_border_box'>
+	    <!-- Core Data -->
+	    <div class='sheet-core_lists '>
+	        <div class='sheet-core_lists1 sheet-edge_padding sheet-table sheet-radius_border'>
+	            <h3 class='sheet-radius_border_heading'><b>Skills</b></h3>
+	            <div class='sheet-skill_header sheet-bold_text'>
+	                <p>Name</p>
+	                <p>Char</p>
+	                <p>Mod</p>
+	                <p>K</p>
+	                <p>+10</p>
+	                <p>+20</p>
+	                <p>+30</p>
+	                <p>Roll</p>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Acrobatics</p>
+	                <select name='attr_acrobatics_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='str'>STR</option>
+	                    <option value='agi' selected='selected'>AGI</option>
+	                </select>
+	                <input name='attr_mod2_acrobatics' type='number' value='0' />
+	                <input name='attr_mod3_acrobatics' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_acrobatics' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_acrobatics' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_acrobatics' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_acrobatics_focus' type='hidden' value=''>
+	                <input name='attr_acrobatics_unnat' type='hidden' value=''>
+	                <button type='roll' name='acrobatics_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Acrobatics}} {{dos=[[[[1+floor(abs([[{{ {@{acrobatics_total}+@{inlinemod-toggle}}, {@{acrobatics_focus}-@{limiter}}}kh1, {@{acrobatics_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{acrobatics_unnat}/2)]]}}{{target=$[[0]]}}{{roll=$[[1]]}}{{dof=$[[2]]}}'
+	                    class='sheet-clear'>
+	                    <input name='attr_acrobatics_total'
+	                        value='@{acrobatics_focus}+@{mod2_acrobatics}+@{mod3_acrobatics}-20'
+	                        class='sheet-input_background' disabled />
+	                </button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Athletics</p>
+	                <select name='attr_athletics_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='str' selected='selected'>STR</option>
+	                    <option value='tou'>TOU</option>
+	                </select>
+	                <input name='attr_mod2_athletics' type='number' value='0' />
+	                <input name='attr_mod3_athletics' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_athletics' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_athletics' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_athletics' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_athletics_focus' type='hidden' value=''>
+	                <input name='attr_athletics_unnat' type='hidden' value=''>
+	                <button type='roll' name='athletics_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Athletics}} {{dos=[[[[1+floor(abs([[{{ {@{athletics_total}+@{inlinemod-toggle}}, {@{athletics_focus}-@{limiter}}}kh1, {@{athletics_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{athletics_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_athletics_total'
+	                        value='@{athletics_focus}+@{mod2_athletics}+@{mod3_athletics}-20'
+	                        class='sheet-input_background' disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Awareness</p>
+	                <select name='attr_awareness_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='int'>INT</option>
+	                    <option value='per' selected='selected'>PER</option>
+	                    <option value='fel'>FEL</option>
+	                </select>
+	                <input name='attr_mod2_awareness' type='number' value='0' />
+	                <input name='attr_mod3_awareness' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_awareness' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_awareness' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_awareness' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_awareness_focus' type='hidden' value=''>
+	                <input name='attr_awareness_unnat' type='hidden' value=''>
+	                <button type='roll' name='awareness_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Awareness}} {{dos=[[[[1+floor(abs([[{{ {@{awareness_total}+@{inlinemod-toggle}}, {@{awareness_focus}-@{limiter}}}kh1, {@{awareness_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{awareness_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_awareness_total'
+	                        value='@{awareness_focus}+@{mod2_awareness}+@{mod3_awareness}-20'
+	                        class='sheet-input_background' disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Charm</p>
+	                <select name='attr_charm_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='fel' selected='selected'>FEL</option>
+	                    <option value='inf'>INF</option>
+	                </select>
+	                <input name='attr_mod2_charm' type='number' value='0' />
+	                <input name='attr_mod3_charm' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_charm' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_charm' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_charm' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_charm_focus' type='hidden' value=''>
+	                <input name='attr_charm_unnat' type='hidden' value=''>
+	                <button type='roll' name='charm_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Charm}} {{dos=[[[[1+floor(abs([[{{ {@{charm_total}+@{inlinemod-toggle}}, {@{charm_focus}-@{limiter}}}kh1, {@{charm_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{charm_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_charm_total'
+	                        value='@{charm_focus}+@{mod2_charm}+@{mod3_charm}-20' class='sheet-input_background'
+	                        disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Command</p>
+	                <select name='attr_command_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='str'>STR</option>
+	                    <option value='int'>INT</option>
+	                    <option value='wp'>WP</option>
+	                    <option value='fel' selected='selected'>FEL</option>
+	                </select>
+	                <input name='attr_mod2_command' type='number' value='0' />
+	                <input name='attr_mod3_command' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_command' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_command' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_command' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_command_focus' type='hidden' value=''>
+	                <input name='attr_command_unnat' type='hidden' value=''>
+	                <button type='roll' name='command_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Command}} {{dos=[[[[1+floor(abs([[{{ {@{command_total}+@{inlinemod-toggle}}, {@{command_focus}-@{limiter}}}kh1, {@{command_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{command_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_command_total'
+	                        value='@{command_focus}+@{mod2_command}+@{mod3_command}-20' class='sheet-input_background'
+	                        disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Commerce</p>
+	                <select name='attr_commerce_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='int' selected='selected'>INT</option>
+	                    <option value='fel'>FEL</option>
+	                </select>
+	                <input name='attr_mod2_commerce' type='number' value='0' />
+	                <input name='attr_mod3_commerce' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_commerce' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_commerce' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_commerce' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_commerce_focus' type='hidden' value=''>
+	                <input name='attr_commerce_unnat' type='hidden' value=''>
+	                <button type='roll' name='commerce_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Commerce}} {{dos=[[[[1+floor(abs([[{{ {@{commerce_total}+@{inlinemod-toggle}}, {@{commerce_focus}-@{limiter}}}kh1, {@{commerce_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{commerce_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_commerce_total'
+	                        value='@{commerce_focus}+@{mod2_commerce}+@{mod3_commerce}-20' class='sheet-input_background'
+	                        disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Deceive</p>
+	                <select name='attr_deceive_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='int'>INT</option>
+	                    <option value='fel' selected='selected'>FEL</option>
+	                </select>
+	                <input name='attr_mod2_deceive' type='number' value='0' />
+	                <input name='attr_mod3_deceive' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_deceive' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_deceive' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_deceive' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_deceive_focus' type='hidden' value=''>
+	                <input name='attr_deceive_unnat' type='hidden' value=''>
+	                <button type='roll' name='deceive_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Deceive}} {{dos=[[[[1+floor(abs([[{{ {@{deceive_total}+@{inlinemod-toggle}}, {@{deceive_focus}-@{limiter}}}kh1, {@{deceive_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{deceive_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_deceive_total'
+	                        value='@{deceive_focus}+@{mod2_deceive}+@{mod3_deceive}-20' class='sheet-input_background'
+	                        disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Dodge</p>
+	                <select name='attr_dodge_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='agi' selected='selected'>AGI</option>
+	                </select>
+	                <input name='attr_mod2_dodge' type='number' value='0' />
+	                <input name='attr_mod3_dodge' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_dodge' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_dodge' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_dodge' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_dodge_focus' type='hidden' value=''>
+	                <input name='attr_dodge_unnat' type='hidden' value=''>
+	                <button type='roll' name='dodge_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Dodge}} {{dos=[[[[1+floor(abs([[{{ {@{dodge_total}+@{inlinemod-toggle}}, {@{dodge_focus}-@{limiter}}}kh1, {@{dodge_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{dodge_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_dodge_total'
+	                        value='@{dodge_focus}+@{mod2_dodge}+@{mod3_dodge}-20' class='sheet-input_background'
+	                        disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Inquiry</p>
+	                <select name='attr_inquiry_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='int'>INT</option>
+	                    <option value='per'>PER</option>
+	                    <option value='fel' selected='selected'>FEL</option>
+	                </select>
+	                <input name='attr_mod2_inquiry' type='number' value='0' />
+	                <input name='attr_mod3_inquiry' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_inquiry' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_inquiry' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_inquiry' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_inquiry_focus' type='hidden' value=''>
+	                <input name='attr_inquiry_unnat' type='hidden' value=''>
+	                <button type='roll' name='inquiry_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Inquiry}} {{dos=[[[[1+floor(abs([[{{ {@{inquiry_total}+@{inlinemod-toggle}}, {@{inquiry_focus}-@{limiter}}}kh1, {@{inquiry_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{inquiry_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_inquiry_total'
+	                        value='@{inquiry_focus}+@{mod2_inquiry}+@{mod3_inquiry}-20' class='sheet-input_background'
+	                        disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Interrogation</p>
+	                <select name='attr_interrogation_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='wp' selected='selected'>WP</option>
+	                    <option value='fel'>FEL</option>
+	                </select>
+	                <input name='attr_mod2_interrogation' type='number' value='0' />
+	                <input name='attr_mod3_interrogation' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_interrogation' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_interrogation' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_interrogation' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_interrogation_focus' type='hidden' value=''>
+	                <input name='attr_interrogation_unnat' type='hidden' value=''>
+	                <button type='roll' name='interrogation_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Interrogation}} {{dos=[[[[1+floor(abs([[{{ {@{interrogation_total}+@{inlinemod-toggle}}, {@{interrogation_focus}-@{limiter}}}kh1, {@{interrogation_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{interrogation_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_interrogation_total'
+	                        value='@{interrogation_focus}+@{mod2_interrogation}+@{mod3_interrogation}-20'
+	                        class='sheet-input_background' disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Intimidate</p>
+	                <select name='attr_intimidate_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='str' selected='selected'>STR</option>
+	                    <option value='wp'>WP</option>
+	                </select>
+	                <input name='attr_mod2_intimidate' type='number' value='0' />
+	                <input name='attr_mod3_intimidate' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_intimidate' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_intimidate' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_intimidate' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_intimidate_focus' type='hidden' value=''>
+	                <input name='attr_intimidate_unnat' type='hidden' value=''>
+	                <button type='roll' name='intimidate_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Intimidate}} {{dos=[[[[1+floor(abs([[{{ {@{intimidate_total}+@{inlinemod-toggle}}, {@{intimidate_focus}-@{limiter}}}kh1, {@{intimidate_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{intimidate_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_intimidate_total'
+	                        value='@{intimidate_focus}+@{mod2_intimidate}+@{mod3_intimidate}-20'
+	                        class='sheet-input_background' disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Logic</p>
+	                <select name='attr_logic_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='agi'>AGI</option>
+	                    <option value='int' selected='selected'>INT</option>
+	                </select>
+	                <input name='attr_mod2_logic' type='number' value='0' />
+	                <input name='attr_mod3_logic' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_logic' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_logic' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_logic' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_logic_focus' type='hidden' value=''>
+	                <input name='attr_logic_unnat' type='hidden' value=''>
+	                <button type='roll' name='logic_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Logic}} {{dos=[[[[1+floor(abs([[{{ {@{logic_total}+@{inlinemod-toggle}}, {@{logic_focus}-@{limiter}}}kh1, {@{logic_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{logic_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_logic_total'
+	                        value='@{logic_focus}+@{mod2_logic}+@{mod3_logic}-20' class='sheet-input_background'
+	                        disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Medicae</p>
+	                <select name='attr_medicae_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='agi'>AGI</option>
+	                    <option value='int' selected='selected'>INT</option>
+	                    <option value='per'>PER</option>
+	                </select>
+	                <input name='attr_mod2_medicae' type='number' value='0' />
+	                <input name='attr_mod3_medicae' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_medicae' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_medicae' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_medicae' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_medicae_focus' type='hidden' value=''>
+	                <input name='attr_medicae_unnat' type='hidden' value=''>
+	                <button type='roll' name='medicae_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Medicae}} {{dos=[[[[1+floor(abs([[{{ {@{medicae_total}+@{inlinemod-toggle}}, {@{medicae_focus}-@{limiter}}}kh1, {@{medicae_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{medicae_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_medicae_total'
+	                        value='@{medicae_focus}+@{mod2_medicae}+@{mod3_medicae}-20' class='sheet-input_background'
+	                        disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Navigate: Surface</p>
+	                <select name='attr_nav_surface_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='int' selected='selected'>INT</option>
+	                    <option value='per'>PER</option>
+	                </select>
+	                <input name='attr_mod2_nav_surface' type='number' value='0' />
+	                <input name='attr_mod3_nav_surface' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_nav_surface' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_nav_surface' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_nav_surface' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_nav_surface_focus' type='hidden' value=''>
+	                <input name='attr_nav_surface_unnat' type='hidden' value=''>
+	                <button type='roll' name='nav_surface_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Navigate: Surface}} {{dos=[[[[1+floor(abs([[{{ {@{nav_surface_total}+@{inlinemod-toggle}}, {@{nav_surface_focus}-@{limiter}}}kh1, {@{nav_surface_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{nav_surface_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_nav_surface_total'
+	                        value='@{nav_surface_focus}+@{mod2_nav_surface}+@{mod3_nav_surface}-20'
+	                        class='sheet-input_background' disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Navigate: Stellar</p>
+	                <select name='attr_nav_stellar_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='int' selected='selected'>INT</option>
+	                    <option value='per'>PER</option>
+	                </select>
+	                <input name='attr_mod2_nav_stellar' type='number' value='0' />
+	                <input name='attr_mod3_nav_stellar' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_nav_stellar' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_nav_stellar' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_nav_stellar' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_nav_stellar_focus' type='hidden' value=''>
+	                <input name='attr_nav_stellar_unnat' type='hidden' value=''>
+	                <button type='roll' name='nav_stellar_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Navigate: Stellar}} {{dos=[[[[1+floor(abs([[{{ {@{nav_stellar_total}+@{inlinemod-toggle}}, {@{nav_stellar_focus}-@{limiter}}}kh1, {@{nav_stellar_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{nav_stellar_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_nav_stellar_total'
+	                        value='@{nav_stellar_focus}+@{mod2_nav_stellar}+@{mod3_nav_stellar}-20'
+	                        class='sheet-input_background' disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Navigate: Warp</p>
+	                <select name='attr_nav_warp_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='int' selected='selected'>INT</option>
+	                    <option value='per'>PER</option>
+	                </select>
+	                <input name='attr_mod2_nav_warp' type='number' value='0' />
+	                <input name='attr_mod3_nav_warp' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_nav_warp' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_nav_warp' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_nav_warp' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_nav_warp_focus' type='hidden' value=''>
+	                <input name='attr_nav_warp_unnat' type='hidden' value=''>
+	                <button type='roll' name='nav_warp_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Navigate: Warp}} {{dos=[[[[1+floor(abs([[{{ {@{nav_warp_total}+@{inlinemod-toggle}}, {@{nav_warp_focus}-@{limiter}}}kh1, {@{nav_warp_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{nav_warp_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_nav_warp_total'
+	                        value='@{nav_warp_focus}+@{mod2_nav_warp}+@{mod3_nav_warp}-20' class='sheet-input_background'
+	                        disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Operate: Aeronautica</p>
+	                <select name='attr_op_aero_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='agi' selected='selected'>AGI</option>
+	                    <option value='int'>INT</option>
+	                </select>
+	                <input name='attr_mod2_op_aero' type='number' value='0' />
+	                <input name='attr_mod3_op_aero' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_op_aero' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_op_aero' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_op_aero' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_op_aero_focus' type='hidden' value=''>
+	                <input name='attr_op_aero_unnat' type='hidden' value=''>
+	                <button type='roll' name='op_aero_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Operate: Aeronautica}} {{dos=[[[[1+floor(abs([[{{ {@{op_aero_total}+@{inlinemod-toggle}}, {@{op_aero_focus}-@{limiter}}}kh1, {@{op_aero_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{op_aero_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_op_aero_total'
+	                        value='@{op_aero_focus}+@{mod2_op_aero}+@{mod3_op_aero}-20' class='sheet-input_background'
+	                        disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Operate: Surface</p>
+	                <select name='attr_op_surface_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='agi' selected='selected'>AGI</option>
+	                    <option value='int'>INT</option>
+	                </select>
+	                <input name='attr_mod2_op_surface' type='number' value='0' />
+	                <input name='attr_mod3_op_surface' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_op_surface' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_op_surface' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_op_surface' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_op_surface_focus' type='hidden' value=''>
+	                <input name='attr_op_surface_unnat' type='hidden' value=''>
+	                <button type='roll' name='op_surface_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Operate: Surface}} {{dos=[[[[1+floor(abs([[{{ {@{op_surface_total}+@{inlinemod-toggle}}, {@{op_surface_focus}-@{limiter}}}kh1, {@{op_surface_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{op_surface_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_op_surface_total'
+	                        value='@{op_surface_focus}+@{mod2_op_surface}+@{mod3_op_surface}-20'
+	                        class='sheet-input_background' disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Operate: Voidship</p>
+	                <select name='attr_op_void_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='agi' selected='selected'>AGI</option>
+	                    <option value='int'>INT</option>
+	                </select>
+	                <input name='attr_mod2_op_void' type='number' value='0' />
+	                <input name='attr_mod3_op_void' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_op_void' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_op_void' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_op_void' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_op_void_focus' type='hidden' value=''>
+	                <input name='attr_op_void_unnat' type='hidden' value=''>
+	                <button type='roll' name='op_void_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Operate: Voidship}} {{dos=[[[[1+floor(abs([[{{ {@{op_void_total}+@{inlinemod-toggle}}, {@{op_void_focus}-@{limiter}}}kh1, {@{op_void_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{op_void_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_op_void_total'
+	                        value='@{op_void_focus}+@{mod2_op_void}+@{mod3_op_void}-20' class='sheet-input_background'
+	                        disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Parry</p>
+	                <select name='attr_parry_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='ws' selected='selected'>WS</option>
+	                </select>
+	                <input name='attr_mod2_parry' type='number' value='0' />
+	                <input name='attr_mod3_parry' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_parry' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_parry' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_parry' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_parry_focus' type='hidden' value=''>
+	                <input name='attr_parry_unnat' type='hidden' value=''>
+	                <button type='roll' name='parry_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Parry}} {{dos=[[[[1+floor(abs([[{{ {@{parry_total}+@{inlinemod-toggle}}, {@{parry_focus}-@{limiter}}}kh1, {@{parry_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{parry_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_parry_total'
+	                        value='@{parry_focus}+@{mod2_parry}+@{mod3_parry}-20' class='sheet-input_background'
+	                        disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Psyniscience</p>
+	                <select name='attr_psyniscience_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='per' selected='selected'>PER</option>
+	                    <option value='wp'>WP</option>
+	                </select>
+	                <input name='attr_mod2_psyniscience' type='number' value='0' />
+	                <input name='attr_mod3_psyniscience' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_psyniscience' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_psyniscience' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_psyniscience' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_psyniscience_focus' type='hidden' value=''>
+	                <input name='attr_psyniscience_unnat' type='hidden' value=''>
+	                <button type='roll' name='psyniscience_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Psyniscience}} {{dos=[[[[1+floor(abs([[{{ {@{psyniscience_total}+@{inlinemod-toggle}}, {@{psyniscience_focus}-@{limiter}}}kh1, {@{psyniscience_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{psyniscience_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_psyniscience_total'
+	                        value='@{psyniscience_focus}+@{mod2_psyniscience}+@{mod3_psyniscience}-20'
+	                        class='sheet-input_background' disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Scrutiny</p>
+	                <select name='attr_scrutiny_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='int'>INT</option>
+	                    <option value='per' selected='selected'>PER</option>
+	                    <option value='fel'>FEL</option>
+	                </select>
+	                <input name='attr_mod2_scrutiny' type='number' value='0' />
+	                <input name='attr_mod3_scrutiny' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_scrutiny' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_scrutiny' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_scrutiny' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_scrutiny_focus' type='hidden' value=''>
+	                <input name='attr_scrutiny_unnat' type='hidden' value=''>
+	                <button type='roll' name='scrutiny_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Scrutiny}} {{dos=[[[[1+floor(abs([[{{ {@{scrutiny_total}+@{inlinemod-toggle}}, {@{scrutiny_focus}-@{limiter}}}kh1, {@{scrutiny_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{scrutiny_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_scrutiny_total'
+	                        value='@{scrutiny_focus}+@{mod2_scrutiny}+@{mod3_scrutiny}-20' class='sheet-input_background'
+	                        disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Security</p>
+	                <select name='attr_security_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='agi'>AGI</option>
+	                    <option value='int' selected='selected'>INT</option>
+	                </select>
+	                <input name='attr_mod2_security' type='number' value='0' />
+	                <input name='attr_mod3_security' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_security' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_security' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_security' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_security_focus' type='hidden' value=''>
+	                <input name='attr_security_unnat' type='hidden' value=''>
+	                <button type='roll' name='security_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Security}} {{dos=[[[[1+floor(abs([[{{ {@{security_total}+@{inlinemod-toggle}}, {@{security_focus}-@{limiter}}}kh1, {@{security_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{security_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_security_total'
+	                        value='@{security_focus}+@{mod2_security}+@{mod3_security}-20' class='sheet-input_background'
+	                        disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Sleight of Hand</p>
+	                <select name='attr_sleight_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='agi' selected='selected'>AGI</option>
+	                    <option value='int'>INT</option>
+	                </select>
+	                <input name='attr_mod2_sleight' type='number' value='0' />
+	                <input name='attr_mod3_sleight' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_sleight' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_sleight' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_sleight' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_sleight_focus' type='hidden' value=''>
+	                <input name='attr_sleight_unnat' type='hidden' value=''>
+	                <button type='roll' name='sleight_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Sleight of Hand}} {{dos=[[[[1+floor(abs([[{{ {@{sleight_total}+@{inlinemod-toggle}}, {@{sleight_focus}-@{limiter}}}kh1, {@{sleight_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{sleight_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_sleight_total'
+	                        value='@{sleight_focus}+@{mod2_sleight}+@{mod3_sleight}-20' class='sheet-input_background'
+	                        disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Stealth</p>
+	                <select name='attr_stealth_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='agi' selected='selected'>AGI</option>
+	                    <option value='per'>PER</option>
+	                </select>
+	                <input name='attr_mod2_stealth' type='number' value='0' />
+	                <input name='attr_mod3_stealth' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_stealth' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_stealth' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_stealth' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_stealth_focus' type='hidden' value=''>
+	                <input name='attr_stealth_unnat' type='hidden' value=''>
+	                <button type='roll' name='stealth_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Stealth}} {{dos=[[[[1+floor(abs([[{{ {@{stealth_total}+@{inlinemod-toggle}}, {@{stealth_focus}-@{limiter}}}kh1, {@{stealth_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{stealth_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_stealth_total'
+	                        value='@{stealth_focus}+@{mod2_stealth}+@{mod3_stealth}-20-(10*@{size})'
+	                        class='sheet-input_background' disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Survival</p>
+	                <select name='attr_survival_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='agi'>AGI</option>
+	                    <option value='int'>INT</option>
+	                    <option value='per' selected='selected'>PER</option>
+	                </select>
+	                <input name='attr_mod2_survival' type='number' value='0' />
+	                <input name='attr_mod3_survival' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_survival' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_survival' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_survival' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_survival_focus' type='hidden' value=''>
+	                <input name='attr_survival_unnat' type='hidden' value=''>
+	                <button type='roll' name='survival_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Survival}} {{dos=[[[[1+floor(abs([[{{ {@{survival_total}+@{inlinemod-toggle}}, {@{survival_focus}-@{limiter}}}kh1, {@{survival_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{survival_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_survival_total'
+	                        value='@{survival_focus}+@{mod2_survival}+@{mod3_survival}-20' class='sheet-input_background'
+	                        disabled /></button>
+	            </div>
+	            <div class='sheet-skill_grid'>
+	                <p class='sheet-bold_text sheet-skills_text'>Tech-Use</p>
+	                <select name='attr_tech_use_char' class='sheet-full_width sheet-full_height'>
+	                    <option value='agi'>AGI</option>
+	                    <option value='int' selected='selected'>INT</option>
+	                </select>
+	                <input name='attr_mod2_tech_use' type='number' value='0' />
+	                <input name='attr_mod3_tech_use' type='checkbox' value='20' class='sheet-skills_item' />
+	                <input name='attr_mod3_tech_use' type='checkbox' value='30' class='sheet-skills_item' />
+	                <input name='attr_mod3_tech_use' type='checkbox' value='40' class='sheet-skills_item' />
+	                <input name='attr_mod3_tech_use' type='checkbox' value='50' class='sheet-skills_item' />
+	                <input name='attr_tech_use_focus' type='hidden' value=''>
+	                <input name='attr_tech_use_unnat' type='hidden' value=''>
+	                <button type='roll' name='tech_use_roll'
+	                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Tech-Use}} {{dos=[[[[1+floor(abs([[{{ {@{tech_use_total}+@{inlinemod-toggle}}, {@{tech_use_focus}-@{limiter}}}kh1, {@{tech_use_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{tech_use_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                    class='sheet-clear'><input name='attr_tech_use_total'
+	                        value='@{tech_use_focus}+@{mod2_tech_use}+@{mod3_tech_use}-20' class='sheet-input_background'
+	                        disabled /></button>
+	            </div>
+	            <fieldset name='skill' class='repeating_skill'>
+	                <div class='sheet-skill_grid'>
+	                    <input name='attr_skill_name' type='text' value='' class='sheet-full_width sheet-text_left' />
+	                    <select name='attr_skill_r_char' class='sheet-full_width sheet-full_height'>
+	                        <option value='ws'>WS</option>
+	                        <option value='bs'>BS</option>
+	                        <option value='str'>STR</option>
+	                        <option value='tou'>TOU</option>
+	                        <option value='agi'>AGI</option>
+	                        <option value='int'>INT</option>
+	                        <option value='per'>PER</option>
+	                        <option value='wp'>WP</option>
+	                        <option value='fel'>FEL</option>
+	                    </select>
+	                    <input name='attr_skill_r_mod2' type='number' value='0' />
+	                    <input name='attr_skill_r_mod3' type='checkbox' value='20' class='sheet-skills_item' />
+	                    <input name='attr_skill_r_mod3' type='checkbox' value='30' class='sheet-skills_item' />
+	                    <input name='attr_skill_r_mod3' type='checkbox' value='40' class='sheet-skills_item' />
+	                    <input name='attr_skill_r_mod3' type='checkbox' value='50' class='sheet-skills_item' />
+	                    <input name='attr_skill_r_focus' type='hidden' value=''>
+	                    <input name='attr_skill_r_unnat' type='hidden' value=''>
+	                    <button type='roll' name='skill_Roll'
+	                        value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=@{skill_name}}} {{dos=[[[[1+floor(abs([[{{ {@{skill_r_total}+@{inlinemod-toggle}}, {@{skill_r_focus}-@{limiter}}}kh1, {@{skill_r_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{skill_r_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+	                        class='sheet-clear'><input name='attr_skill_r_total'
+	                            value='@{skill_r_focus}+@{skill_r_mod2}+[[@{skill_r_mod3}-20'
+	                            class='sheet-input_background' disabled /></button>
+	                </div>
+	            </fieldset>
+	        </div>
+
+	        <div class='sheet-core_lists2 sheet-edge_padding sheet-table sheet-radius_border'>
+	            <h3 class='sheet-radius_border_heading'><b>Linguistics</b></h3>
+	            <div class='sheet-education_header'>
+	                <p class='sheet-bold_text'>Name</p>
+	                <p class='sheet-bold_text'>Char</p>
+	                <p class='sheet-bold_text'>Mod</p>
+	                <p class='sheet-bold_text'>K</p>
+	                <p class='sheet-bold_text'>+10</p>
+	                <p class='sheet-bold_text'>+20</p>
+	                <p class='sheet-bold_text'>+30</p>
+	                <p class='sheet-bold_text'>Roll</p>
+	            </div>
+	            <fieldset name='linguistics' class='repeating_linguistics'>
+	                <div class='sheet-education_grid'>
+	                    <input name='attr_linguistics_name' type='text' class='sheet-full_width sheet-text_left' />
+	                    <select name='attr_linguistics_r_char' class='sheet-full_width sheet-full_height'>
+	                        <option value='int' selected='selected'>INT</option>
+	                        <option value='fel'>FEL</option>
+	                    </select>
+	                    <input name='attr_linguistics_r_mod2' type='number' value='0' />
+	                    <input name='attr_linguistics_r_mod3' type='checkbox' value='20' class='sheet-skills_item ' />
+	                    <input name='attr_linguistics_r_mod3' type='checkbox' value='30' class='sheet-skills_item' />
+	                    <input name='attr_linguistics_r_mod3' type='checkbox' value='40' class='sheet-skills_item ' />
+	                    <input name='attr_linguistics_r_mod3' type='checkbox' value='50' class='sheet-skills_item' />
+	                    <input name='attr_linguistics_r_focus' type='hidden' value=''>
+	                    <input name='attr_linguistics_r_unnat' type='hidden' value=''>
+	                    <button name='linguistics_roll' type='roll' class='sheet-clear'
+	                        value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Linguistics: @{linguistics_name} }} {{dos=[[[[1+floor(abs([[{{ {@{linguistics_r_total}+@{inlinemod-toggle}}, {@{linguistics_r_focus}-@{limiter}}}kh1, {@{linguistics_r_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{linguistics_r_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'>
+	                        <input name='attr_linguistics_r_total'
+	                            value='@{linguistics_r_focus}+@{linguistics_r_mod2}+@{linguistics_r_mod3}-20'
+	                            class='sheet-input_background' disabled /></button>
+	                </div>
+	            </fieldset>
+	        </div>
+
+	        <div class='sheet-core_lists3 sheet-edge_padding sheet-table sheet-radius_border'>
+	            <h3 class='sheet-radius_border_heading'><b>Common Lore</b></h3>
+	            <div class='sheet-education_header'>
+	                <p class='sheet-bold_text'>Name</p>
+	                <p class='sheet-bold_text'>Char</p>
+	                <p class='sheet-bold_text'>Mod</p>
+	                <p class='sheet-bold_text'>K</p>
+	                <p class='sheet-bold_text'>+10</p>
+	                <p class='sheet-bold_text'>+20</p>
+	                <p class='sheet-bold_text'>+30</p>
+	                <p class='sheet-bold_text'>Roll</p>
+	            </div>
+	            <fieldset name='common-lore' class='repeating_common-lore'>
+	                <div class='sheet-education_grid'>
+	                    <input name='attr_common-lore_name' type='text' class='sheet-full_width sheet-text_left' />
+	                    <select name='attr_common-lore_r_char' class='sheet-full_width sheet-full_height'>
+	                        <option value='int' selected='selected'>INT</option>
+	                        <option value='fel'>FEL</option>
+	                    </select>
+	                    <input name='attr_common-lore_r_mod2' type='number' value='0' />
+	                    <input name='attr_common-lore_r_mod3' type='checkbox' value='20' class='sheet-skills_item ' />
+	                    <input name='attr_common-lore_r_mod3' type='checkbox' value='30' class='sheet-skills_item' />
+	                    <input name='attr_common-lore_r_mod3' type='checkbox' value='40' class='sheet-skills_item ' />
+	                    <input name='attr_common-lore_r_mod3' type='checkbox' value='50' class='sheet-skills_item' />
+	                    <input name='attr_common-lore_r_focus' type='hidden' value=''>
+	                    <input name='attr_common-lore_r_unnat' type='hidden' value=''>
+	                    <button name='common-lore_roll' type='roll' class='sheet-clear'
+	                        value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Common-Lore: @{common-lore_name} }} {{dos=[[[[1+floor(abs([[{{ {@{common-lore_r_total}+@{inlinemod-toggle}}, {@{common-lore_r_focus}-@{limiter}}}kh1, {@{common-lore_r_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{common-lore_r_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'>
+	                        <input name='attr_common-lore_r_total'
+	                            value='@{common-lore_r_focus}+@{common-lore_r_mod2}+@{common-lore_r_mod3}-20'
+	                            class='sheet-input_background' disabled /></button>
+	                </div>
+	            </fieldset>
+	        </div>
+
+	        <div class='sheet-core_lists4 sheet-edge_padding sheet-table sheet-radius_border'>
+	            <h3 class='sheet-radius_border_heading'><b>Scholastic Lore</b></h3>
+	            <div class='sheet-education_header'>
+	                <p class='sheet-bold_text'>Name</p>
+	                <p class='sheet-bold_text'>Char</p>
+	                <p class='sheet-bold_text'>Mod</p>
+	                <p class='sheet-bold_text'>K</p>
+	                <p class='sheet-bold_text'>+10</p>
+	                <p class='sheet-bold_text'>+20</p>
+	                <p class='sheet-bold_text'>+30</p>
+	                <p class='sheet-bold_text'>Roll</p>
+	            </div>
+	            <fieldset name='scholastic-lore' class='repeating_scholastic-lore'>
+	                <div class='sheet-education_grid'>
+	                    <input name='attr_scholastic-lore_name' type='text' class='sheet-full_width sheet-text_left' />
+	                    <select name='attr_scholastic-lore_r_char' class='sheet-full_width sheet-full_height'>
+	                        <option value='int' selected='selected'>INT</option>
+	                        <option value='fel'>FEL</option>
+	                    </select>
+	                    <input name='attr_scholastic-lore_r_mod2' type='number' value='0' />
+	                    <input name='attr_scholastic-lore_r_mod3' type='checkbox' value='20' class='sheet-skills_item ' />
+	                    <input name='attr_scholastic-lore_r_mod3' type='checkbox' value='30' class='sheet-skills_item' />
+	                    <input name='attr_scholastic-lore_r_mod3' type='checkbox' value='40' class='sheet-skills_item ' />
+	                    <input name='attr_scholastic-lore_r_mod3' type='checkbox' value='50' class='sheet-skills_item' />
+	                    <input name='attr_scholastic-lore_r_focus' type='hidden' value=''>
+	                    <input name='attr_scholastic-lore_r_unnat' type='hidden' value=''>
+	                    <button name='scholastic-lore_roll' type='roll' class='sheet-clear'
+	                        value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Scholastic-Lore: @{scholastic-lore_name} }} {{dos=[[[[1+floor(abs([[{{ {@{scholastic-lore_r_total}+@{inlinemod-toggle}}, {@{scholastic-lore_r_focus}-@{limiter}}}kh1, {@{scholastic-lore_r_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{scholastic-lore_r_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'>
+	                        <input name='attr_scholastic-lore_r_total'
+	                            value='@{scholastic-lore_r_focus}+@{scholastic-lore_r_mod2}+@{scholastic-lore_r_mod3}-20'
+	                            class='sheet-input_background' disabled /></button>
+	                </div>
+	            </fieldset>
+	        </div>
+
+	        <div class='sheet-core_lists5 sheet-edge_padding sheet-table sheet-radius_border'>
+	            <h3 class='sheet-radius_border_heading'><b>Forbidden Lore</b></h3>
+	            <div class='sheet-education_header'>
+	                <p class='sheet-bold_text'>Name</p>
+	                <p class='sheet-bold_text'>Char</p>
+	                <p class='sheet-bold_text'>Mod</p>
+	                <p class='sheet-bold_text'>K</p>
+	                <p class='sheet-bold_text'>+10</p>
+	                <p class='sheet-bold_text'>+20</p>
+	                <p class='sheet-bold_text'>+30</p>
+	                <p class='sheet-bold_text'>Roll</p>
+	            </div>
+	            <fieldset name='forbidden-lore' class='repeating_forbidden-lore'>
+	                <div class='sheet-education_grid'>
+	                    <input name='attr_forbidden-lore_name' type='text' class='sheet-full_width sheet-text_left' />
+	                    <select name='attr_forbidden-lore_r_char' class='sheet-full_width sheet-full_height'>
+	                        <option value='int' selected='selected'>INT</option>
+	                        <option value='fel'>FEL</option>
+	                    </select>
+	                    <input name='attr_forbidden-lore_r_mod2' type='number' value='0' />
+	                    <input name='attr_forbidden-lore_r_mod3' type='checkbox' value='20' class='sheet-skills_item ' />
+	                    <input name='attr_forbidden-lore_r_mod3' type='checkbox' value='30' class='sheet-skills_item' />
+	                    <input name='attr_forbidden-lore_r_mod3' type='checkbox' value='40' class='sheet-skills_item ' />
+	                    <input name='attr_forbidden-lore_r_mod3' type='checkbox' value='50' class='sheet-skills_item' />
+	                    <input name='attr_forbidden-lore_r_focus' type='hidden' value=''>
+	                    <input name='attr_forbidden-lore_r_unnat' type='hidden' value=''>
+	                    <button name='forbidden-lore_roll' type='roll' class='sheet-clear'
+	                        value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Forbidden-Lore: @{forbidden-lore_name} }} {{dos=[[[[1+floor(abs([[{{ {@{forbidden-lore_r_total}+@{inlinemod-toggle}}, {@{forbidden-lore_r_focus}-@{limiter}}}kh1, {@{forbidden-lore_r_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{forbidden-lore_r_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'>
+	                        <input name='attr_forbidden-lore_r_total'
+	                            value='@{forbidden-lore_r_focus}+@{forbidden-lore_r_mod2}+@{forbidden-lore_r_mod3}-20'
+	                            class='sheet-input_background' disabled /></button>
+	                </div>
+	            </fieldset>
+	        </div>
+
+	        <div class='sheet-core_lists6 sheet-edge_padding sheet-table sheet-radius_border'>
+	            <h3 class='sheet-radius_border_heading'><b>Trade</b></h3>
+	            <div class='sheet-education_header'>
+	                <p class='sheet-bold_text'>Name</p>
+	                <p class='sheet-bold_text'>Char</p>
+	                <p class='sheet-bold_text'>Mod</p>
+	                <p class='sheet-bold_text'>K</p>
+	                <p class='sheet-bold_text'>+10</p>
+	                <p class='sheet-bold_text'>+20</p>
+	                <p class='sheet-bold_text'>+30</p>
+	                <p class='sheet-bold_text'>Roll</p>
+	            </div>
+	            <fieldset name='trade' class='repeating_trade'>
+	                <div class='sheet-education_grid'>
+	                    <input name='attr_trade_name' type='text' class='sheet-full_width sheet-text_left' />
+	                    <select name='attr_trade_r_char' class='sheet-full_width sheet-full_height'>
+	                        <option value='agi'>AGI</option>
+	                        <option value='int' selected='selected'>INT</option>
+	                        <option value='fel'>FEL</option>
+	                    </select>
+	                    <input name='attr_trade_r_mod2' type='number' value='0' />
+	                    <input name='attr_trade_r_mod3' type='checkbox' value='20' class='sheet-skills_item ' />
+	                    <input name='attr_trade_r_mod3' type='checkbox' value='30' class='sheet-skills_item' />
+	                    <input name='attr_trade_r_mod3' type='checkbox' value='40' class='sheet-skills_item ' />
+	                    <input name='attr_trade_r_mod3' type='checkbox' value='50' class='sheet-skills_item' />
+	                    <input name='attr_trade_r_focus' type='hidden' value=''>
+	                    <input name='attr_trade_r_unnat' type='hidden' value=''>
+	                    <button name='trade_roll' type='roll' class='sheet-clear'
+	                        value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Trade: @{trade_name} }} {{dos=[[[[1+floor(abs([[{{ {@{trade_r_total}+@{inlinemod-toggle}}, {@{trade_r_focus}-@{limiter}}}kh1, {@{trade_r_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{trade_r_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'>
+	                        <input name='attr_trade_r_total' value='@{trade_r_focus}+@{trade_r_mod2}+@{trade_r_mod3}-20'
+	                            class='sheet-input_background' disabled /></button>
+	                </div>
+	            </fieldset>
+	        </div>
+
+	    </div>
+
+	    <br>
+
+
+
+	    <h2>Special Abilities / Talents</h2>
+	    <p class='sheet-abilities_checkbox_pointer'><b>Expand &#9660;</b></p>
+	    <div class='sheet-edge_padding sheet-ssc'>
+	        <fieldset name='abilities' class='repeating_abilities'>
+	            <input name='attr_ability_r' type='text' placeholder='Name' class='sheet-full_width_49px' />
+	            <label title='Expand' class='sheet-margin_adjust'><input type='checkbox' name='attr_collapse' value='3'
+	                    class='sheet-collapsible_entity_switch sheet-select_button sheet-hidden' /><span
+	                    class='sheet-select_text '>&#9660;</span></label>
+	            <label title='Send description in the chat' class='sheet-margin_adjust2'><button type='roll'
+	                    value='@{to-gm}&{template:mythic} {{name=@{ability_r} }} {{description=@{ability_desc_r} }}'
+	                    class='sheet-hidden'></button><span class='sheet-select_text'>&#128266;</span></label>
+	            <input name='attr_collapse' type='checkbox' value='3'
+	                class='sheet-collapsible_entity_switch sheet-hidden' />
+	            <textarea name='attr_ability_desc_r' class='sheet-collapsible_entity_block'></textarea>
+	        </fieldset>
+	    </div>
+
+	    <h2>Traits</h2>
+	    <p class='sheet-traits_checkbox_pointer'><b>Expand &#9660;</b></p>
+	    <div class='sheet-edge_padding sheet-ssc'>
+	        <fieldset name='traits' class='repeating_traits'>
+	            <input name='attr_trait_r' type='text' placeholder='Name' class='sheet-full_width_49px' />
+	            <label title='Expand' class='sheet-margin_adjust'><input type='checkbox' name='attr_collapse' value='3'
+	                    class='sheet-collapsible_entity_switch sheet-select_button sheet-hidden' /><span
+	                    class='sheet-select_text '>&#9660;</span></label>
+	            <label title='Send description in the chat' class='sheet-margin_adjust2'><button type='roll'
+	                    value='@{to-gm}&{template:mythic} {{name=@{trait_r} }} {{description=@{trait_desc_r} }}'
+	                    class='sheet-hidden'></button><span class='sheet-select_text'>&#128266;</span></label>
+	            <input name='attr_collapse' type='checkbox' value='3'
+	                class='sheet-collapsible_entity_switch sheet-hidden' />
+	            <textarea name='attr_trait_desc_r' class='sheet-collapsible_entity_block'></textarea>
+	        </fieldset>
+	    </div>
+
+	</div>

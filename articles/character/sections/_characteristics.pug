@@ -1,0 +1,30 @@
+// An array of all characteristics for the system. 
+// We'll iterate through this so we don't have to write the same code 10 times.
+-
+    const characteristics = [
+        'WeaponSkill',
+        'BallisticSkill',
+        'Strength',
+        'Toughness',
+        'Agility',
+        'Intelligence',
+        'Perception',
+        'Willpower',
+        'Fellowship',
+        'Influence'
+    ];
+// Let's store that array in the K-scaffold provided varObjects object so that we'll be able to reuse it in our HTML.
+- varObjects.characteristicNames = characteristics;
+// Our characteristics section. We'll use the ID and class in our CSS and our navigation functions. paper-background will be used to style the backgrounds of our sections.
+section#characteristics.characteristics
+    // A section for each characteristic, containing the name, the value, the unnatural value and the bonus.
+    each name in characteristics
+        // The characteristic name.
+        h5(data-i18n=name).characteristic-head
+        // The characteristic value.
+        +number({name,class:'underlined',trigger:{affects:[`${name}_value`]}})
+        // The characteristic unnatural value.
+        +number({name,class:'underlined',trigger:{affects:[`${name}_unnatural`]}})
+        // The characteristic bonus.
+        +number({name,class:'underlined',trigger:{affects:[`${name}_bonus`]}})
+// help needed

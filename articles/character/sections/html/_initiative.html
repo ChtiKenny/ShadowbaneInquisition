@@ -1,0 +1,60 @@
+<div class='sheet-tabs_main'>
+
+    <div class='sheet-initiative_container'>
+        <button name='initiative' type='roll' class='sheet-clear sheet-button_top_padding'
+            value='@{to-gm}&{template:mythic}{{character= @{character_name}}}{{initiative=@{initmod0}(@{initmod1}+@{initmod2}+@{initmod3})&{tracker}]]}}'>
+            Initiative|
+            <input name='attr_init_total' value='floor(@{initmod2}+@{initmod3})'
+                class='sheet-input_background sheet-input_init_background' disabled />
+        </button>
+        <select name='attr_initmod1' class='sheet-init_field'>
+            <option value='1d10cs1cf10' selected='selected'>Standard</option>
+            <option value='2d10k1cs1cf10'>Constant Vigilance</option>
+            <option value='?{dice|1d10}cs1cf10'>Custom</option>
+        </select>
+        <p class='sheet-init_plus'>+</p>
+        <input name='attr_initmod2' type='number' value='0' />
+        <p class='sheet-init_plus'>+</p>
+        <select name='attr_initmod3' class='sheet-init_field'>
+            <option value='(@{AGI_total})/10+@{AGI_unnat}' selected='selected'>Agility
+            </option>
+            <option value='(@{INT}+@{INT_advancement})/10+@{INT_unnat}'>Intelligence</option>
+            <option value='(@{PER}+@{PER_advancement})/10+@{PER_unnat}'>Perception</option>
+            <option value='0'>N/A</option>
+        </select>
+        <button name='fate_initiative' type='roll' class='sheet-clear sheet-button_top_padding'
+            value='@{to-gm}&{template:mythic}{{character= @{character_name}}}{{initiative=@{initmod0}(1d0cf0+10+@{initmod2}+@{initmod3})&{tracker}]]}}'>
+            Fate Ini|
+            <input name='attr_init_total' value='floor(@{initmod2}+@{initmod3})'
+                class='sheet-input_background sheet-input_init_background' disabled />
+        </button>
+    </div>
+
+    <div class='sheet-arc_container' title='The GM need to install the WeaponArc API in the game API setting page'>
+        <button class='sheet-clear sheet-button_top_padding' type='roll' name='arc'
+            value="!weapon-arc --add ?{degrees|30} ?{Range|20}m @{arc_color}"> Create Arc
+        </button>
+        <select name="attr_arc_color" class='sheet-arc_color sheet-init_field'>
+            <option value="#FF0000" style="background-color: #FF0000;">Red</option>
+            <option value="#228B22" style="background-color: #228B22;">Green</option>
+            <option value="#4161E1" style="background-color: #4161E1;">Blue</option>
+            <option value="#FFFF00" style="background-color: #FFFF00;">Yellow</option>
+            <option value="#FF00FF" style="background-color: #FF00FF;">Fuchsia</option>
+            <option value="#00FFFF" style="background-color: #00FFFF;">Cyan</option>
+            <option value="#FFA500" style="background-color: #FFA500;">Orange</option>
+            <option value="#00FF00" style="background-color: #00FF00;">Lime</option>
+            <option value="#FFC0CB" style="background-color: #FFC0CB;">Pink</option>
+        </select>
+        <button class='sheet-clear sheet-button_top_padding' type='roll' name='arc-clear' value="!weapon-arc --clear">
+            Clear Arcs
+        </button>
+        <!-- 
+					!weapon-arc {{
+						--add   0|90 ?{Range|30}m #0F05 #000 2
+						--add -90|90 ?{Range|30}m #FF05 #000 2
+						--add  90|90 ?{Range|30}m #FF05 #000 2
+						--add 180|90 ?{Range|30}m #F005 #000 2
+					}}-->
+    </div>
+
+</div>

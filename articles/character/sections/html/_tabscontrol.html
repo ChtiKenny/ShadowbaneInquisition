@@ -1,0 +1,32 @@
+<!-- SHEET TABS LOGIC -->
+
+<input name='attr_sheetTab' type='hidden' value='core' class='sheet-tabstoggle' />
+
+<!-- sheet tabs grid -->
+
+<div class='sheet-tabs_main'>
+    <div class='sheet-'>
+
+    </div>
+    <div class='sheet-sheet_tabs'>
+        <input name='attr_sheetTab' type='checkbox' value='core' class='sheet-hidden sheet-core_button' checked />
+        <button name='act_core' type='action' class='sheet-core_button sheet-bold_text'>Core</button>
+        <input name='attr_sheetTab' type='checkbox' value='equipment' class='sheet-hidden sheet-core_button' />
+        <button name='act_equipment' type='action' class='sheet-equipment_button sheet-bold_text'>Equipment</button>
+        <input name='attr_sheetTab' type='checkbox' value='advancements' class='sheet-hidden sheet-core_button' />
+        <button name='act_advancements' type='action'
+            class='sheet-advancements_button sheet-bold_text'>Advancements</button>
+        <input name='attr_sheetTab' type='checkbox' value='journal' class='sheet-hidden sheet-core_button' />
+        <button name='act_journal' type='action' class='sheet-journal_button sheet-bold_text'>Journal</button>
+        <input name='attr_sheetTab' type='checkbox' value='vehicle' class='sheet-hidden sheet-core_button' />
+        <button name='act_vehicle' type='action' class='sheet-vehicle_button sheet-bold_text'>Vehicle</button>
+        <input name='attr_sheetTab' type='checkbox' value='psykana' class='sheet-hidden sheet-core_button' />
+        <button name='act_psykana' type='action' class='sheet-psykana_button sheet-bold_text'>Psykana</button>
+        <input name='attr_sheetTab' type='checkbox' value='settings' class='sheet-hidden sheet-core_button' />
+        <button name='act_settings' type='action' class='sheet-settings_button sheet-huge_text'>⚙</button>
+    </div>
+
+</div>
+
+<!-- limiter value for min/max modifier -->
+<input type="hidden" name="attr_limiter" value="60">

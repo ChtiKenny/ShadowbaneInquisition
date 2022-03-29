@@ -1,0 +1,196 @@
+<div class='sheet-minimisable_infographic_main'>
+
+    <div class='sheet-minimisable_infographic_toggles'>
+        <label
+            title='Toggles a display showing Wounds, Fatigue, Fate Pts, Force Field, Conditions and Criticals Wounds info'>
+            <input type='checkbox' name='attr_infographic'
+                class='sheet-collapsible_entity_switch sheet-select_button sheet-hidden' checked />
+            <span class='sheet-select_text'>Infographic</span>
+        </label>
+        <label title='If selected, all rolls from this sheet will be whispered to GM, instead of posted in public'>
+            <input type='checkbox' name='attr_to-gm' value='/w gm' class='sheet-select_button sheet-hidden' />
+            <span class='sheet-select_text'>To GM</span>
+        </label>
+        <label title='If selected, most rolls made will also ask for a situational Modifier'>
+            <input type='checkbox' name='attr_inlinemod-toggle' value='0?{Modifier|0}'
+                class='sheet-select_button sheet-hidden' checked />
+            <span class='sheet-select_text'>Inline Mod</span>
+        </label>
+        <p></p>
+        <button class='sheet-clear sheet-minimisable_infographic_override' type='roll' name='scatter'
+            value="@{to-gm}&{template:mythic}{{character= @{character_name}}}{{scatter-range= [[?{Dice|D10, 1d10|D5, 1d5}+ceil(?{Degrees of Failiure|1}/2)+?{Modifier|0}]]}} {{scatter-direction=[[1d10]]}}">
+            Scatter
+        </button>
+        <button class='sheet-clear sheet-minimisable_infographic_override' type='roll' name='shock'
+            value="@{to-gm}&{template:mythic} {{character= @{character_name}}} {{shock= [[(?{Fear DoF|1})*10 + 1d100]]}}">
+            Shock
+        </button>
+        <button class='sheet-clear sheet-minimisable_infographic_override' type='roll' name='d100'
+            value="@{to-gm}&{template:mythic} [[ ([[?{Target Number|50}]] - [[1d100]])/10]] {{d100= }} {{character= @{character_name}}} {{target= $[[0]]}} {{roll=$[[1]]}} {{difference=$[[2]]}}">
+            1d100
+        </button>
+        <button class='sheet-clear sheet-minimisable_infographic_override' type='roll' name='righteousfury'
+            value="@{to-gm}&{template:mythic} {{character= @{character_name}}} {{righteousfury= }} {{@{settings_crunchsummary}= }} {{target= [[?{Target|Person, 0|Vehicle, 1}]] }} {{location= [[?{Location|Arm/Weapon, 0|Body/Propulsion, 1|Head/Turret, 2|Leg/Hull, 3}]]}} {{type= [[?{Damage Type|Energy, 0|Explosive, 1|Impact, 2|Rending, 3}]] }} {{roll=[[ ceil(?{Dice Roll|1d5, 1d5|1d10, 1d10} / ?{Mitigation|None, 1| True Grit, 2}) ]] }} ">
+            Righteous Fury
+        </button>
+    </div>
+    <input type='checkbox' name='attr_infographic' class='sheet-collapsible_entity_switch sheet-hidden' />
+    <div class='sheet-collapsible_entity_block'>
+        <div class='sheet-minimisable_infographic_grid'>
+
+            <div class='sheet-minimisable_infographic_field4x3a sheet-radius_border'>
+                <button name='wound_roll' type='roll'
+                    class='sheet-minimisable_infographic_g1 sheet-clear sheet-radius_border_top'
+                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{name=Wounds}} {{4x2-1-name=Current}} {{4x2-1=@{wounds}}} {{4x2-1-name-max=Max}} {{4x2-1-max=@{wounds|max}}} {{4x2-2-name=Critical}} {{4x2-2=@{critical_dmg}}}'>
+                    Wounds
+                </button>
+                <p class='sheet-minimisable_infographic_g6'>
+                    Current
+                </p>
+                <input class='sheet-minimisable_infographic_g7 sheet-full_width' type='text' name='attr_wounds'
+                    value='0' />
+                <p class='sheet-minimisable_infographic_g4'>
+                    Non-Lethal Dmg
+                </p>
+                <input class='sheet-minimisable_infographic_g5 sheet-full_width' type='text' name='attr_critical_dmg'
+                    value='0' />
+                <p class='sheet-minimisable_infographic_g2'>
+                    Max
+                </p>
+                <input class='sheet-minimisable_infographic_g3 sheet-full_width' type='text' name='attr_wounds_max'
+                    value='0' />
+            </div>
+
+            <div class='sheet-minimisable_infographic_field4x4 sheet-radius_border'>
+                <button name='fatigue_roll' type='roll'
+                    class='sheet-minimisable_infographic_g1 sheet-clear sheet-radius_border_top'
+                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{name=Fatigue}} {{2x2-name=Current}} {{2x2=@{fatigue}}} {{2x2-name-max=Max}} {{2x2-max=@{fatigue|max}}}'>
+                    Fatigue
+                </button>
+                <p class='sheet-minimisable_infographic_g2'>
+                    Current
+                </p>
+                <input class='sheet-minimisable_infographic_g3 sheet-full_width' type='text' name='attr_fatigue'
+                    value='0' />
+                <p class='sheet-minimisable_infographic_g4'>
+                    Max
+                </p>
+                <input class='sheet-minimisable_infographic_g5 sheet-full_width' type='text' name='attr_fatigue_max'
+                    value='0' readonly />
+                <p class='sheet-minimisable_infographic_g8'>
+                    Threshold Mod
+                </p>
+                <input class='sheet-minimisable_infographic_g9 sheet-full_width' type='text' name='attr_fatigue_mod'
+                    value='0' />
+            </div>
+
+            <div class='sheet-minimisable_infographic_field2x3 sheet-radius_border'>
+                <button
+                    title='Roll to see if you keep the Fate Point, If you are from a Shrine World activate that option in the settings'
+                    name='fate_roll' type='roll'
+                    class='sheet-minimisable_infographic_g1 sheet-clear sheet-radius_border_top'
+                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}}{{fate= [[1d10cs10@{settings_fate}]]}}'>
+                    Fate Pts
+                </button>
+                <p class='sheet-minimisable_infographic_g2'>
+                    Current
+                </p>
+                <input class='sheet-minimisable_infographic_g3 sheet-full_width' type='text' name='attr_fate'
+                    value='0' />
+                <p class='sheet-minimisable_infographic_g4'>
+                    Max
+                </p>
+                <input class='sheet-minimisable_infographic_g5 sheet-full_width' type='text' name='attr_fate_max'
+                    value='0' />
+            </div>
+
+            <div class='sheet-minimisable_infographic_field4x3b sheet-radius_border'>
+                <button name='forcefield_roll' type='roll'
+                    class='sheet-minimisable_infographic_g1 sheet-clear sheet-radius_border_top'
+                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{forcefield= @{forcefield_name}}} {{roll= [[1d100cs>@{forcefield_protection}cf<@{forcefield_overload}]]}}'>
+                    Force Field
+                </button>
+                <p class='sheet-minimisable_infographic_g2'>
+                    Name
+                </p>
+                <input class='sheet-minimisable_infographic_g3 sheet-full_width' type='text' name='attr_forcefield_name'
+                    value='None' />
+                <p class='sheet-minimisable_infographic_g8'>
+                    Overload
+                </p>
+                <input class='sheet-minimisable_infographic_g9 sheet-full_width' type='text'
+                    name='attr_forcefield_overload' value='0' />
+                <p class='sheet-minimisable_infographic_g4'>
+                    Protection
+                </p>
+                <input class='sheet-minimisable_infographic_g5 sheet-full_width' type='text'
+                    name='attr_forcefield_protection' value='0' />
+            </div>
+
+            <div class='sheet-minimisable_infographic'>
+                <h3>Conditions</h3>
+                <p class='sheet-traits_checkbox_pointer'>
+                    <b>Expand &#9660;</b>
+                </p>
+                <div class='sheet-edge_padding sheet-ssc'>
+                    <fieldset name='conditions' class='repeating_conditions'>
+                        <input name='attr_condition_r' type='text' placeholder='Name' class='sheet-full_width_49px' />
+                        <label title='Expand' class='sheet-margin_adjust'>
+                            <input type='checkbox' name='attr_collapse' value='3'
+                                class='sheet-collapsible_entity_switch sheet-select_button sheet-hidden' />
+                            <span class='sheet-select_text '>&#9660;</span>
+                        </label>
+                        <label title='Send description in the chat' class='sheet-margin_adjust2'>
+                            <button type='roll'
+                                value='@{to-gm}&{template:mythic} {{name=@{condition_r} }} {{description=@{condition_desc_r} }}'
+                                class='sheet-hidden'>
+                            </button>
+                            <span class='sheet-select_text'>&#128266;</span>
+                        </label>
+                        <input name='attr_collapse' type='checkbox' value='3'
+                            class='sheet-collapsible_entity_switch sheet-hidden' />
+                        <textarea name='attr_condition_desc_r' class='sheet-collapsible_entity_block'
+                            placeholder='Description of the conditions suffered'>
+								</textarea>
+                    </fieldset>
+                </div>
+            </div>
+
+            <div class='sheet-minimisable_infographic_field4x3c sheet-radius_border'>
+                <button name='critical_roll' type='roll'
+                    class='sheet-minimisable_critical_g0 sheet-clear sheet-radius_border_top' value=''> Critical Wounds
+                </button>
+                <p class='sheet-minimisable_critical_g1'>
+                    Head
+                </p>
+                <input class='sheet-minimisable_critical_g2 sheet-full_width' type='text' name='attr_head' value='0' />
+                <p class='sheet-minimisable_critical_g3'>
+                    Body
+                </p>
+                <input class='sheet-minimisable_critical_g4 sheet-full_width' type='text' name='attr_body' value='0' />
+                <p class='sheet-minimisable_critical_g5'>
+                    Left Arm
+                </p>
+                <input class='sheet-minimisable_critical_g6 sheet-full_width' type='text' name='attr_arm_left'
+                    value='0' />
+                <p class='sheet-minimisable_critical_g7'>
+                    Right Arm
+                </p>
+                <input class='sheet-minimisable_critical_g8 sheet-full_width' type='text' name='attr_arm_right'
+                    value='0' />
+                <p class='sheet-minimisable_critical_g9'>
+                    Left Leg
+                </p>
+                <input class='sheet-minimisable_critical_g10 sheet-full_width' type='text' name='attr_leg_left'
+                    value='0' />
+                <p class='sheet-minimisable_critical_g11'>
+                    Right Leg
+                </p>
+                <input class='sheet-minimisable_critical_g12 sheet-full_width' type='text' name='attr_leg_right'
+                    value='0' />
+            </div>
+
+        </div>
+    </div>
+
+</div>

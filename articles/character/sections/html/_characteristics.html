@@ -1,0 +1,334 @@
+<div class='sheet-characteristics_background sheet-edge_padding'>
+    <div class='sheet-characteristics_main'>
+        <input type="hidden" name='attr_wsTotal' value=''>
+        <input type="hidden" name='attr_wsB' value=''>
+        <input type="hidden" name='attr_bsTotal' value=''>
+        <input type="hidden" name='attr_bsB' value=''>
+        <input type="hidden" name='attr_strTotal' value=''>
+        <input type="hidden" name='attr_strB' value=''>
+        <input type="hidden" name='attr_touTotal' value=''>
+        <input type="hidden" name='attr_touB' value=''>
+        <input type="hidden" name='attr_agiTotal' value=''>
+        <input type="hidden" name='attr_agiB' value=''>
+        <input type="hidden" name='attr_intTotal' value=''>
+        <input type="hidden" name='attr_intB' value=''>
+        <input type="hidden" name='attr_perTotal' value=''>
+        <input type="hidden" name='attr_perB' value=''>
+        <input type="hidden" name='attr_wpTotal' value=''>
+        <input type="hidden" name='attr_wpB' value=''>
+        <input type="hidden" name='attr_felTotal' value=''>
+        <input type="hidden" name='attr_felB' value=''>
+        <input type="hidden" name='attr_infTotal' value=''>
+        <input type="hidden" name='attr_infB' value=''>
+
+        <button title="Weapon Skill" name='WS' type='roll'
+            class='sheet-clear sheet-full_width sheet-characteristics_button'
+            value='@{to-gm}&{template:mythic}{{character= @{character_name}}}{{roll-name=Weapon Skill}}{{dos=[[[[1+floor(abs([[{{ {@{wsTotal}+@{inlinemod-toggle}}, {@{wsTotal}-@{limiter}}}kh1, {@{wsTotal}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{WS_unnat}/2)]]}}{{target= $[[0]]}}{{roll= $[[1]]}}{{dof= $[[2]]}}'>
+            WS |
+            <input name='attr_WS_total' value='@{wsTotal}' class='sheet-input_background sheet-input_char_background'
+                disabled />
+        </button>
+        <button title="Ballistic Skill" name='BS' type='roll'
+            class='sheet-clear sheet-full_width sheet-characteristics_button'
+            value='@{to-gm}&{template:mythic}{{character= @{character_name}}}{{roll-name=Ballistic Skill}}{{dos=[[[[1+floor(abs([[{{ {@{bsTotal}+@{inlinemod-toggle}}, {@{bsTotal}-@{limiter}}}kh1, {@{bsTotal}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{BS_unnat}/2)]]}} {{target= $[[0]]}}{{roll= $[[1]]}}{{dof= $[[2]]}}'>
+            BS |
+            <input name='attr_BS_total' value='@{bsTotal}' class='sheet-input_background sheet-input_char_background'
+                disabled />
+        </button>
+        <button title="Strength" name='STR' type='roll'
+            class='sheet-clear sheet-full_width sheet-characteristics_button'
+            value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Strength}}{{dos=[[[[1+floor(abs([[{{ {@{strTotal}+@{inlinemod-toggle}}, {@{strTotal}-@{limiter}}}kh1, {@{strTotal}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{STR_unnat}/2)]]}} {{target= $[[0]]}}{{roll= $[[1]]}}{{dof= $[[2]]}}'>
+            STR |
+            <input name='attr_STR_total' value='@{strTotal}' class='sheet-input_background sheet-input_char_background'
+                disabled />
+        </button>
+        <button title="Toughness" name='TOU' type='roll'
+            class='sheet-clear sheet-full_width sheet-characteristics_button'
+            value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Toughness}} {{dos=[[[[1+floor(abs([[{{ {@{touTotal}+@{inlinemod-toggle}}, {@{touTotal}-@{limiter}}}kh1, {@{touTotal}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{TOU_unnat}/2)]]}} {{target= $[[0]]}}{{roll= $[[1]]}}{{dof= $[[2]]}}'>
+            TOU |
+            <input name='attr_TOU_total' value='@{touTotal}' class='sheet-input_background sheet-input_char_background'
+                disabled />
+        </button>
+        <button title="Agility" name='AGI' type='roll' class='sheet-clear sheet-full_width sheet-characteristics_button'
+            value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Agility}} {{dos=[[[[1+floor(abs([[{{ {@{agiTotal}+@{inlinemod-toggle}}, {@{agiTotal}-@{limiter}}}kh1, {@{agiTotal}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{AGI_unnat}/2)]]}} {{target= $[[0]]}}{{roll= $[[1]]}}{{dof= $[[2]]}}'>
+            AGI |
+            <input name='attr_AGI_total' value="@{agiTotal}" class='sheet-input_background sheet-input_char_background'
+                disabled />
+        </button>
+        <button title="Intelligence" name='INT' type='roll'
+            class='sheet-clear sheet-full_width sheet-characteristics_button'
+            value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Intelligence}} {{dos=[[[[1+floor(abs([[{{ {@{intTotal}+@{inlinemod-toggle}}, {@{intTotal}-@{limiter}}}kh1, {@{intTotal}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{INT_unnat}/2)]]}} {{target= $[[0]]}}{{roll= $[[1]]}}{{dof= $[[2]]}}'>
+            INT |
+            <input name='attr_INT_total' value='@{intTotal}' class='sheet-input_background sheet-input_char_background'
+                disabled />
+        </button>
+        <button title="Perception" name='PER' type='roll'
+            class='sheet-clear sheet-full_width sheet-characteristics_button'
+            value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Perception}} {{dos=[[[[1+floor(abs([[{{ {@{perTotal}+@{inlinemod-toggle}}, {@{perTotal}-@{limiter}}}kh1, {@{perTotal}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{PER_unnat}/2)]]}} {{target= $[[0]]}}{{roll= $[[1]]}}{{dof= $[[2]]}}'>
+            PER |
+            <input name='attr_PER_total' value='@{perTotal}' class='sheet-input_background sheet-input_char_background'
+                disabled />
+        </button>
+        <button title="Willpower" name='WP' type='roll'
+            class='sheet-clear sheet-full_width sheet-characteristics_button'
+            value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Willpower}} {{dos=[[[[1+floor(abs([[{{ {@{wpTotal}+@{inlinemod-toggle}}, {@{wpTotal}-@{limiter}}}kh1, {@{wpTotal}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{WP_unnat}/2)]]}} {{target= $[[0]]}}{{roll= $[[1]]}}{{dof= $[[2]]}}'>
+            WP |
+            <input name='attr_WP_total' value='@{wpTotal}' class='sheet-input_background sheet-input_char_background'
+                disabled />
+        </button>
+        <button title="Fellowship" name='FEL' type='roll'
+            class='sheet-clear sheet-full_width sheet-characteristics_button'
+            value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Fellowship}} {{dos=[[[[1+floor(abs([[{{ {@{felTotal}+@{inlinemod-toggle}}, {@{felTotal}-@{limiter}}}kh1, {@{felTotal}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{FEL_unnat}/2)]]}} {{target= $[[0]]}}{{roll= $[[1]]}}{{dof= $[[2]]}}'>
+            FEL |
+            <input name='attr_FEL_total' value='@{felTotal}' class='sheet-input_background sheet-input_char_background'
+                disabled />
+        </button>
+        <button title="Influence" name='INF' type='roll'
+            class='sheet-clear sheet-full_width sheet-characteristics_button'
+            value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Influence}} {{dos=[[[[1+floor(abs([[{{ {@{INF}+@{inlinemod-toggle}}, {@{infTotal}-@{limiter}}}kh1, {@{INF}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{INF_unnat}/2)]]}} {{target= $[[0]]}}{{roll= $[[1]]}}{{dof= $[[2]]}}'>
+            INF |
+            <input name='attr_INF_total' value='@{infTotal}' class='sheet-input_background sheet-input_char_background'
+                disabled />
+        </button>
+
+        <input title="Weapon Skill" name='attr_WS' type='text' value='0'
+            class='sheet-characteristics_input sheet-full_width' />
+        <input title="Ballistic Skill" name='attr_BS' type='text' value='0'
+            class='sheet-characteristics_input sheet-full_width' />
+        <input title="Strength" name='attr_STR' type='text' value='0'
+            class='sheet-characteristics_input sheet-full_width' />
+        <input title="Toughness" name='attr_TOU' type='text' value='0'
+            class='sheet-characteristics_input sheet-full_width' />
+        <input title="Agility" name='attr_AGI' type='text' value='0'
+            class='sheet-characteristics_input sheet-full_width' />
+        <input title="Intelligence" name='attr_INT' type='text' value='0'
+            class='sheet-characteristics_input sheet-full_width' />
+        <input title="Perception" name='attr_PER' type='text' value='0'
+            class='sheet-characteristics_input sheet-full_width' />
+        <input title="Willpower" name='attr_WP' type='text' value='0'
+            class='sheet-characteristics_input sheet-full_width' />
+        <input title="Fellowship" name='attr_FEL' type='text' value='0'
+            class='sheet-characteristics_input sheet-full_width' />
+        <input title="Influence" name='attr_INF' type='text' value='0'
+            class='sheet-characteristics_input sheet-full_width' />
+
+        <select name='attr_WS_advancement' class='sheet-full_width'>
+            <option value='0' selected='selected'>N/A +0</option>
+            <option value='5'>S +5</option>
+            <option value='10'>T +10</option>
+            <option value='15'>I +15</option>
+            <option value='20'>E +20</option>
+            <option value='25'>M +25</option>
+            <option value='30'>L +30</option>
+        </select>
+        <select name='attr_BS_advancement' class='sheet-full_width'>
+            <option value='0' selected='selected'>N/A +0</option>
+            <option value='5'>S +5</option>
+            <option value='10'>T +10</option>
+            <option value='15'>I +15</option>
+            <option value='20'>E +20</option>
+            <option value='25'>M +25</option>
+            <option value='30'>L +30</option>
+        </select>
+        <select name='attr_STR_advancement' class='sheet-full_width'>
+            <option value='0' selected='selected'>N/A +0</option>
+            <option value='5'>S +5</option>
+            <option value='10'>T +10</option>
+            <option value='15'>I +15</option>
+            <option value='20'>E +20</option>
+            <option value='25'>M +25</option>
+            <option value='30'>L +30</option>
+        </select>
+        <select name='attr_TOU_advancement' class='sheet-full_width'>
+            <option value='0' selected='selected'>N/A +0</option>
+            <option value='5'>S +5</option>
+            <option value='10'>T +10</option>
+            <option value='15'>I +15</option>
+            <option value='20'>E +20</option>
+            <option value='25'>M +25</option>
+            <option value='30'>L +30</option>
+        </select>
+        <select name='attr_AGI_advancement' class='sheet-full_width'>
+            <option value='0' selected='selected'>N/A +0</option>
+            <option value='5'>S +5</option>
+            <option value='10'>T +10</option>
+            <option value='15'>I +15</option>
+            <option value='20'>E +20</option>
+            <option value='25'>M +25</option>
+            <option value='30'>L +30</option>
+        </select>
+        <select name='attr_INT_advancement' class='sheet-full_width'>
+            <option value='0' selected='selected'>N/A +0</option>
+            <option value='5'>S +5</option>
+            <option value='10'>T +10</option>
+            <option value='15'>I +15</option>
+            <option value='20'>E +20</option>
+            <option value='25'>M +25</option>
+            <option value='30'>L +30</option>
+        </select>
+        <select name='attr_PER_advancement' class='sheet-full_width'>
+            <option value='0' selected='selected'>N/A +0</option>
+            <option value='5'>S +5</option>
+            <option value='10'>T +10</option>
+            <option value='15'>I +15</option>
+            <option value='20'>E +20</option>
+            <option value='25'>M +25</option>
+            <option value='30'>L +30</option>
+        </select>
+        <select name='attr_WP_advancement' class='sheet-full_width'>
+            <option value='0' selected='selected'>N/A +0</option>
+            <option value='5'>S +5</option>
+            <option value='10'>T +10</option>
+            <option value='15'>I +15</option>
+            <option value='20'>E +20</option>
+            <option value='25'>M +25</option>
+            <option value='30'>L +30</option>
+        </select>
+        <select name='attr_FEL_advancement' class='sheet-full_width'>
+            <option value='0' selected='selected'>N/A +0</option>
+            <option value='5'>S +5</option>
+            <option value='10'>T +10</option>
+            <option value='15'>I +15</option>
+            <option value='20'>E +20</option>
+            <option value='25'>M +25</option>
+            <option value='30'>L +30</option>
+        </select>
+        <input type="hidden" name="attr_INF_advancement" value="0">
+        <label title='Toggles a display showing Characteristics modifiers' class='sheet-full_width'>
+            <input type='checkbox' name='attr_char_more'
+                class='sheet-collapsible_entity_switch sheet-select_button sheet-hidden' checked />
+            <span class='sheet-select_text sheet-char_more'>
+                More
+            </span>
+        </label>
+    </div>
+    <input type='checkbox' name='attr_char_more' class='sheet-collapsible_entity_switch sheet-hidden' />
+    <div class='sheet-collapsible_entity_block'>
+        <label title='Toogle Ignore Fatigue'>
+            <input type='checkbox' name='attr_fatigue_ignore' value='1' class='sheet-select_button sheet-hidden' />
+            <span class='sheet-select_text sheet-char_more'>
+                Fatigue Immunity
+            </span>
+        </label>
+        <h3>Characteristics Modifiers</h3>
+        <div class='sheet-characteristics_mods'>
+            <input title="Weapon Skill" name='attr_WS_mod' type='text' value='0'
+                class='sheet-characteristics_mods sheet-full_width' />
+            <input title="Ballistic Skill" name='attr_BS_mod' type='text' value='0'
+                class='sheet-characteristics_mods sheet-full_width' />
+            <input title="Strength" name='attr_STR_mod' type='text' value='0'
+                class='sheet-characteristics_mods sheet-full_width' />
+            <input title="Toughness" name='attr_TOU_mod' type='text' value='0'
+                class='sheet-characteristics_mods sheet-full_width' />
+            <input title="Agility" name='attr_AGI_mod' type='text' value='0'
+                class='sheet-characteristics_mods sheet-full_width' />
+            <input title="Intelligence" name='attr_INT_mod' type='text' value='0'
+                class='sheet-characteristics_mods sheet-full_width' />
+            <input title="Perception" name='attr_PER_mod' type='text' value='0'
+                class='sheet-characteristics_mods sheet-full_width' />
+            <input title="Willpower" name='attr_WP_mod' type='text' value='0'
+                class='sheet-characteristics_mods sheet-full_width' />
+            <input title="Fellowship" name='attr_FEL_mod' type='text' value='0'
+                class='sheet-characteristics_mods sheet-full_width' />
+            <input title="Influence" name='attr_INF_mod' type='text' value='0'
+                class='sheet-characteristics_mods sheet-full_width' />
+        </div>
+        <!-- <fieldset name='buff' class='repeating_buff'>
+				<div class='sheet-characteristics_mods'>
+					<input title="Active?" name='attr_active_r' type='checkbox' class='sheet-characteristics_check' value='1' />
+					<input title="Weapon Skill" name='attr_WS_mod_r' type='text' value='0' class='sheet-characteristics_mods sheet-full_width' />
+					<input title="Ballistic Skill" name='attr_BS_mod_r' type='text' value='0' class='sheet-characteristics_mods sheet-full_width' />
+					<input title="Strength" name='attr_STR_mod_r' type='text' value='0' class='sheet-characteristics_mods sheet-full_width' />
+					<input title="Toughness" name='attr_TOU_mod_r' type='text' value='0' class='sheet-characteristics_mods sheet-full_width' />
+					<input title="Agility" name='attr_AGI_mod_r' type='text' value='0' class='sheet-characteristics_mods sheet-full_width' />
+					<input title="Intelligence" name='attr_INT_mod_r' type='text' value='0' class='sheet-characteristics_mods sheet-full_width' />
+					<input title="Perception" name='attr_PER_mod_r' type='text' value='0' class='sheet-characteristics_mods sheet-full_width' />
+					<input title="Willpower" name='attr_WP_mod_r' type='text' value='0' class='sheet-characteristics_mods sheet-full_width' />
+					<input title="Fellowship" name='attr_FEL_mod_r' type='text' value='0' class='sheet-characteristics_mods sheet-full_width' />
+					<input title="Influence" name='attr_INF_mod_r' type='text' value='0' class='sheet-characteristics_mods sheet-full_width' />
+				</div>
+				</fieldset> -->
+    </div>
+</div>
+<br>
+
+<!-- TODO: buff menu -->
+
+<!-- unnatural characteristics, size, movement and pushing grid -->
+
+<div class='sheet-unnat_centering_container'>
+    <div class='sheet-unnat_centering'>
+        <div class='sheet-characteristics_unnat'>
+            <p class='sheet-unnatgs1'>
+                <b>Unnatural Characteristics</b>
+            </p>
+            <input name='attr_WS_unnat' type='text' value='0' class='sheet-unnatgs2 sheet-unnatgs_width' />
+            <input name='attr_BS_unnat' type='text' value='0' class='sheet-unnatgs3 sheet-unnatgs_width' />
+            <input name='attr_STR_unnat' type='text' value='0' class='sheet-unnatgs4 sheet-unnatgs_width' />
+            <input name='attr_TOU_unnat' type='text' value='0' class='sheet-unnatgs5 sheet-unnatgs_width' />
+            <input name='attr_AGI_unnat' type='text' value='0' class='sheet-unnatgs6 sheet-unnatgs_width' />
+            <input name='attr_INT_unnat' type='text' value='0' class='sheet-unnatgs7 sheet-unnatgs_width' />
+            <input name='attr_PER_unnat' type='text' value='0' class='sheet-unnatgs8 sheet-unnatgs_width' />
+            <input name='attr_WP_unnat' type='text' value='0' class='sheet-unnatgs9 sheet-unnatgs_width' />
+            <input name='attr_FEL_unnat' type='text' value='0' class='sheet-unnatgs10 sheet-unnatgs_width' />
+            <input name='attr_INF_unnat' type='text' value='0' class='sheet-unnatgs11 sheet-unnatgs_width' />
+            <p class='sheet-unnatgs12'>WS</p>
+            <p class='sheet-unnatgs13'>BS</p>
+            <p class='sheet-unnatgs14'>STR</p>
+            <p class='sheet-unnatgs15'>TOU</p>
+            <p class='sheet-unnatgs16'>AGI</p>
+            <p class='sheet-unnatgs17'>INT</p>
+            <p class='sheet-unnatgs18'>PER</p>
+            <p class='sheet-unnatgs19'>WP</p>
+            <p class='sheet-unnatgs20'>FEL</p>
+            <p class='sheet-unnatgs21'>INF</p>
+        </div>
+    </div>
+</div>
+<div class='sheet-unnat_centering_container'>
+    <div class='sheet-unnat_centering'>
+        <div class='sheet-characteristics_unnat'>
+            <p class='sheet-unnatgs1'><b>Characteristics Bonus</b></p>
+            <input title='@{wsB}' name='attr_wsB' type='text' value='0' class='sheet-unnatgs2 sheet-unnatgs_width'
+                readonly />
+            <input title='@{bsB}' name='attr_bsB' type='text' value='0' class='sheet-unnatgs3 sheet-unnatgs_width'
+                readonly />
+            <input title='@{strB}' name='attr_strB' type='text' value='0' class='sheet-unnatgs4 sheet-unnatgs_width'
+                readonly />
+            <input title='@{touB}' name='attr_touB' type='text' value='0' class='sheet-unnatgs5 sheet-unnatgs_width'
+                readonly />
+            <input title='@{agiB}' name='attr_agiB' type='text' value='0' class='sheet-unnatgs6 sheet-unnatgs_width'
+                readonly />
+            <input title='@{intB}' name='attr_intB' type='text' value='0' class='sheet-unnatgs7 sheet-unnatgs_width'
+                readonly />
+            <input title='@{perB}' name='attr_perB' type='text' value='0' class='sheet-unnatgs8 sheet-unnatgs_width'
+                readonly />
+            <input title='@{wpB}' name='attr_wpB' type='text' value='0' class='sheet-unnatgs9 sheet-unnatgs_width'
+                readonly />
+            <input title='@{felB}' name='attr_felB' type='text' value='0' class='sheet-unnatgs10 sheet-unnatgs_width'
+                readonly />
+            <input title='@{infB}' name='attr_infB' type='text' value='0' class='sheet-unnatgs11 sheet-unnatgs_width'
+                readonly />
+            <p title='@{wsB}' class='sheet-unnatgs12'>WS
+            </p>
+            <p title='@{bsB}' class='sheet-unnatgs13'>BS
+            </p>
+            <p title='@{strB}' class='sheet-unnatgs14'>STR
+            </p>
+            <p title='@{touB}' class='sheet-unnatgs15'>TOU
+            </p>
+            <p title='@{agiB}' class='sheet-unnatgs16'>AGI
+            </p>
+            <p title='@{intB}' class='sheet-unnatgs17'>INT
+            </p>
+            <p title='@{perB}' class='sheet-unnatgs18'>PER
+            </p>
+            <p title='@{wpB}' class='sheet-unnatgs19'>WP
+            </p>
+            <p title='@{felB}' class='sheet-unnatgs20'>FEL
+            </p>
+            <p title='@{infB}' class='sheet-unnatgs21'>INF
+            </p>
+        </div>
+    </div>
+</div>

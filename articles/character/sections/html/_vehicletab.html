@@ -1,0 +1,562 @@
+<div class='sheet-tab_vehicle sheet-box sheet-ssc sheet-radius_border_box'>
+    <div class='sheet-vehicles_divider'>
+        <fieldset name='vehicles-R' class='repeating_vehicles'>
+            <div class='sheet-vehicles_grid1'>
+                <input name='attr_vehicle-name' type='text' class='sheet-vehicles_Gn sheet-full_width'
+                    placeholder='Name' />
+
+                <select name='attr_vehicle-size' class='sheet-vehicles_Gs sheet-full_width'>
+                    <option value='-3'>Miniscule (1)</option>
+                    <option value='-2'>Puny (2)</option>
+                    <option value='-1'>Scrawny (3)</option>
+                    <option value='0'>Average (4)</option>
+                    <option value='1'>Hulking (5)</option>
+                    <option value='2'>Enormous (6)</option>
+                    <option value='3' selected='selected'>Massive (7)</option>
+                    <option value='4'>Immense (8)</option>
+                    <option value='5'>Monumental (9)</option>
+                    <option value='6'>Titanic (10)</option>
+                </select>
+
+                <input name='attr_vehicle-world' type='text' class='sheet-vehicles_G1 sheet-full_width'
+                    placeholder='Origin or Forge World' />
+
+                <select name='attr_vehicle-type' class='sheet-vehicles_Gt sheet-full_width'>
+                    <option value='0' selected='selected'>Tracked</option>
+                    <option value='1'>Wheeled</option>
+                    <option value='2'>Skimmer</option>
+                    <option value='3'>Walker</option>
+                    <option value='4'>Stationary</option>
+                    <option value='5'>Aircraft</option>
+                    <option value='6'>Spacecraft</option>
+                    <option value='7'>Voidship</option>
+                </select>
+
+                <div class='sheet-vehicles_G2'>
+                    <h3>SPEED AND MANEUVERABILITY</h3>
+                </div>
+                <div class='sheet-vehicles_G3'>Tactical</div>
+                <div class='sheet-vehicles_G4'>Cruising</div>
+                <div class='sheet-vehicles_G5'>Maneuverability</div>
+                <div class='sheet-vehicles_G6'>Operate</div>
+                <input name='attr_vehicle-tactical' type='text' class='sheet-vehicles_G7 sheet-full_width'
+                    placeholder='Meters per Turn' />
+                <input name='attr_vehicle-cruising' type='text' class='sheet-vehicles_G8 sheet-full_width'
+                    placeholder='Km/H' />
+                <input name='attr_vehicle-maneuver' type='text' class='sheet-vehicles_G9 sheet-full_width' value='0' />
+
+                <!-- GS18 Different operate checks for each Vehicle Type. Tracked, Wheeled, Skimmer, Walker use Surface. Aircraft and Spacecraft use Aeronautica. Voidship is as it is. -->
+                <input name='attr_vehicle-type' type='checkbox' value='0' class='sheet-hidden sheet-hider' />
+                <button type='roll' name='op_surface_roll'
+                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Operate: Surface with @{vehicle-name}}}{{dos=[[[[1+floor(abs([[{{ {@{op_surface_total_v}+@{inlinemod-toggle}}, {@{op_surface_focus}-@{limiter}}}kh1, {@{op_surface_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{op_surface_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+                    class='sheet-vehicles_G10 sheet-clear'><input name='attr_op_surface_total_v'
+                        value='@{op_surface_total}+@{vehicle-maneuver}' class='sheet-input_background'
+                        disabled /></button>
+                <input name='attr_vehicle-type' type='checkbox' value='1' class='sheet-hidden sheet-hider' />
+                <button type='roll' name='op_surface_roll'
+                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Operate: Surface with @{vehicle-name}}}{{dos=[[[[1+floor(abs([[{{ {@{op_surface_total_v}+@{inlinemod-toggle}}, {@{op_surface_focus}-@{limiter}}}kh1, {@{op_surface_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{op_surface_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+                    class='sheet-vehicles_G10 sheet-clear'><input name='attr_op_surface_total_v'
+                        value='@{op_surface_total}+@{vehicle-maneuver}' class='sheet-input_background'
+                        disabled /></button>
+                <input name='attr_vehicle-type' type='checkbox' value='2' class='sheet-hidden sheet-hider' />
+                <button type='roll' name='op_surface_roll'
+                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Operate: Surface with @{vehicle-name}}}{{dos=[[[[1+floor(abs([[{{ {@{op_surface_total_v}+@{inlinemod-toggle}}, {@{op_surface_focus}-@{limiter}}}kh1, {@{op_surface_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{op_surface_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+                    class='sheet-vehicles_G10 sheet-clear'><input name='attr_op_surface_total_v'
+                        value='@{op_surface_total}+@{vehicle-maneuver}' class='sheet-input_background'
+                        disabled /></button>
+                <input name='attr_vehicle-type' type='checkbox' value='3' class='sheet-hidden sheet-hider' />
+                <button type='roll' name='op_surface_roll'
+                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Operate: Surface with @{vehicle-name}}}{{dos=[[[[1+floor(abs([[{{ {@{op_surface_total_v}+@{inlinemod-toggle}}, {@{op_surface_focus}-@{limiter}}}kh1, {@{op_surface_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{op_surface_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+                    class='sheet-vehicles_G10 sheet-clear'><input name='attr_op_surface_total_v'
+                        value='@{op_surface_total}+@{vehicle-maneuver}' class='sheet-input_background'
+                        disabled /></button>
+                <input name='attr_vehicle-type' type='checkbox' value='4' class='sheet-hidden sheet-hider' />
+                <input name='attr_op_none' type='text' class='sheet-vehicles_G10 sheet-full_width'
+                    placeholder='You sure?' />
+                <input name='attr_vehicle-type' type='checkbox' value='5' class='sheet-hidden sheet-hider' />
+                <button type='roll' name='op_aero_roll'
+                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Operate: Aeronautica with @{vehicle-name}}}{{dos=[[[[1+floor(abs([[{{ {@{op_aero_total_v}+@{inlinemod-toggle}}, {@{op_aero_focus}-@{limiter}}}kh1, {@{op_aero_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{op_aero_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+                    class='sheet-vehicles_G10 sheet-clear'><input name='attr_op_aero_total_v'
+                        value='@{op_aero_total}+@{vehicle-maneuver}' class='sheet-input_background' disabled /></button>
+                <input name='attr_vehicle-type' type='checkbox' value='6' class='sheet-hidden sheet-hider' />
+                <button type='roll' name='op_aero_roll'
+                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Operate: Aeronautica with @{vehicle-name}}}{{dos=[[[[1+floor(abs([[{{ {@{op_aero_total_v}+@{inlinemod-toggle}}, {@{op_aero_focus}-@{limiter}}}kh1, {@{op_aero_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{op_aero_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+                    class='sheet-vehicles_G10 sheet-clear'><input name='attr_op_aero_total_v'
+                        value='@{op_aero_total}+@{vehicle-maneuver}' class='sheet-input_background' disabled /></button>
+                <input name='attr_vehicle-type' type='checkbox' value='7' class='sheet-hidden sheet-hider' />
+                <button type='roll' name='op_void_roll'
+                    value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{roll-name=Operate: Voidship with @{vehicle-name}}}{{dos=[[[[1+floor(abs([[{{ {@{op_void_total_v}+@{inlinemod-toggle}}, {@{op_void_focus}-@{limiter}}}kh1, {@{op_void_focus}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{op_void_unnat}/2)]]}} {{target=$[[0]]}} {{roll=$[[1]]}} {{dof=$[[2]]}}'
+                    class='sheet-vehicles_G10 sheet-clear'><input name='attr_op_void_total_v'
+                        value='@{op_void_total}+@{vehicle-maneuver}' class='sheet-input_background' disabled /></button>
+
+                <div class='sheet-vehicles_G11'>
+                    <h3>CREW AND COMPLEMENT</h3>
+                </div>
+                <div class='sheet-vehicles_G12'>Crew</div>
+                <div class='sheet-vehicles_G13'>Carrying Capacity</div>
+                <input name='attr_vehicle-crew' type='text' class='sheet-vehicles_G14 sheet-full_width'
+                    placeholder='Minimum Crew Prerequisite' />
+                <input name='attr_vehicle-compliment' type='text' class='sheet-vehicles_G15 sheet-full_width'
+                    placeholder='Maximum Crew Space' />
+            </div>
+
+            <div class='sheet-vehicles_grid2'>
+                <div class='sheet-vehicles_G16'>
+                    <h3>HULL INTEGRITY AND ARMOR</h3>
+                </div>
+                <div class='sheet-vehicles_G17'>Integrity</div>
+                <div class='sheet-vehicles_G18'>Front</div>
+                <div class='sheet-vehicles_G19'>Side</div>
+                <div class='sheet-vehicles_G20'>Rear</div>
+                <input name='attr_vehicle-integrity' type='text' class='sheet-vehicles_G21 sheet-full_width'
+                    placeholder='#' />
+                <input name='attr_vehicle-integrity_max' type='text' class='sheet-vehicles_G22 sheet-full_width'
+                    placeholder='Max' />
+                <input name='attr_vehicle-armor-front' type='text' class='sheet-vehicles_G23 sheet-full_width' />
+                <input name='attr_vehicle-armor-side' type='text' class='sheet-vehicles_G24 sheet-full_width' />
+                <input name='attr_vehicle-armor-rear' type='text' class='sheet-vehicles_G25 sheet-full_width' />
+                <div class='sheet-vehicles_G26 '>
+                    <div>
+                        <input name='attr_armaments' type='text' placeholder='Armaments'
+                            class='sheet-full_width_49px' />
+                        <label title='Expand' class='sheet-margin_adjust'><input type='checkbox' name='attr_collapse'
+                                value='4'
+                                class='sheet-collapsible_entity_switch sheet-select_button sheet-hidden' /><span
+                                class='sheet-select_text '>&#9660;</span></label>
+                        <label title='Send description in the chat' class='sheet-margin_adjust2'><button type='roll'
+                                value='@{to-gm}&{template:mythic} {{name=@{armaments} }} {{description=@{armaments_desc} }}'
+                                class='sheet-hidden'></button><span class='sheet-select_text'>&#128266;</span></label>
+                        <input name='attr_collapse' type='checkbox' value='4'
+                            class='sheet-collapsible_entity_switch sheet-hidden' />
+                        <textarea name='attr_armaments_desc' class='sheet-collapsible_entity_block'
+                            placeholder='Enter more detailed information, such as placement of vehicle armament. Full stat-blocks should be written out in the sections on the right.'></textarea>
+                    </div>
+                    <div>
+                        <input name='attr_vehicle_traits' type='text' placeholder='Traits'
+                            class='sheet-full_width_49px' />
+                        <label title='Expand' class='sheet-margin_adjust'><input type='checkbox' name='attr_collapse'
+                                value='5'
+                                class='sheet-collapsible_entity_switch sheet-select_button sheet-hidden' /><span
+                                class='sheet-select_text '>&#9660;</span></label>
+                        <label title='Send description in the chat' class='sheet-margin_adjust2'><button type='roll'
+                                value='@{to-gm}&{template:mythic} {{name=@{vehicle_traits} }} {{description=@{vehicle_traits_desc} }}'
+                                class='sheet-hidden'></button><span class='sheet-select_text'>&#128266;</span></label>
+                        <input name='attr_collapse' type='checkbox' value='5'
+                            class='sheet-collapsible_entity_switch sheet-hidden' />
+                        <textarea name='attr_vehicle_traits_desc' class='sheet-collapsible_entity_block'
+                            placeholder='Enter any vehicle-specific rules or other unique information here, such as specific details about crew placement or expanded descriptions of the Vehicle Traits.'></textarea>
+                    </div>
+                    <div>
+                        <input name='attr_modifications' type='text' placeholder='Modifications'
+                            class='sheet-full_width_49px sheet-vehicles_descriptor' />
+                        <label title='Expand' class='sheet-margin_adjust'><input type='checkbox' name='attr_collapse'
+                                value='6'
+                                class='sheet-collapsible_entity_switch sheet-select_button sheet-hidden' /><span
+                                class='sheet-select_text sheet-radius_border_right'>&#9660;</span></label>
+                        <label title='Send description in the chat' class='sheet-margin_adjust2'><button type='roll'
+                                value='@{to-gm}&{template:mythic} {{name=@{modifications} }} {{description=@{modifications_desc} }}'
+                                class='sheet-hidden'></button><span class='sheet-select_text'>&#128266;</span></label>
+                        <input name='attr_collapse' type='checkbox' value='6'
+                            class='sheet-collapsible_entity_switch sheet-hidden' />
+                        <textarea name='attr_modifications_desc'
+                            class='sheet-collapsible_entity_block sheet-description_rounded_margin'
+                            placeholder='Vehicles can be fitted with Vehicle Upgrades or other player modifications. Be sure to include the Base Difficulty Modifier of each Modification here.
+				 &#10;Vehicle modifications are classified into two categories: Integral ones which the vehicle must come from the factory with, or Standard ones which can be requisitioned and installed as normal.'></textarea>
+                    </div>
+                </div>
+            </div>
+            <br>
+        </fieldset>
+
+        <div class='sheet-vehicle_weapons'>
+            <div class='sheet-equipment_ranged_weapons'>
+                <h3 class='sheet-radius_border_top'>Vehicle Ranged Weapons</h3>
+                <fieldset name='vehiclerangedweapons' class='repeating_vehiclerangedweapons'>
+                    <div class='sheet-equipment_ranged_weapons_rep'>
+                        <input name='attr_wep_display' type='checkbox' value='min'
+                            class='sheet-collapsible_entity_switch sheet-hidden' />
+                        <input name='attr_wep_display' type='checkbox' value='half'
+                            class='sheet-collapsible_entity_switch_min sheet-hidden' />
+                        <input name='attr_wep_display' type='checkbox' value='expand'
+                            class='sheet-collapsible_entity_switch_half sheet-hidden' />
+                        <input type='hidden' name='attr_id' value=''>
+                        <input type='hidden' name='attr_ammo' value='1'>
+                        <div class='sheet-equipment_weapon_rep_head'>
+                            <div class='sheet-equipment_weapon_rep_h1'>
+                                <label title='Min' class='sheet-wb1'><input type='checkbox' name='attr_wep_display'
+                                        value='min' class='sheet-select_button sheet-hidden' /><span
+                                        class='sheet-select_text'>&#128469;</span></label>
+                                <label title='Half' class='sheet-wb2'><input type='checkbox' name='attr_wep_display'
+                                        value='half' class='sheet-select_button sheet-hidden' /><span
+                                        class='sheet-select_text'>&#128471;</span></label>
+                                <label title='Expand' class='sheet-wb3'><input type='checkbox' name='attr_wep_display'
+                                        value='expand' class='sheet-select_button sheet-hidden' /><span
+                                        class='sheet-select_text'>&#128470;</span></label>
+                            </div>
+                            <h3 class='sheet-equipment_weapon_rep_h2'><span name='attr_V_R_weapon_name'></span></h3>
+                            <button name='weapon_hit' class='sheet-equipment_weapon_rep_h3 sheet-full_width sheet-clear'
+                                type='roll' value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{attack= }} {{weapon= @{V_R_weapon_name}}} {{dos=[[[[1+ floor(abs([[{{ {@{V_R_weapon_target}+@{inlinemod-toggle}}, {@{bsTotal}-@{limiter}}}kh1, {@{bsTotal}+@{limiter}}}kl1]]-[[1d100@{V_R_weapon_mishap_chance}]])/10)]]+ceil(@{BS_unnat}/2)]]}}{{target= $[[0]]}}{{roll= $[[1]]}}{{dof= $[[2]]}}@{settings_hitroll}{{aim= [[@{V_R_weapon_aim}]]}}{{V_R_type= [[@{V_R_weapon_attack}]]}}{{range= [[@{V_R_weapon_attack_range}]]}}{{modifier= [[@{inlinemod-toggle}]]}}{{skill_name= Ballistic}}{{skill=[[@{BS}]]}}{{advancement= [[@{BS_advancement}]]}}{{weaponmod= [[@{V_R_weapon_mod1}]]}}{{trained= [[@{V_R_weapon_trained}]]}}{{burst=@{V_R_weapon_burst}}}{{auto=@{V_R_weapon_auto}}}
+!wammo @{character_id} repeating_vehiclerangedweapons_@{id}_V_R_weapon_mag [[@{ammo}*@{V_R_weapon_setting}]]'>Hit
+                                |<input name='attr_V_R_weapon_target'
+                                    value='@{bsTotal} + @{V_R_weapon_trained} - 20 + @{V_R_weapon_mod1} + @{V_R_weapon_attack} + @{V_R_weapon_aim} + @{V_R_weapon_attack_range}'
+                                    class='sheet-input_background sheet-input_char_background' disabled></button>
+                            <button name='weapon_dmg' class='sheet-equipment_weapon_rep_h4 sheet-full_width sheet-clear'
+                                type='roll'
+                                value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{type= @{V_R_weapon_type}}} {{weapon= @{V_R_weapon_name}}} {{damage=[[@{V_R_weapon_real_dmg}]] }} {{@{V_R_weapon_spray}= }} {{pen=[[@{V_R_weapon_pen}+0@{V_R_weapon_pen2}]] }} {{@{settings_weapondescription}=@{V_R_ability_r} }} @{V_R_weapon_accurate}'>DMG</button>
+                        </div>
+                        <div class='sheet-equipment_ranged_weapons_grid0 sheet-collapsible_entity_toggle'>
+                            <select name='attr_V_R_weapon_aim'
+                                class='sheet-equipment_ranged_weapons_gs01 sheet-full_width sheet-clear sheet-select_corection'>
+                                <option value='0' selected='selected'>No Aim (+0)</option>
+                                <option value='10'>Half Aim (+10)</option>
+                                <option value='20'>Full Aim (+20)</option>
+                            </select>
+                            <select name='attr_V_R_weapon_attack'
+                                class='sheet-equipment_ranged_weapons_gs02 sheet-full_width sheet-clear sheet-select_corection'>
+                                <option value='10' selected='selected'>Standard (+10)</option>
+                                <option value='0'>Semi Auto (+0)</option>
+                                <option value='-10'>Full Auto (-10)</option>
+                                <option value='-20'>Called Shot (-20)</option>
+                                <option value='-20'>Suppressing (-20)</option>
+                            </select>
+                            <select name='attr_V_R_weapon_attack_range'
+                                class='sheet-equipment_ranged_weapons_gs03 sheet-full_width sheet-clear sheet-select_corection'>
+                                <option value='30'>Point Blank (+30)</option>
+                                <option value='10'>Short Range (+10)</option>
+                                <option value='0' selected='selected'>Standard (+0)</option>
+                                <option value='-10'>Long Range (-10)</option>
+                                <option value='-30'>Extreme Range (-30)</option>
+                            </select>
+                            <select name='attr_V_R_weapon_setting'
+                                class='sheet-equipment_ranged_weapons_gs04 sheet-full_width sheet-clear sheet-select_corection'>
+                                <option value='1'>N/A</option>
+                                <optgroup label="Las">
+                                    <option value='2'>Overcharge</option>
+                                    <option value='4'>Overload</option>
+                                </optgroup>
+                                <optgroup label="Plasma">
+                                    <option value='3'>Maximal</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div
+                            class='sheet-equipment_ranged_weapons_grid1 sheet-collapsible_entity_toggle sheet-collapsible_entity_toggle_min'>
+                            <div class='sheet-equipment_ranged_weapons_gs1'>Name</div>
+                            <input class='sheet-equipment_ranged_weapons_gs2 sheet-full_width' type='text'
+                                name='attr_V_R_weapon_name' list='RangedWeapons' />
+                            <div class='sheet-equipment_ranged_weapons_gs3'>Class</div>
+                            <select class='sheet-equipment_ranged_weapons_gs4 sheet-full_width sheet-select_corection'
+                                name='attr_R_weapon_class'>
+                                <option value='-'>N/A</option>
+                                <option value='Basic'>Basic</option>
+                                <option value='Heavy'>Heavy</option>
+                                <option value='Melee'>Melee</option>
+                                <option value='Pistol'>Pistol</option>
+                                <option value='Thrown'>Thrown</option>
+                            </select>
+                        </div>
+                        <div
+                            class='sheet-equipment_ranged_weapons_grid2 sheet-collapsible_entity_toggle sheet-collapsible_entity_toggle_min'>
+                            <div class='sheet-equipment_ranged_weapons_gs5'>Range</div>
+                            <input class='sheet-equipment_ranged_weapons_gs6 sheet-full_width' type='text' value='0'
+                                name='attr_V_R_weapon_range' />
+                            <div class='sheet-equipment_ranged_weapons_gs7'>Damage</div>
+                            <input class='sheet-equipment_ranged_weapons_gs8 sheet-full_width' type='text' value='0'
+                                name='attr_V_R_weapon_dam-roll' />
+                            <div class='sheet-equipment_ranged_weapons_gs9'>Pen</div>
+                            <input class='sheet-equipment_ranged_weapons_gs10 sheet-full_width' type='text' value='0'
+                                name='attr_V_R_weapon_pen' />
+                            <input type='hidden' value='0' name='attr_V_R_weapon_pen2' />
+                            <div class='sheet-equipment_ranged_weapons_gs11'>Type</div>
+                            <select class='sheet-equipment_ranged_weapons_gs12 sheet-full_width sheet-select_corection'
+                                name='attr_V_R_weapon_type'>
+                                <option value='-'>N/A</option>
+                                <option value='Energy'>Energy</option>
+                                <option value='Impact'>Impact</option>
+                                <option value='Rending'>Rending</option>
+                                <option value='Explosive'>Explosive</option>
+                            </select>
+                        </div>
+                        <div
+                            class='sheet-equipment_ranged_weapons_grid2a sheet-collapsible_entity_toggle sheet-collapsible_entity_toggle_min sheet-collapsible_entity_toggle_half'>
+                            <div class='sheet-equipment_ranged_weapons_gs06'>Primitive</div>
+                            <input class='sheet-equipment_ranged_weapons_gs07 sheet-full_width' type='number' value='0'
+                                name='attr_V_R_weapon_max' />
+                            <div class='sheet-equipment_ranged_weapons_gs08'>Proven</div>
+                            <input class='sheet-equipment_ranged_weapons_gs09 sheet-full_width' type='number' value='0'
+                                name='attr_V_R_weapon_min' />
+                            <div class='sheet-equipment_ranged_weapons_gs010'>Vengeful</div>
+                            <input class='sheet-equipment_ranged_weapons_gs011 sheet-full_width' type='number' value='0'
+                                name='attr_V_R_weapon_vengeful' />
+                            <input type='hidden' value='' name='attr_V_R_weapon_real_dmg' />
+                            <div class='sheet-equipment_ranged_weapons_gs012'>Accurate</div>
+                            <input class='sheet-equipment_ranged_weapons_gs013' type='checkbox'
+                                value='{{accurate=?{dos |1, [[0]]|2, [[0]]|3, [[1d5]]|4, [[1d5]]|5, [[2d5]]|5+, [[2d5]]}}}'
+                                name='attr_V_R_weapon_accurate' />
+                        </div>
+                        <div
+                            class='sheet-equipment_ranged_weapons_grid3 sheet-collapsible_entity_toggle sheet-collapsible_entity_toggle_min'>
+                            <div class='sheet-equipment_ranged_weapons_gs13'>RoF</div>
+                            <input class='sheet-equipment_ranged_weapons_gs14 sheet-full_width' type='text'
+                                placeholder='Std' name='attr_V_R_weapon_standard' />
+                            <div class='sheet-equipment_ranged_weapons_gs15'>/</div>
+                            <input class='sheet-equipment_ranged_weapons_gs16 sheet-full_width' type='text'
+                                placeholder='Bst' name='attr_V_R_weapon_burst' />
+                            <div class='sheet-equipment_ranged_weapons_gs17'>/</div>
+                            <input class='sheet-equipment_ranged_weapons_gs18 sheet-full_width' type='text'
+                                placeholder='Auto' name='attr_V_R_weapon_auto' />
+                            <div class='sheet-equipment_ranged_weapons_gs19'>Magazine</div>
+                            <input class='sheet-equipment_ranged_weapons_gs20 sheet-full_width' type='text' value='0'
+                                name='attr_V_R_weapon_mag' />
+                            <div class='sheet-equipment_ranged_weapons_gs21'>/</div>
+                            <input class='sheet-equipment_ranged_weapons_gs22 sheet-full_width' type='text' value='0'
+                                name='attr_V_R_weapon_mag_max' />
+                        </div>
+                        <div
+                            class='sheet-equipment_ranged_weapons_grid4 sheet-collapsible_entity_toggle sheet-collapsible_entity_toggle_min sheet-collapsible_entity_toggle_half'>
+                            <div class='sheet-equipment_ranged_weapons_gs25'>Trained?</div>
+                            <input class='sheet-equipment_ranged_weapons_gs26' type='checkbox' value='20'
+                                name='attr_V_R_weapon_trained' checked />
+                            <div class='sheet-equipment_ranged_weapons_gs27'>Hit Mod</div>
+                            <input class='sheet-equipment_ranged_weapons_gs28 sheet-full_width' type='number' value='0'
+                                name='attr_V_R_weapon_mod1' />
+                            <div class='sheet-equipment_ranged_weapons_gs29'>Reload</div>
+                            <input class='sheet-equipment_ranged_weapons_gs30 sheet-full_width' type='text' value='0'
+                                name='attr_V_R_weapon_reload' />
+                            <div class='sheet-equipment_ranged_weapons_gs31'>Weight</div>
+                            <input class='sheet-equipment_ranged_weapons_gs32 sheet-full_width' type='text' value='0'
+                                name='attr_V_R_weapon_weight' />
+                        </div>
+                        <div
+                            class='sheet-equipment_ranged_weapons_grid5 sheet-collapsible_entity_toggle sheet-collapsible_entity_toggle_min sheet-collapsible_entity_toggle_half'>
+                            <div class='sheet-equipment_ranged_weapons_gs33'>Domain</div>
+                            <select class='sheet-equipment_ranged_weapons_gs34 sheet-full_width sheet-select_corection'
+                                name='attr_R_weapon_domain'>
+                                <option value='-'>N/A</option>
+                                <option value='Bolt'>Bolt</option>
+                                <option value='Chain'>Chain</option>
+                                <option value='Exotic'>Exotic</option>
+                                <option value='Exotic (Graviton)'>Exotic (Graviton)</option>
+                                <option value='Explosives'>Explosives</option>
+                                <option value='Flame'>Flame</option>
+                                <option value='Force'>Force</option>
+                                <option value='Grenades/Missiles'>Grenades/Missiles</option>
+                                <option value='Las'>Las</option>
+                                <option value='Launcher'>Launcher</option>
+                                <option value='Low-Tech'>Low-Tech</option>
+                                <option value='Melta'>Melta</option>
+                                <option value='Plasma'>Plasma</option>
+                                <option value='Power'>Power</option>
+                                <option value='Shock'>Shock</option>
+                                <option value='Solid-Projectile'>Solid Projectile</option>
+                                <option value='Varies'>Varies</option>
+                                <option value='Xenos(Eldar)'>Xenos (Eldar)</option>
+                                <option value='Xenos(Kroot)'>Xenos (Kroot)</option>
+                                <option value='Xenos(Lost Races)'>Xenos (Lost Races)</option>
+                                <option value='Xenos(Necron)'>Xenos (Necron)</option>
+                                <option value='Xenos(Ork)'>Xenos (Ork)</option>
+                            </select>
+                            <div class='sheet-equipment_ranged_weapons_gs35'>Mishap Chance</div>
+                            <select name='attr_V_R_weapon_mishap_chance'
+                                class='sheet-equipment_ranged_weapons_gs36 sheet-full_width sheet-select_corection'>
+                                <option value='cs>90'>Unreliable (91)</option>
+                                <option value='cs>93'>Burst/Auto (94)</option>
+                                <option value='cs>95' selected='selected'>Standard (96)</option>
+                                <option value='cs>99'>Reliable (100)</option>
+                                <option value='cs11cs22cs33cs44cs55cs66cs77cs88cs99cs100'>Doubles</option>
+                                <option value='cs>?{Mishap chance|96}'>Custom</option>
+                            </select>
+                            <div class='sheet-equipment_ranged_weapons_gs37'>Spray?</div>
+                            <input class='sheet-equipment_ranged_weapons_gs38' type='checkbox' value='spray'
+                                name='attr_V_R_weapon_spray' />
+                        </div>
+                        <div
+                            class='sheet-collapsible_entity_toggle sheet-collapsible_entity_toggle_min sheet-collapsible_entity_toggle_half'>
+                            <input name='attr_V_R_ability_r' type='text' placeholder='Special'
+                                class='sheet-full_width_49px sheet-border_none' />
+                            <label title='Expand' class='sheet-margin_adjust_wep'><input type='checkbox'
+                                    name='attr_collapse' value='3'
+                                    class='sheet-collapsible_entity_switch sheet-select_button sheet-hidden' /><span
+                                    class='sheet-select_text sheet-radius_border_right_wep'>&#9660;</span></label>
+                            <label title='Send description in the chat' class='sheet-margin_adjust_wep2'><button
+                                    type='roll'
+                                    value='@{to-gm}&{template:mythic} {{name=@{V_R_weapon_name} }} {{description=@{V_R_ability_desc_r} }}'
+                                    class='sheet-hidden'></button><span
+                                    class='sheet-select_text'>&#128266;</span></label>
+                            <input name='attr_collapse' type='checkbox' value='3'
+                                class='sheet-collapsible_entity_switch sheet-hidden' />
+                            <textarea name='attr_V_R_ability_desc_r'
+                                class='sheet-collapsible_entity_block sheet-description_rounded_margin'
+                                placeholder='Description'></textarea>
+                        </div>
+                </fieldset>
+            </div>
+
+            <div class='sheet-equipment_melee_weapons'>
+                <h3 class='sheet-radius_border_top'>Vehicle Melee Weaponry</h3>
+                <fieldset name='vehiclemeleeweapons' class='repeating_vehiclemeleeweapons'>
+                    <div class='sheet-equipment_melee_weapons_rep'>
+                        <input name='attr_wep_display' type='checkbox' value='min'
+                            class='sheet-collapsible_entity_switch sheet-hidden' />
+                        <input name='attr_wep_display' type='checkbox' value='half'
+                            class='sheet-collapsible_entity_switch_min sheet-hidden' />
+                        <input name='attr_wep_display' type='checkbox' value='expand'
+                            class='sheet-collapsible_entity_switch_half sheet-hidden' />
+                        <div class='sheet-equipment_weapon_rep_head'>
+                            <div class='sheet-equipment_weapon_rep_h1'>
+                                <label title='Min' class='sheet-wb1'><input type='checkbox' name='attr_wep_display'
+                                        value='min' class='sheet-select_button sheet-hidden' /><span
+                                        class='sheet-select_text'>&#128469;</span></label>
+                                <label title='Half' class='sheet-wb2'><input type='checkbox' name='attr_wep_display'
+                                        value='half' class='sheet-select_button sheet-hidden' /><span
+                                        class='sheet-select_text'>&#128471;</span></label>
+                                <label title='Expand' class='sheet-wb3'><input type='checkbox' name='attr_wep_display'
+                                        value='expand' class='sheet-select_button sheet-hidden' /><span
+                                        class='sheet-select_text'>&#128470;</span></label>
+                            </div>
+                            <h3 class='sheet-equipment_weapon_rep_h2'><span name='attr_V_M_weapon_name'></span></h3>
+                            <button name='weapon_hit' class='sheet-equipment_weapon_rep_h3 sheet-full_width sheet-clear'
+                                type='roll'
+                                value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{attack= }}{{weapon= @{V_M_weapon_name}}}{{dos=[[[[1+ floor(abs([[{{ {@{V_M_weapon_target}+@{inlinemod-toggle}}, {@{wsTotal}-@{limiter}}}kh1, {@{wsTotal}+@{limiter}}}kl1]]-[[1d100]])/10)]]+ceil(@{WS_unnat}/2)]]}}{{target= $[[0]]}}{{roll= $[[1]]}}{{dof= $[[2]]}}@{settings_hitroll} {{aim= [[@{V_M_weapon_aim}]]}}{{V_M_type= [[@{V_M_weapon_attack}]]}}{{multi= [[@{V_M_weapon_multi}]]}}{{modifier= [[@{inlinemod-toggle}]]}}{{skill_name= Weapon}}{{skill=[[@{WS}]]}}{{advancement=[[@{WS_advancement}]]}}{{weaponmod=[[@{V_M_weapon_mod1}]]}}{{trained=[[@{V_M_weapon_trained}]]}}{{WS_bonus=[[@{wsB}]]}}'>Hit
+                                |<input name='attr_V_M_weapon_target'
+                                    value='@{wsTotal}+@{V_M_weapon_trained}-20+@{V_M_weapon_mod1}+@{V_M_weapon_attack}+@{V_M_weapon_aim}+@{V_M_weapon_multi}'
+                                    class='sheet-input_background sheet-input_char_background' disabled></button>
+                            <button name='weapon_dmg' class='sheet-equipment_weapon_rep_h4 sheet-full_width sheet-clear'
+                                type='roll'
+                                value='@{to-gm}&{template:mythic} {{character= @{character_name}}} {{weapon= @{V_M_weapon_name}}} {{type= @{V_M_weapon_type}}} {{damage=[[@{V_M_weapon_real_dmg}]] }} {{pen= [[@{V_M_weapon_pen}]] }} {{@{settings_weapondescription}=@{V_M_ability_r} }}'>DMG</button>
+                        </div>
+                        <div class='sheet-equipment_melee_weapons_grid0 sheet-collapsible_entity_toggle'>
+                            <select name='attr_V_M_weapon_aim'
+                                class='sheet-equipment_melee_weapons_gs01 sheet-full_width sheet-clear sheet-select_corection'>
+                                <option value='0' selected='selected'>No Aim (+0)</option>
+                                <option value='10'>Half Aim (+10)</option>
+                                <option value='20'>Full Aim (+20)</option>
+                            </select>
+                            <select name='attr_V_M_weapon_attack'
+                                class='sheet-equipment_melee_weapons_gs02 sheet-full_width sheet-clear sheet-select_corection'>
+                                <option value='-20'>Called Shot (-20)</option>
+                                <option value='10' selected='selected'>Standard (+10)</option>
+                                <option value='20'>Charge (+20)</option>
+                                <option value='30'>All Out (+30)</option>
+                            </select>
+                            <select name='attr_V_M_weapon_multi'
+                                class='sheet-equipment_melee_weapons_gs03 sheet-full_width sheet-clear sheet-select_corection'>
+                                <option value='0' selected='selected'>Standard (-0)</option>
+                                <option value='-10'>Swift (-10)</option>
+                                <option value='-20'>Lighting (-20)</option>
+                            </select>
+                        </div>
+                        <div
+                            class='sheet-equipment_melee_weapons_grid1 sheet-collapsible_entity_toggle sheet-collapsible_entity_toggle_min'>
+                            <div class='sheet-equipment_melee_weapons_gs1'>Name</div>
+                            <input class='sheet-equipment_melee_weapons_gs2 sheet-full_width' type='text'
+                                name='attr_V_M_weapon_name' list='MeleeWeapons' />
+                            <div class='sheet-equipment_melee_weapons_gs3'>Class</div>
+                            <select class='sheet-equipment_melee_weapons_gs4 sheet-full_width sheet-select_corection'
+                                name='attr_R_weapon_class'>
+                                <option value='-'>N/A</option>
+                                <option value='Basic'>Basic</option>
+                                <option value='Heavy'>Heavy</option>
+                                <option value='Melee'>Melee</option>
+                                <option value='Pistol'>Pistol</option>
+                                <option value='Thrown'>Thrown</option>
+                            </select>
+                        </div>
+                        <div
+                            class='sheet-equipment_melee_weapons_grid2 sheet-collapsible_entity_toggle sheet-collapsible_entity_toggle_min'>
+                            <div class='sheet-equipment_melee_weapons_gs5'>Reach</div>
+                            <input class='sheet-equipment_melee_weapons_gs6 sheet-full_width' type='text'
+                                name='attr_V_M_weapon_reach' />
+                            <div class='sheet-equipment_melee_weapons_gs7'>Damage</div>
+                            <input class='sheet-equipment_melee_weapons_gs8 sheet-full_width' type='text' value='0'
+                                name='attr_V_M_weapon_dam-roll' />
+                            <div class='sheet-equipment_melee_weapons_gs9'>Pen</div>
+                            <input class='sheet-equipment_melee_weapons_gs10 sheet-full_width' type='text' value='0'
+                                name='attr_V_M_weapon_pen' />
+                            <div class='sheet-equipment_melee_weapons_gs11'>Type</div>
+                            <select class='sheet-equipment_melee_weapons_gs12 sheet-full_width sheet-select_corection'
+                                name='attr_V_M_weapon_type'>
+                                <option value='-'>N/A</option>
+                                <option value='Energy'>Energy</option>
+                                <option value='Impact'>Impact</option>
+                                <option value='Rending'>Rending</option>
+                                <option value='Explosive'>Explosive</option>
+                            </select>
+                        </div>
+                        <div
+                            class='sheet-equipment_melee_weapons_grid2a sheet-collapsible_entity_toggle sheet-collapsible_entity_toggle_min sheet-collapsible_entity_toggle_half'>
+                            <div class='sheet-equipment_melee_weapons_gs06'>Primitive</div>
+                            <input class='sheet-equipment_melee_weapons_gs07 sheet-full_width' type='number' value='0'
+                                name='attr_V_M_weapon_max' />
+                            <div class='sheet-equipment_melee_weapons_gs08'>Proven</div>
+                            <input class='sheet-equipment_melee_weapons_gs09 sheet-full_width' type='number' value='0'
+                                name='attr_V_M_weapon_min' />
+                            <div class='sheet-equipment_melee_weapons_gs010'>Vengeful</div>
+                            <input class='sheet-equipment_melee_weapons_gs011 sheet-full_width' type='number' value='0'
+                                name='attr_V_M_weapon_vengeful' />
+                            <input type='hidden' value='' name='attr_V_M_weapon_real_dmg' />
+                        </div>
+                        <div
+                            class='sheet-equipment_melee_weapons_grid3 sheet-collapsible_entity_toggle sheet-collapsible_entity_toggle_min sheet-collapsible_entity_toggle_half'>
+                            <div class='sheet-equipment_melee_weapons_gs13'>Trained?</div>
+                            <input class='sheet-equipment_melee_weapons_gs14' type='checkbox' value='20'
+                                name='attr_V_M_weapon_trained' checked />
+                            <div class='sheet-equipment_melee_weapons_gs15'>Hit Mod</div>
+                            <input class='sheet-equipment_melee_weapons_gs16 sheet-full_width' type='number' value='0'
+                                name='attr_V_M_weapon_mod1' />
+                            <div class='sheet-equipment_melee_weapons_gs17'>Weight</div>
+                            <input class='sheet-equipment_melee_weapons_gs18 sheet-full_width' type='text' value='0'
+                                name='attr_V_M_weapon_weight' />
+                            <div class='sheet-equipment_melee_weapons_gs19'>Domain</div>
+                            <select class='sheet-equipment_melee_weapons_gs20 sheet-full_width sheet-select_corection'
+                                name='attr_R_weapon_domain'>
+                                <option value='-'>N/A</option>
+                                <option value='Bolt'>Bolt</option>
+                                <option value='Chain'>Chain</option>
+                                <option value='Exotic'>Exotic</option>
+                                <option value='Exotic (Graviton)'>Exotic (Graviton)</option>
+                                <option value='Explosives'>Explosives</option>
+                                <option value='Flame'>Flame</option>
+                                <option value='Force'>Force</option>
+                                <option value='Grenades/Missiles'>Grenades/Missiles</option>
+                                <option value='Las'>Las</option>
+                                <option value='Launcher'>Launcher</option>
+                                <option value='Low-Tech'>Low-Tech</option>
+                                <option value='Melta'>Melta</option>
+                                <option value='Plasma'>Plasma</option>
+                                <option value='Power'>Power</option>
+                                <option value='Shock'>Shock</option>
+                                <option value='Solid-Projectile'>Solid Projectile</option>
+                                <option value='Varies'>Varies</option>
+                                <option value='Xenos(Eldar)'>Xenos (Eldar)</option>
+                                <option value='Xenos(Kroot)'>Xenos (Kroot)</option>
+                                <option value='Xenos(Lost Races)'>Xenos (Lost Races)</option>
+                                <option value='Xenos(Necron)'>Xenos (Necron)</option>
+                                <option value='Xenos(Ork)'>Xenos (Ork)</option>
+                            </select>
+                        </div>
+                        <div
+                            class='sheet-collapsible_entity_toggle sheet-collapsible_entity_toggle_min sheet-collapsible_entity_toggle_half'>
+                            <input name='attr_V_M_ability_r' type='text' placeholder='Special'
+                                class='sheet-full_width_49px sheet-border_none' />
+                            <label title='Expand' title='Expand' class='sheet-margin_adjust_wep'><input type='checkbox'
+                                    name='attr_collapse' value='3'
+                                    class='sheet-collapsible_entity_switch sheet-select_button sheet-hidden' /><span
+                                    class='sheet-select_text sheet-radius_border_right_wep'>&#9660;</span></label>
+                            <label title='Send description in the chat' class='sheet-margin_adjust_wep2'><button
+                                    type='roll'
+                                    value='@{to-gm}&{template:mythic} {{name=@{V_M_weapon_name} }} {{description=@{V_M_ability_desc_r} }}'
+                                    class='sheet-hidden'></button><span
+                                    class='sheet-select_text'>&#128266;</span></label>
+                            <input name='attr_collapse' type='checkbox' value='3'
+                                class='sheet-collapsible_entity_switch sheet-hidden' />
+                            <textarea name='attr_V_M_ability_desc_r'
+                                class='sheet-collapsible_entity_block sheet-description_rounded_margin'
+                                placeholder='Description'></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>

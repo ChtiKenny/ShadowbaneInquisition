@@ -1,0 +1,2604 @@
+<script type='text/worker'>
+    // <script>
+
+	// repeating sections data array
+    const BUFF = {
+        active: 'active_r',
+        ws: 'WS_mod_r',
+        bs: 'BS_mod_r',
+        str: 'STR_mod_r',
+        tou: 'TOU_mod_r',
+        agi: 'AGI_mod_r',
+        int: 'INT_mod_r',
+        per: 'PER_mod_r',
+        wp: 'WP_mod_r',
+        fel: 'FEL_mod_r',
+        inf: 'INF_mod_r'
+    },
+    GEAR = {
+        carry: 'gear_carry_r',
+        name: 'gear_name_r',
+        craftsmanship: 'gear_crafts_r',
+        quantity: 'gear_quantity_r',
+        availability: 'gear_avail_r',
+        weight: 'gear_weight_r'
+    },
+    R_WEAPON = {
+        name : 'R_weapon_name',
+        class : 'R_weapon_class',
+        range : 'R_weapon_range',
+        damage : 'R_weapon_dam-roll',
+        pen : 'R_weapon_pen',
+        type : 'R_weapon_type',
+        max : 'R_weapon_max',
+        min : 'R_weapon_min',
+        vengeful : 'R_weapon_vengeful',
+        accurate : 'R_weapon_accurate',
+        burst : 'R_weapon_burst',
+        auto : 'R_weapon_auto',
+        mag : 'R_weapon_mag',
+        mag_max : 'R_weapon_mag_max',
+        trained : 'R_weapon_trained',
+        mod1 : 'R_weapon_mod1',
+        reload : 'R_weapon_reload',
+        weight : 'R_weapon_weight',
+        domain : 'R_weapon_domain'
+    }
+
+    // Skills unnatural bonus sheet worker
+	
+    /**
+    * skillRoll description
+    * @param {string} skill - name of the skill
+    * @param {string} focus - short name of the characteristic
+    */
+    const skillRoll = (skill, focus) => {
+        let attr = {};
+        attr[`${skill}_focus`] = `@{${focus}Total}`;
+        attr[`${skill}_unnat`]=`@{${focus.toUpperCase()}_unnat}`;
+        return attr;
+    };
+    let skills = [
+        'acrobatics','athletics','awareness','charm','command','commerce','deceive','dodge','inquiry',
+        'interrogation','intimidate','logic','medicae','nav_surface','nav_stellar','nav_warp','op_aero','op_surface','op_void',
+        'parry','psyniscience','scrutiny','security','sleight','stealth','survival','tech_use',
+        'linguistics','common-lore','scholastic-lore','forbidden-lore','trade'
+    ];
+    let repeatingSkills = ['skill','linguistics','common-lore','scholastic-lore','forbidden-lore','trade'];
+    on('sheet:opened ' + skills.map(skill => `change:${skill}_char change:${skill}_name`).join(' ') + repeatingSkills.map(skill => `change:repeating_${skill}:${skill}_r_char change:repeating_${skill}:${skill}_name`).join(' '), function () {
+        console.log('== UPDATING SKILLS ==');
+        getAttrs(skills.map( skill => `${skill}_char`), (values) => {
+            let attr = {};
+            for (var [skill, focus] of Object.entries(values)) {
+                attr = {...attr, ...skillRoll(skill.replace('_char', ''), focus)};
+            }
+            setAttrs(attr);
+        });
+        repeatingSkills.forEach(field => {
+            var repSkills = [];
+            getSectionIDs(field, ids => {
+                ids.forEach( id => {
+                    repSkills.push(`repeating_${field}_${id}_${field}_r_char`);
+                });
+                getAttrs(repSkills, (values) => {
+                    let attr = {};
+                    for (var [skill, focus] of Object.entries(values)) {
+                        attr = {...attr, ...skillRoll(skill.replace('_char', ''), focus)};
+                    }
+                    if (attr) setAttrs(attr);
+                });
+            });
+        });
+        console.log('== SKILLS UPDATED ==');
+    });
+
+
+ // Movement and Weight sheet worker and Fatigue Pts
+
+    let fieldsMWF = [
+        'size', 'fatigue', 'carry', 'weight_total',
+        'ws', 'ws_unnat', 'ws_advancement', 'ws_mod',
+        'bs', 'bs_unnat', 'bs_advancement', 'bs_mod',
+        'str', 'str_unnat', 'str_advancement', 'str_mod',
+        'tou', 'tou_unnat', 'tou_advancement', 'tou_mod',
+        'int', 'int_unnat', 'int_advancement', 'int_mod',
+        'per', 'per_unnat', 'per_advancement', 'per_mod',
+        'wp', 'wp_unnat', 'wp_advancement', 'wp_mod',
+        'fel', 'fel_unnat', 'fel_advancement', 'fel_mod',
+        'inf', 'inf_unnat',
+        'agi', 'agi_unnat', 'agi_advancement', 'agi_mod', 'agi_mov_mod', 'armor_agi', 'armor_limit',
+        'fatigue_ignore', 'psykana_class'
+    ];
+    on('sheet:opened ' + fieldsMWF.map(field => 'change:' + field).join(' '), function(e) {
+        // console.log(e);
+        getAttrs(fieldsMWF, function(values) {
+            // SIZE
+            var size = parseInt(values['size'], 10) || 0;
+            // FATIGUE
+            var fatigue = parseInt(values['fatigue'], 10) || 0;
+            var fatigueIgnore = parseInt(values['fatigue_ignore'], 10) || 0;
+            if (fatigueIgnore) fatigue = 0;
+            // CARRY
+            var carry = parseInt(values['carry'], 10) || 0;
+            var weight_total = parseInt(values['weight_total'], 10) || 0;
+            // STATS
+            function Stat(stat) {
+                this.base = parseInt(values[`${stat}`], 10) || 0
+                this.modifier = parseInt(values[`${stat}_mod`], 10) || 0
+                this.advancement = parseInt(values[`${stat}_advancement`], 10) || 0
+                this.unnat = parseInt(values[`${stat}_unnat`], 10) || 0
+                this.total = this.base + this.modifier + this.advancement
+                this.bonus = () => Math.floor(this.total / 10 + this.unnat)
+            }
+            // WS
+            var ws = new Stat('ws')
+            if (ws.bonus() < fatigue) ws.total = Math.ceil(ws.total / 2)
+            // BS
+            var bs = new Stat('bs')
+            if (bs.bonus() < fatigue) bs.total = Math.ceil(bs.total / 2)
+            // STR
+            var str = new Stat('str')
+            if (str.bonus() < fatigue) str.total = Math.ceil(str.total / 2)
+            // TOU
+            var tou = new Stat('tou')
+            if (tou.bonus() < fatigue) tou.total = Math.ceil(tou.total / 2)
+            // AGI
+            var agi = new Stat('agi')
+                agi_mov_mod = parseInt(values['agi_mov_mod'], 10) || 0,
+                armor_agi = parseInt(values['armor_agi'], 10) || 0,
+                armor_limit = parseInt(values['armor_limit'], 10) || 0;
+            if (weight_total > carry) agi.total -= 10
+            if (armor_limit) agi.total = (agi.total > armor_agi ) ? armor_agi : agi.total
+            if (agi.bonus() < fatigue) agi.total = Math.ceil(agi.total / 2)
+            // INT
+            var int = new Stat('int')
+            if (int.bonus() < fatigue) int.total = Math.ceil(int.total / 2)
+            // PER
+            var per = new Stat('per')
+            if (per.bonus() < fatigue) per.total = Math.ceil(per.total / 2)
+            // WP
+            var wp = new Stat('wp')
+            if (wp.bonus() < fatigue) wp.total = Math.ceil(wp.total / 2)
+            // FEL
+            var fel = new Stat('fel')
+            // Blank FEL halfing
+            var blank = values['psykana_class']
+            if (blank === '-1') fel.total = Math.ceil(fel.total / 2);
+            if (fel.bonus() < fatigue) fel.total = Math.ceil(fel.total / 2)
+            // INF
+            var inf = new Stat('inf')
+            if (inf.bonus() < fatigue) inf.total = Math.ceil(inf.total / 2)
+
+            var move_mod = agi.bonus() + size + agi_mov_mod;
+            var carry_mod = str.bonus() + tou.bonus();
+            var carry_calc;
+
+            // 40k system does their carry weight off a sheet-table
+
+            switch (carry_mod) {
+                case 1: carry_calc  = 2.25;     break;
+                case 2: carry_calc  =  4.5;     break;
+                case 3: carry_calc  =    9;     break;
+                case 4: carry_calc  =   18;     break;
+                case 5: carry_calc  =   27;     break;
+                case 6: carry_calc  =   36;     break;
+                case 7: carry_calc  =   45;     break;
+                case 8: carry_calc  =   56;     break;
+                case 9: carry_calc  =   67;     break;
+                case 10: carry_calc =   78;     break;
+                case 11: carry_calc =   90;     break;
+                case 12: carry_calc =  112;     break;
+                case 13: carry_calc =  225;     break;
+                case 14: carry_calc =  337;     break;
+                case 15: carry_calc =  450;     break;
+                case 16: carry_calc =  675;     break;
+                case 17: carry_calc =  900;     break;
+                case 18: carry_calc = 1350;     break;
+                case 19: carry_calc = 1800;     break;
+                case 20: carry_calc = 2250;     break;
+            }
+
+            // normal, no unnatural
+            setAttrs({
+                half_move:   (move_mod),
+                full_move:   (move_mod * 2),
+                charge_move: (move_mod * 3),
+                run_move:    (move_mod * 6),
+                carry:       (carry_calc * 1), //taking out the * 1 seems to cause attr_carry to freeze when carry_mod is set to 1 or 0
+                lift:        (carry_calc * 2),
+                push:        (carry_calc * 4),
+                bsTotal:     (bs.total),
+                bsB:         (bs.bonus()),
+                wsTotal:     (ws.total),
+                wsB:         (ws.bonus()),
+                strTotal:    (str.total),
+                strB:        (str.bonus()),
+                touTotal:    (tou.total),
+                touB:        (tou.bonus()),
+                agiTotal:    (agi.total),
+                agiB:        (agi.bonus()),
+                intTotal:    (int.total),
+                intB:        (int.bonus()),
+                perTotal:    (per.total),
+                perB:        (per.bonus()),
+                wpTotal:     (wp.total),
+                wpB:         (wp.bonus()),
+                felTotal:    (fel.total),
+                felB:        (fel.bonus()),
+                infTotal:    (inf.total),
+                infB:        (inf.bonus()),
+            });
+
+            // 0 mod movement override
+            if (move_mod <= 0) {
+                setAttrs({
+                    half_move: (0.5),
+                    full_move: (1),
+                    charge_move: (2),
+                    run_move: (3)
+                });
+            }
+
+            // 0 mod carry override
+            if (carry_mod <=0) {
+                setAttrs({
+                carry: (0.9),
+                lift: (2.25),
+                push: (4.5)
+                });
+            }
+
+        });
+    });
+
+
+
+    // Fatigue and Armor sheet worker
+    
+    let fieldsFA = [
+        'fatigue_mod',
+        'tou', 'tou_unnat', 'tou_advancement', 'tou_mod',
+        'wp', 'wp_unnat', 'wp_advancement', 'wp_mod',
+        'armor_head', 'armor_arm_right', 'armor_body', 'armor_arm_left', 'armor_leg_right', 'armor_leg_left'
+    ];
+    on('sheet:opened ' + fieldsFA.map(field => 'change:' + field).join(' '), function() {
+        getAttrs(fieldsFA, function(values) {
+            var fatigue_mod           = parseInt(values['fatigue_mod'], 10) || 0;
+
+            var toughness             = parseInt(values['tou'], 10) || 0;
+            var toughness_unnat       = parseInt(values['tou_unnat'], 10) || 0;
+            var toughness_advancement = parseInt(values['tou_advancement'], 10) || 0;
+            var toughness_modifier    = parseInt(values['tou_mod'], 10) || 0;
+            var toughness_bonus       = Math.floor((toughness + toughness_advancement + toughness_modifier) / 10 + toughness_unnat);
+
+            var willpower             = parseInt(values['wp'], 10) || 0;
+            var willpower_unnat       = parseInt(values['wp_unnat'], 10) || 0;
+            var willpower_advancement = parseInt(values['wp_advancement'], 10) || 0;
+            var willpower_modifier    = parseInt(values['wp_mod'], 10) || 0;
+            var willpower_bonus       = Math.floor((willpower + willpower_advancement + willpower_modifier) / 10 + willpower_unnat);
+
+            var armor_head            = parseInt(values['armor_head'], 10) || 0;
+            var armor_arm_right       = parseInt(values['armor_arm_right'], 10) || 0;
+            var armor_body            = parseInt(values['armor_body'], 10) || 0;
+            var armor_arm_left        = parseInt(values['armor_arm_left'], 10) || 0;
+            var armor_leg_right       = parseInt(values['armor_leg_right'], 10) || 0;
+            var armor_leg_left        = parseInt(values['armor_leg_left'], 10) || 0;
+
+            // normal, no modifiers _
+            setAttrs({
+                soak_head:      (armor_head + toughness_bonus),
+                soak_arm_right: (armor_arm_right + toughness_bonus),
+                soak_body:      (armor_body + toughness_bonus),
+                soak_arm_left:  (armor_arm_left + toughness_bonus),
+                soak_leg_right: (armor_leg_right + toughness_bonus),
+                soak_leg_left:  (armor_leg_left + toughness_bonus),
+                fatigue_max:    (toughness_bonus + willpower_bonus + fatigue_mod)
+            });
+
+        });
+    });
+
+
+
+    // Tabs sheet worker
+    
+    const buttonlist = ['core','equipment','advancements','journal','vehicle','psykana','settings'];
+    buttonlist.forEach(button => {
+        on(`clicked:${button}`, function() {
+            setAttrs({
+                sheetTab: button
+            });
+        });
+    });
+
+    // Inventory Tabs sheet worker
+    
+    const buttonListIventory = ['all', 'weapon', 'armour', 'gear', 'tool', 'consumables', 'ammo', 'cyberntic', 'other'];
+    buttonListIventory.forEach(button => {
+        on(`clicked:inv_${button}`, function() {
+            setAttrs({
+                equipmentTab: button
+            });
+        });
+    });
+
+
+    // insanity/corruption sheet worker
+
+    on('sheet:opened change:insanity_pts change:corruption_pts', function() {
+        getAttrs(['insanity_pts', 'corruption_pts'], function(values) {
+            var insanity_pts = parseInt(values['insanity_pts'], 0) || 0;
+            var corruption_pts = parseInt(values['corruption_pts'], 10) || 0;
+
+            function insanity (points) {
+                if (points <= 9)  return ('Stable')
+                if (points <= 39) return ('Unsettled')
+                if (points <= 59) return ('Disturbed')
+                if (points <= 79) return ('Unhinged')
+                if (points <= 99) return ('Deranged')
+                return ('Terminally Insane')
+            }
+
+            function corruption (points) {
+                if (points <= 9)  return ('Pure')
+                if (points <= 39) return ('Tainted')
+                if (points <= 59) return ('Soiled')
+                if (points <= 79) return ('Debased')
+                if (points <= 99) return ('Profane')
+                return ('Damned')
+            }
+            setAttrs({
+                insanity_degree: (insanity(insanity_pts)),
+                corruption_degree: (corruption(corruption_pts))
+            })
+
+        });
+    });
+
+
+
+    // psychic info sheet worker
+
+    const PSY_RANK = {}
+        
+    let fieldsPsy = ['psykana_class', 'psykana_limit', 'psy_push', 'psy_rating','psykana_sustain','psykana_sustain_count'];
+    on('sheet:opened ' + fieldsPsy.map(field => 'change:' + field).join(' '), function() {
+        getAttrs(fieldsPsy, function(values) {
+            var psykana_class = parseInt(values['psykana_class'])||0;
+            var psykana_limit = parseInt(values['psykana_limit'])||0;
+            var psy_push = parseInt(values['psy_push'])||0;
+            var psy_rating = parseInt(values['psy_rating'], 10) || 0;
+            var psykana_sustain = parseInt(values['psykana_sustain'], 10) || 0;
+            var psykana_sustain_count = parseInt(values['psykana_sustain_count'], 10) || 0;
+            var psykana_limit_factor = 0;
+            var push_addend_epr = 0;
+            var sustain_count_addend = 0;
+            var unfettered_addend = 0;
+            var push_addend_pp = 0;
+            var sustain_addend = 0;
+
+            // psy rating calc
+            switch (psykana_limit) {
+                case 0:
+                    psykana_limit_factor = 0.5;
+                    setAttrs({
+                        psy_roll: ('cf>96')
+                    });
+                break;
+                case 1:
+                    psykana_limit_factor = 1;
+                    setAttrs({
+                        psy_roll: ('cf11cf22cf33cf44cf55cf66cf77cf88cf99cf100')
+                    });
+                break;
+                case 2:
+                    psykana_limit_factor = 1;
+                    push_addend_epr = psy_push;
+                    if (psykana_class == 0) {
+                        setAttrs({
+                            psy_roll: ('cs1cs11cs22cs33cs44cs55cs66cs77cs88cs99cs100cf>0')
+                            //psy_roll: ('cf>0')
+                        });
+                    } else {
+                        setAttrs({
+                            psy_roll: ('cf>0')
+                        });
+                    }
+                break;
+            }
+
+            if (psykana_sustain == -5) {
+                sustain_count_addend = psykana_sustain_count;
+            }
+            var epr = Math.ceil(psy_rating * psykana_limit_factor) + push_addend_epr;
+
+            // phenomena calc
+            if (psykana_class == 2 && psykana_limit == 1) {
+                unfettered_addend = 10;
+            }
+            if (psykana_class == 0 && psykana_limit == 2) {
+                push_addend_pp = 10;
+            }
+            if (psykana_class == 1 && psykana_limit == 2) {
+                push_addend_pp = 5 * psy_push;
+            }
+            if (psykana_class == 2 && psykana_limit == 2) {
+                push_addend_pp = 10 * psy_push;
+            }
+            if (psykana_sustain == -5) {
+                sustain_addend = 5 * sustain_count_addend;
+            }
+            var pp = unfettered_addend + push_addend_pp + sustain_addend;
+
+            //output
+            setAttrs({
+                effective_psy_rating: epr,
+                psykana_phenomena: pp
+            });
+        });
+    });
+
+
+
+    // gear cost/weight sheet worker 
+
+    on('sheet:opened change:repeating_rangedweapons:R_weapon_weight change:repeating_rangedweapons:R_weapon_carry remove:repeating_rangedweapons change:repeating_meleeweapons:M_weapon_weight change:repeating_meleeweapons:M_weapon_carry remove:repeating_meleeweapons', function() {
+            repeatingWeight("R_weapon_weight_t","rangedweapons",[['weight',"R_weapon_weight"],['carry',"R_weapon_carry"]]),
+            repeatingWeight("M_weapon_weight_t","meleeweapons",[['weight',"M_weapon_weight"],['carry',"M_weapon_carry"]]);
+    });
+
+    on('change:M_weapon_weight_t change:R_weapon_weight_t change:repeating_gear:gear_carry_r change:repeating_gear:gear_weight_r change:repeating_gear:gear_quantity_r remove:repeating_gear', () => {
+        getSectionIDs(`repeating_gear`, idArray => {
+            const fieldset_weight = [];
+            const fieldset_quantity = [];
+            const fieldset_carry = [];
+            idArray.forEach(id => fieldset_weight.push (`repeating_gear_${id}_gear_weight_r`));
+            idArray.forEach(id => fieldset_quantity.push (`repeating_gear_${id}_gear_quantity_r`));
+            idArray.forEach(id => fieldset_carry.push (`repeating_gear_${id}_gear_carry_r`));
+            getAttrs(['M_weapon_weight_t','R_weapon_weight_t','weight_total', ...fieldset_weight, ...fieldset_quantity, ...fieldset_carry], v => {
+				//console.table(v)
+                const getValue = (id, field) => parseFloat(v[`repeating_gear_${id}_${field}`]) || 0
+                const weight_repeating = idArray.reduce((total, id) => total + (getValue(id, 'gear_weight_r') * getValue(id, 'gear_quantity_r') * getValue(id, 'gear_carry_r')), 0)
+                const weapon_weight = parseFloat(v.M_weapon_weight_t) + parseFloat(v.R_weapon_weight_t)
+                setAttrs({
+                    weight_total: (weight_repeating + weapon_weight).toFixed(3)
+                });
+            });
+        });
+    });
+
+    // Advancement XP sheet worker
+
+	const CHARACTERISTICS = [
+		{name: "Weapon Skill", aptitudes : ["Weapon Skill", "Offence"]},
+		{name: "Ballistic Skill", aptitudes : ["Ballistic Skill", "Finesse"]},
+		{name: "Strength", aptitudes : ["Strength", "Offence"]},
+		{name: "Toughness", aptitudes : ["Toughness", "Defence"]},
+		{name: "Agility", aptitudes : ["Agility", "Finesse"]},
+		{name: "Intelligence", aptitudes : ["Intelligence", "Knowledge"]},
+		{name: "Perception", aptitudes : ["Perception", "Fieldcraft"]},
+		{name: "Willpower", aptitudes : ["Willpower", "Psyker"]},
+		{name: "Fellowship", aptitudes : ["Fellowship", "Social"]}
+	]
+	const SKILLS = [
+		{name: "Acrobatics", aptitudes : ["Agility", "General"]},
+		{name: "Athletics", aptitudes : ["Strength", "General"]},
+		{name: "Awareness", aptitudes : ["Perception", "Fieldcraft"]},
+		{name: "Charm", aptitudes : ["Fellowship", "Social"]},
+		{name: "Command", aptitudes : ["Fellowship", "Leadership"]},
+		{name: "Commerce", aptitudes : ["Intelligence", "Knowledge"]},
+		{name: "Common Lore X", aptitudes : ["Intelligence", "General"]},
+		{name: "Deceive", aptitudes : ["Fellowship", "Social"]},
+		{name: "Dodge", aptitudes : ["Agility", "Defence"]},
+		{name: "Forbidden Lore X", aptitudes : ["Intelligence", "Knowledge"]},
+		{name: "Inquiry", aptitudes : ["Fellowship", "Social"]},
+		{name: "Interrogation", aptitudes : ["Willpower", "Social"]},
+		{name: "Intimidate", aptitudes : ["Strength", "Social"]},
+		{name: "Linguistics X", aptitudes : ["Intelligence", "General"]},
+		{name: "Logic", aptitudes : ["Intelligence", "Knowledge"]},
+		{name: "Medicae", aptitudes : ["Intelligence", "Fieldcraft"]},
+		{name: "Navigate X", aptitudes : ["Intelligence", "Fieldcraft"]},
+		{name: "Operate X", aptitudes : ["Agility", "Tech"]},
+		{name: "Parry", aptitudes : ["Weapon Skill", "Defence"]},
+		{name: "Psyniscience", aptitudes : ["Perception", "Psyker"]},
+		{name: "Scholastic Lore X", aptitudes : ["Intelligence", "Knowledge"]},
+		{name: "Scrutiny", aptitudes : ["Perception", "General"]},
+		{name: "Security", aptitudes : ["Intelligence", "Tech"]},
+		{name: "Sleight of Hand", aptitudes : ["Agility", "Knowledge"]},
+		{name: "Stealth", aptitudes : ["Agility", "Fieldcraft"]},
+		{name: "Survival", aptitudes : ["Perception", "Fieldcraft"]},
+		{name: "Tech-Use", aptitudes : ["Intelligence", "Tech"]},
+		{name: "Trade X", aptitudes : ["Intelligence", "General"]}
+	]
+	const TIER_1_TALENTS = [
+		{name: "Ambidextrous", aptitudes : ["Weapon Skill", "Ballistic Skill"]},
+		{name: "Blind Fighting", aptitudes : ["Perception", "Fieldcraft"]},
+		{name: "Bodyguard", aptitudes : ["Agility", "Defence"]},
+		{name: "Catfall", aptitudes : ["Agility", "Fieldcraft"]},
+		{name: "Clues from the Crowds", aptitudes : ["General", "Social"]},
+		{name: "Die Hard", aptitudes : ["Willpower", "Defence"]},
+		{name: "Disarm", aptitudes : ["Weapon Skill", "Defence"]},
+		{name: "Double Team", aptitudes : ["General", "Offence"]},
+		{name: "Enemy X", aptitudes : ["General", "Social"]},
+		{name: "Ferric Summons", aptitudes : ["Willpower", "Tech"]},
+		{name: "Flagellant", aptitudes : ["Offence", "Toughness"]},
+		{name: "Frenzy", aptitudes : ["Strength", "Offence"]},
+		{name: "Grenadier", aptitudes : ["Ballistic Skill", "Finesse"]},
+		{name: "Iron Jaw", aptitudes : ["Toughness", "Defence"]},
+		{name: "Jaded", aptitudes : ["Willpower", "Defence"]},
+		{name: "Keen Intuition", aptitudes : ["Perception", "Social"]},
+		{name: "Leap Up", aptitudes : ["Agility", "General"]},
+		{name: "Leaping Dodge", aptitudes : ["Agility", "Defence"]},
+		{name: "Mounted Warrior Melee", aptitudes : ["Weapon Skill", "Offence"]},
+		{name: "Mounted Warrior Ranged", aptitudes : ["Ballistic Skill", "Offence"]},
+		{name: "Nowhere to Hide", aptitudes : ["Perception", "Offence"]},
+		{name: "Peer X", aptitudes : ["Fellowship", "Social"]},
+		{name: "Quick Draw", aptitudes : ["Agility", "Finesse"]},
+		{name: "Rapid Reload", aptitudes : ["Agility", "Fieldcraft"]},
+		{name: "Resistance X", aptitudes : ["Toughness", "Defence"]},
+		{name: "Skilled Rider", aptitudes : ["Agility", "Fieldcraft"]},
+		{name: "Sound Constitution", aptitudes : ["Toughness", "General"]},
+		{name: "Takedown", aptitudes : ["Weapon Skill", "Offence"]},
+		{name: "Technical Knock", aptitudes : ["Intelligence", "Tech"]},
+		{name: "Warp Sense", aptitudes : ["Perception", "Psyker"]},
+		{name: "Weapon Training X", aptitudes : ["General", "General"]},
+		{name: "Weapon-Tech", aptitudes : ["Intelligence", "Tech"]}
+	]
+	const TIER_2_TALENTS = [
+		{name: "Ambassador Imperialis", aptitudes : ["Perception", "Social"]},
+		{name: "Archivator", aptitudes : ["Knowledge", "Social"]},
+		{name: "Armor-Monger", aptitudes : ["Intelligence", "Tech"]},
+		{name: "Battle Rage", aptitudes : ["Strength", "Defence"]},
+		{name: "Bulging Biceps", aptitudes : ["Strength", "Offence"]},
+		{name: "Bulwark of Faith", aptitudes : ["Defence", "Willpower"]},
+		{name: "Combat Master", aptitudes : ["Weapon Skill", "Defence"]},
+		{name: "Constant Vigilance X", aptitudes : ["Perception", "Defence"]},
+		{name: "Contact Network", aptitudes : ["Fellowship", "Leadership"]},
+		{name: "Coordinated Interrogation", aptitudes : ["Intelligence", "Social"]},
+		{name: "Counter Attack", aptitudes : ["Weapon Skill", "Defence"]},
+		{name: "Cover-Up", aptitudes : ["Intelligence", "Knowledge"]},
+		{name: "Daemonhunter", aptitudes : ["Offence", "Willpower"]},
+		{name: "Daemonologist", aptitudes : ["Psyker", "Willpower"]},
+		{name: "Deny the Witch", aptitudes : ["Willpower", "Defence"]},
+		{name: "Devastating Assault", aptitudes : ["Weapon Skill", "Offence"]},
+		{name: "Double Tap", aptitudes : ["Finesse", "Offence"]},
+		{name: "Exotic Weapon Training", aptitudes : ["Intelligence", "Finesse"]},
+		{name: "Face in a Crowd", aptitudes : ["Fellowship", "Social"]},
+		{name: "Field Vivisection Melee", aptitudes : ["Weapon Skill", "Knowledge"]},
+		{name: "Field Vivisection Ranged", aptitudes : ["Ballistic Skill", "Knowledge"]},
+		{name: "Hard Target", aptitudes : ["Agility", "Defence"]},
+		{name: "Harden Soul", aptitudes : ["Defence", "Willpower"]},
+		{name: "Hardy", aptitudes : ["Toughness", "Defence"]},
+		{name: "Hatred X", aptitudes : ["Weapon Skill", "Social"]},
+		{name: "Hip Shooting", aptitudes : ["Ballistic Skill", "Finesse"]},
+		{name: "Hotshot Pilot", aptitudes : ["Agility", "Tech"]},
+		{name: "Independent Targeting", aptitudes : ["Ballistic Skill", "Finesse"]},
+		{name: "Inescapable Attack Melee", aptitudes : ["Weapon Skill", "Finesse"]},
+		{name: "Inescapable Attack Ranged", aptitudes : ["Ballistic Skill", "Finesse"]},
+		{name: "Inspiring Aura", aptitudes : ["Leadership", "Willpower"]},
+		{name: "Iron Resolve", aptitudes : ["Defence", "Willpower"]},
+		{name: "Killing Strike", aptitudes : ["Weapon Skill", "Offence"]},
+		{name: "Lexographer", aptitudes : ["Intelligence", "Knowledge"]},
+		{name: "Luminen Shock", aptitudes : ["Weapon Skill", "Tech"]},
+		{name: "Maglev Transcendence", aptitudes : ["Intelligence", "Tech"]},
+		{name: "Marksman", aptitudes : ["Ballistic Skill", "Finesse"]},
+		{name: "Mechadendrite Use X", aptitudes : ["Intelligence", "Tech"]},
+		{name: "One-on-One", aptitudes : ["Finesse", "Weapon Skill"]},
+		{name: "Penitent Psyker", aptitudes : ["Psyker", "Defence"]},
+		{name: "Precision Killer Melee", aptitudes : ["Weapon Skill", "Finesse"]},
+		{name: "Precision Killer Ranged", aptitudes : ["Ballistic Skill", "Finesse"]},
+		{name: "Prosanguine", aptitudes : ["Toughness", "Tech"]},
+		{name: "Purity of Hatred", aptitudes : ["Offence", "Willpower"]},
+		{name: "Rites of Banishment", aptitudes : ["Offence", "Willpower"]},
+		{name: "Strong Minded", aptitudes : ["Willpower", "Defence"]},
+		{name: "Swift Attack", aptitudes : ["Weapon Skill", "Finesse"]},
+		{name: "Tainted Psyker", aptitudes : ["Knowledge", "Psyker"]},
+		{name: "Two-Weapon Wielder Melee", aptitudes : ["Weapon Skill", "Finesse"]},
+		{name: "Two-Weapon Wielder Ranged", aptitudes : ["Ballistic Skill", "Finesse"]},
+		{name: "Unarmed Specialist", aptitudes : ["Strength", "Offence"]},
+		{name: "Warp Conduit", aptitudes : ["Willpower", "Psyker"]},
+		{name: "Whirlwind of Death", aptitudes : ["Weapon Skill", "Finesse"]},
+		{name: "Witch Finder", aptitudes : ["Knowledge", "Perception"]},
+		{name: "Xenosavant", aptitudes : ["Intelligence", "Knowledge"]}
+	]
+	const TIER_3_TALENTS = [
+		{name: "Adamantium Faith", aptitudes : ["Willpower", "Defence"]},
+		{name: "Aegis of Contempt", aptitudes : ["Defence", "Leadership"]},
+		{name: "Assassin Strike", aptitudes : ["Weapon Skill", "Fieldcraft"]},
+		{name: "Bastion of Iron Will", aptitudes : ["Willpower", "Psyker"]},
+		{name: "Blademaster", aptitudes : ["Weapon Skill", "Finesse"]},
+		{name: "Crushing Blow", aptitudes : ["Weapon Skill", "Offence"]},
+		{name: "Daemonic Disruption", aptitudes : ["Willpower", "General"]},
+		{name: "Dark Soul", aptitudes : ["Toughness", "Willpower"]},
+		{name: "Deathdealer", aptitudes : ["Perception", "Finesse"]},
+		{name: "Delicate Interrogation", aptitudes : ["Intelligence", "Finesse"]},
+		{name: "Divine Protection", aptitudes : ["General", "Finesse"]},
+		{name: "Eye of Vengeance", aptitudes : ["Ballistic Skill", "Offence"]},
+		{name: "Favored by the Warp", aptitudes : ["Willpower", "Psyker"]},
+		{name: "Flash of Insight", aptitudes : ["Perception", "Knowledge"]},
+		{name: "Halo of Command", aptitudes : ["Fellowship", "Leadership"]},
+		{name: "Hammer Blow", aptitudes : ["Strength", "Offence"]},
+		{name: "Hull Down", aptitudes : ["Agility", "Fieldcraft"]},
+		{name: "Indomitable Conviction", aptitudes : ["Leadership", "Willpower"]},
+		{name: "Infused Knowledge", aptitudes : ["Intelligence", "Knowledge"]},
+		{name: "Instrument of His Will", aptitudes : ["Offence", "Willpower"]},
+		{name: "Into the Jaws of Hell", aptitudes : ["Leadership", "Willpower"]},
+		{name: "Iron Faith", aptitudes : ["Defence", "Willpower"]},
+		{name: "Lightning Attack", aptitudes : ["Weapon Skill", "Finesse"]},
+		{name: "Luminen Blast", aptitudes : ["Ballistic Skill", "Tech"]},
+		{name: "Mastery X", aptitudes : ["Intelligence", "Knowledge"]},
+		{name: "Mighty Shot", aptitudes : ["Ballistic Skill", "Offence"]},
+		{name: "Never Die", aptitudes : ["Toughness", "Defence"]},
+		{name: "Preternatural Speed", aptitudes : ["Agility", "Offence"]},
+		{name: "Push the Limit", aptitudes : ["Perception", "Tech"]},
+		{name: "Sanctic Purity", aptitudes : ["Psyker", "Willpower"]},
+		{name: "Shield Wall", aptitudes : ["Defence", "Weapon Skill"]},
+		{name: "Sprint", aptitudes : ["Agility", "Fieldcraft"]},
+		{name: "Step Aside", aptitudes : ["Agility", "Defence"]},
+		{name: "Superior Chirurgeon", aptitudes : ["Intelligence", "Fieldcraft"]},
+		{name: "Target Selection", aptitudes : ["Ballistic Skill", "Finesse"]},
+		{name: "Thunder Charge", aptitudes : ["Strength", "Offence"]},
+		{name: "True Grit", aptitudes : ["Toughness", "Defence"]},
+		{name: "Two-Weapon Master", aptitudes : ["Finesse", "Offence"]},
+		{name: "Warp Lock", aptitudes : ["Willpower", "Psyker"]},
+		{name: "Weapon Intuition", aptitudes : ["Intelligence", "Finesse"]}
+	]
+	const fieldAptitudes = ['aptitude_1','aptitude_2','aptitude_3','aptitude_4','aptitude_5','aptitude_6','aptitude_7','aptitude_8','aptitude_9']
+
+	/* DISABLED XP COST AUTO-FILL UNTIL NEW VALUES ARE MADE */
+	on('change:repeating_advancements:advancement_nameL_r change:repeating_advancements:advancement_nameR_r', () => {
+		getAttrs([
+		'repeating_advancements_advancement_nameR_r',
+		'repeating_advancements_advancement_nameL_r',
+		...fieldAptitudes
+		], (values) => {
+			var aptitudes = [
+				values['aptitude_1'].toLowerCase(),
+				values['aptitude_2'].toLowerCase(),
+				values['aptitude_3'].toLowerCase(),
+				values['aptitude_4'].toLowerCase(),
+				values['aptitude_5'].toLowerCase(),
+				values['aptitude_6'].toLowerCase(),
+				values['aptitude_7'].toLowerCase(),
+				values['aptitude_8'].toLowerCase(),
+				values['aptitude_9'].toLowerCase()
+			]
+			function xpCalc (name) {
+				var advance = name.split(':')[0]
+				var level = name.split(':')?.[1]
+
+				let characteristic = CHARACTERISTICS.find( char => char.name === advance)
+				let skill = SKILLS.find( skill => skill.name === advance)
+				let t1Talent = TIER_1_TALENTS.find( talent => talent.name === advance)
+				let t2Talent = TIER_2_TALENTS.find( talent => talent.name === advance)
+				let t3Talent = TIER_3_TALENTS.find( talent => talent.name === advance)
+
+				if (characteristic) {
+					var firstAptitude  = aptitudes.includes(characteristic.aptitudes[0].toLowerCase())
+					var secondAptitude = aptitudes.includes(characteristic.aptitudes[1].toLowerCase())
+					
+					if (firstAptitude && secondAptitude) {
+						if (level === '+5')  return 100
+						if (level === '+10') return 200
+						if (level === '+15') return 400
+						if (level === '+20') return 800
+						if (level === '+25') return 1200
+						if (level === '+30') return 2400
+					}
+					if (firstAptitude || secondAptitude) {
+						if (level === '+5')  return 200
+						if (level === '+10') return 400
+						if (level === '+15') return 800
+						if (level === '+20') return 1200
+						if (level === '+25') return 2400
+						if (level === '+30') return 3600
+					}
+					if (!firstAptitude && !secondAptitude) {
+						if (level === '+5')  return 400
+						if (level === '+10') return 800
+						if (level === '+15') return 1200
+						if (level === '+20') return 2400
+						if (level === '+25') return 3600
+						if (level === '+30') return 4800
+					}
+				}
+				if (skill) {
+					var firstAptitude  = aptitudes.includes(skill.aptitudes[0].toLowerCase())
+					var secondAptitude = aptitudes.includes(skill.aptitudes[1].toLowerCase())
+					
+					if (firstAptitude && secondAptitude) {
+						if (level === 'Known')  return 100
+						if (level === '+10')    return 200
+						if (level === '+20') 	return 300
+						if (level === '+30')	return 600
+					}
+					if (firstAptitude || secondAptitude) {
+						if (level === 'Known')  return 200
+						if (level === '+10')    return 400
+						if (level === '+20') 	return 600
+						if (level === '+30')	return 1200
+					}
+					if (!firstAptitude && !secondAptitude) {
+						if (level === 'Known')  return 300
+						if (level === '+10')    return 600
+						if (level === '+20') 	return 900
+						if (level === '+30')	return 1800
+					}
+				}
+				if (t1Talent) {
+					var firstAptitude  = aptitudes.includes(t1Talent.aptitudes[0].toLowerCase())
+					var secondAptitude = aptitudes.includes(t1Talent.aptitudes[1].toLowerCase())
+					
+					if (firstAptitude && secondAptitude)   return 200
+					if (firstAptitude || secondAptitude)   return 300
+					if (!firstAptitude && !secondAptitude) return 500
+				}
+				if (t2Talent) {
+					var firstAptitude  = aptitudes.includes(t2Talent.aptitudes[0].toLowerCase())
+					var secondAptitude = aptitudes.includes(t2Talent.aptitudes[1].toLowerCase())
+					
+					if (firstAptitude && secondAptitude)   return 300
+					if (firstAptitude || secondAptitude)   return 500
+					if (!firstAptitude && !secondAptitude) return 800
+				}
+				if (t3Talent) {
+					var firstAptitude  = aptitudes.includes(t3Talent.aptitudes[0].toLowerCase())
+					var secondAptitude = aptitudes.includes(t3Talent.aptitudes[1].toLowerCase())
+					
+					if (firstAptitude && secondAptitude)   return 500
+					if (firstAptitude || secondAptitude)   return 800
+					if (!firstAptitude && !secondAptitude) return 1200
+				}
+				if (t4Talent) {
+					var firstAptitude  = aptitudes.includes(t3Talent.aptitudes[0].toLowerCase())
+					var secondAptitude = aptitudes.includes(t3Talent.aptitudes[1].toLowerCase())
+					
+					if (firstAptitude && secondAptitude)   return 800
+					if (firstAptitude || secondAptitude)   return 1200
+					if (!firstAptitude && !secondAptitude) return 1700
+				}
+			}
+
+			var costL = xpCalc(values['repeating_advancements_advancement_nameL_r'])
+			var costR = xpCalc(values['repeating_advancements_advancement_nameR_r'])
+
+			var attr = {}
+
+			if (costL) attr['repeating_advancements_advancement_costL_r'] = costL
+			if (costR) attr['repeating_advancements_advancement_costR_r'] = costR
+
+			setAttrs(attr,true)
+		})
+	})
+	/* */
+    on('change:xp_total change:advancement_costL change:advancement_costR change:repeating_advancements remove:repeating_advancements', () => {
+        // get section IDs because of operation both inside and outside of fieldset
+        getSectionIDs(`repeating_advancements`, idArray => {
+            const fieldnames = [];
+            idArray.forEach(id => fieldnames.push (
+                `repeating_advancements_${id}_advancement_costL_r`,
+                `repeating_advancements_${id}_advancement_costR_r`
+            ));
+            // spread operator to get every array value
+            getAttrs(['xp_total', 'advancement_costL', 'advancement_costR', ...fieldnames], v => {
+                const getValue = (id, field) => parseFloat(v[`repeating_advancements_${id}_${field}`]) || 0
+                const cost = parseFloat(v.gear_cost) || 0
+                const left = parseFloat(v.advancement_costL) || 0
+                const right = parseFloat(v.advancement_costR) || 0
+                const left_r = idArray.reduce((total, id) => total + getValue(id,'advancement_costL_r'),0)
+                const right_r = idArray.reduce((total, id) => total + getValue(id,'advancement_costR_r'),0)
+                const spent = left + right + left_r + right_r
+                const total = parseFloat(v.xp_total) || 0
+                setAttrs({
+                    xp_spent: spent,
+                    xp_current: total - spent
+                });
+            });
+        });
+    });
+
+
+
+    // General sum sheet worker
+	
+    /**
+     * [repeatingWeight description]
+     * @param {[type]} destination [description]
+     * @param {[type]} section [description]
+     * @param {[type]} fields [description]
+     */
+    const repeatingWeight = (destination, section, fields) => {
+        getSectionObjects(section, fields, items => {
+            const sumTotal = items.filter(item => item.carry !== '0').reduce((total, item) => total + parseFloat(item.weight),0);
+            setAttrs({[destination]: sumTotal});
+        })
+    }
+
+    // Weapons 
+
+	// Script for Ammo API
+	
+    on("sheet:opened change:repeating_rangedweapons:r_weapon_attack change:repeating_rangedweapons:r_weapon_burst change:repeating_rangedweapons:r_weapon_auto remove:repeating_rangedweapons change:repeating_vehiclerangedweapons:v_r_weapon_attack change:repeating_vehiclerangedweapons:v_r_weapon_burst change:repeating_vehiclerangedweapons:v_r_weapon_auto remove:repeating_vehiclerangedweapons", function() {
+        getSectionIDs("rangedweapons", function(idArray) {
+            // first get the attribute names for all rows in put in one array
+            const fieldnames = [];
+            idArray.forEach(id => fieldnames.push(
+                `repeating_rangedweapons_${id}_R_weapon_attack`,
+                `repeating_rangedweapons_${id}_R_weapon_burst`,
+                `repeating_rangedweapons_${id}_R_weapon_auto`
+            ));
+            getAttrs(fieldnames, values => {
+                // create a variable to hold all the attribute values you re going to create.
+                const attr = {};
+                // now loop through the rows again
+                idArray.forEach(id => {
+                    let row = 'repeating_rangedweapons_' + id;
+                    let attack = +values[`${row}_R_weapon_attack`] || 0,
+                        burst = +values[`${row}_R_weapon_burst`] || 0,
+                        auto = +values[`${row}_R_weapon_auto`] || 0;
+
+                    let ammo = attack === -10 ? -auto : (attack === 0 ? -burst : -1);
+
+                    attr[`${row}_id`] = id; // id of the repeating element
+                    attr[`${row}_ammo`] = ammo; // number of ammo to use
+                });
+                setAttrs(attr);
+            });
+        });
+		getSectionIDs("vehiclerangedweapons", function(idArray) {
+            // first get the attribute names for all rows in put in one array
+            const fieldnames = [];
+            idArray.forEach(id => fieldnames.push(
+                `repeating_vehiclerangedweapons_${id}_V_R_weapon_attack`,
+                `repeating_vehiclerangedweapons_${id}_V_R_weapon_burst`,
+                `repeating_vehiclerangedweapons_${id}_V_R_weapon_auto`
+            ));
+            getAttrs(fieldnames, values => {
+                // create a variable to hold all the attribute values you re going to create.
+                const attr = {};
+                // now loop through the rows again
+                idArray.forEach(id => {
+                    let row = 'repeating_vehiclerangedweapons_' + id;
+                    let attack = +values[`${row}_V_R_weapon_attack`] || 0,
+                        burst = +values[`${row}_V_R_weapon_burst`] || 0,
+                        auto = +values[`${row}_V_R_weapon_auto`] || 0;
+
+                    let ammo = attack === -10 ? -auto : (attack === 0 ? -burst : -1);
+
+                    attr[`${row}_id`] = id; // id of the repeating element
+                    attr[`${row}_ammo`] = ammo; // number of ammo to use
+                });
+                setAttrs(attr);
+            });
+        });
+    });
+    
+    /**
+     * calculate real damage roll
+     * @param {string} source row id of the weapon
+     */
+    const calcDmg = function (sources, fields) {
+        var redice = /^(\d+)?(d\d+)(.*)?/;
+
+        getAttrs(fields, v => {
+            let attr = {};
+            sources.forEach( source => {
+                // to avoid retyping long strings because i'm lazy
+                var dam = source + 'weapon_dam-roll',
+                    ven = source + 'weapon_vengeful', // crit
+                    min = source + 'weapon_min', // proven
+                    max = source + 'weapon_max', // primitive
+                    set = source + 'weapon_setting'; // overcharge/load / maximal
+
+                let dmg = redice.exec(v[dam]);
+                    ven = parseInt(v[ven], 10) || 0,
+                    min = parseInt(v[min], 10) || 0,
+                    max = parseInt(v[max], 10) || 0,
+                    set = parseInt(v[set], 10) || 0;
+
+                if (!dmg) {
+                    console.log('no damage found');
+                    attr[`${source}weapon_real_dmg`] = v[dam];
+                } else {
+                    let dicenum = parseInt(dmg[1], 10) || 1,
+                        dicetype = dmg[2],
+                        mod = dmg[3];
+
+                    let damTotal = '{';
+                    if (set === 3) dicenum ++;
+
+                    for (var i = 0; i < dicenum; i++) {
+                        if (i) damTotal += ', '
+                        if (min > 0) damTotal += '{';
+                        if (max > 0) damTotal += '{';
+                        damTotal += (dicetype == 'd5') ? 'ceil(1d10/2)' : '1d10';
+                        if (ven > 0) damTotal += 'cs>' + ven;
+                        if (min > 0) damTotal += ', {' + min + '}}kh1';
+                        if (max > 0) damTotal += ', {' + max + '}}kl1';
+                    }
+                    damTotal += '}';
+                    if (mod) damTotal += mod;
+                    if (set === 2) damTotal += '+1';
+                    if (set === 4) {
+                        damTotal += '+2';
+                        attr[`${source}weapon_pen2`] = 2;
+                    } else {
+                        attr[`${source}weapon_pen2`] = 0;
+                    }
+                    attr[`${source}weapon_real_dmg`] = damTotal;
+                }
+            });
+            setAttrs(attr);
+        });
+    };
+
+    let fieldsDMG = [
+        'vehiclerangedweapons:V_R_weapon_dam-roll', 'vehiclerangedweapons:V_R_weapon_vengeful', 'vehiclerangedweapons:V_R_weapon_min', 'vehiclerangedweapons:V_R_weapon_max', 'vehiclerangedweapons:V_R_weapon_setting',
+        'rangedweapons:R_weapon_dam-roll', 'rangedweapons:R_weapon_vengeful', 'rangedweapons:R_weapon_min', 'rangedweapons:R_weapon_max', 'rangedweapons:R_weapon_setting',
+        'vehiclemeleeweapons:V_M_weapon_dam-roll', 'vehiclemeleeweapons:V_M_weapon_vengeful', 'vehiclemeleeweapons:V_M_weapon_min', 'vehiclemeleeweapons:V_M_weapon_max',
+        'meleeweapons:M_weapon_dam-roll', 'meleeweapons:M_weapon_vengeful', 'meleeweapons:M_weapon_min', 'meleeweapons:M_weapon_max',
+        ];
+    on('sheet:opened ' + fieldsDMG.map(field => 'change:repeating_' + field).join(' '), () => {
+        getSectionIDs('rangedweapons', (idArray) => {
+            let sources = [];
+            let fieldnames = [];
+            idArray.forEach( id => {
+                sources.push(`repeating_rangedweapons_${id}_R_`);
+                fieldnames.push(
+                `repeating_rangedweapons_${id}_R_weapon_dam-roll`,
+                `repeating_rangedweapons_${id}_R_weapon_vengeful`,
+                `repeating_rangedweapons_${id}_R_weapon_min`,
+                `repeating_rangedweapons_${id}_R_weapon_max`,
+                `repeating_rangedweapons_${id}_R_weapon_setting`
+                );
+            });
+            calcDmg(sources, fieldnames);
+        });
+        getSectionIDs('meleeweapons', (idArray) => {
+            let sources = [];
+            let fieldnames = [];
+            idArray.forEach( id => {
+                sources.push(`repeating_meleeweapons_${id}_M_`);
+                fieldnames.push(
+                `repeating_meleeweapons_${id}_M_weapon_dam-roll`,
+                `repeating_meleeweapons_${id}_M_weapon_vengeful`,
+                `repeating_meleeweapons_${id}_M_weapon_min`,
+                `repeating_meleeweapons_${id}_M_weapon_max`
+                );
+            });
+            calcDmg(sources, fieldnames);
+        });
+        getSectionIDs('vehiclerangedweapons', (idArray) => {
+            let sources = [];
+            let fieldnames = [];
+            idArray.forEach( id => {
+                sources.push(`repeating_vehiclerangedweapons_${id}_V_R_`);
+                fieldnames.push(
+                `repeating_vehiclerangedweapons_${id}_V_R_weapon_dam-roll`,
+                `repeating_vehiclerangedweapons_${id}_V_R_weapon_vengeful`,
+                `repeating_vehiclerangedweapons_${id}_V_R_weapon_min`,
+                `repeating_vehiclerangedweapons_${id}_V_R_weapon_max`,
+                `repeating_vehiclerangedweapons_${id}_V_R_weapon_setting`
+                );
+            });
+            calcDmg(sources, fieldnames);
+        });
+        getSectionIDs('vehiclemeleeweapons', (idArray) => {
+            let sources = [];
+            let fieldnames = [];
+            idArray.forEach( id => {
+                sources.push(`repeating_vehiclemeleeweapons_${id}_V_M_`);
+                fieldnames.push(
+                `repeating_vehiclemeleeweapons_${id}_V_M_weapon_dam-roll`,
+                `repeating_vehiclemeleeweapons_${id}_V_M_weapon_vengeful`,
+                `repeating_vehiclemeleeweapons_${id}_V_M_weapon_min`,
+                `repeating_vehiclemeleeweapons_${id}_V_M_weapon_max`
+                );
+            });
+            calcDmg(sources, fieldnames);
+        });
+        console.log('DAMAGES UPDATED');
+    });
+
+	// Weapon Auto-Fill || DISABLED
+
+	const RANGED_WEAPONS = []
+
+	on('change:repeating_rangedweapons:R_weapon_name', () => {
+		getAttrs(['repeating_rangedweapons_R_weapon_name'], (v) => {
+			let weapon = RANGED_WEAPONS.find( weap => weap.name == v['repeating_rangedweapons_R_weapon_name'])
+			if (!weapon) return
+			let attributes = {}
+			let RoF = weapon.RoF.split('/')
+
+			let damage = weapon.damage
+
+			if (weapon.special.includes('Tearing')) {
+				var redice = /^(\d+)?(d\d+)(.*)?/;
+				let dmg = redice.exec(damage)
+				let dicenum = parseInt(dmg[1], 10) || 1,
+					dicetype = dmg[2],
+					mod = dmg[3]
+				dicenum++
+				damage = `${dicenum}${dicetype}d1${mod}`
+			}
+
+			attributes[`repeating_rangedweapons_R_weapon_max`]		= ''
+			attributes[`repeating_rangedweapons_R_weapon_min`]		= ''
+			attributes[`repeating_rangedweapons_R_weapon_vengeful`]	= ''
+
+			if (weapon.special.includes('Primitive')) {
+				let regex = /Primitive \((\d)\)/;
+				let max = regex.exec(weapon.special)
+				attributes[`repeating_rangedweapons_R_weapon_max`]		= max[1]
+			}
+
+			if (weapon.special.includes('Proven')) {
+				let regex = /Proven \((\d)\)/;
+				let min = regex.exec(weapon.special)
+				attributes[`repeating_rangedweapons_R_weapon_min`]		= min[1]
+			}
+
+			if (weapon.special.includes('Vengeful')) {
+				let regex = /Vengeful \((\d)\)/;
+				let vengeful = regex.exec(weapon.special)
+				attributes[`repeating_rangedweapons_R_weapon_vengeful`]		= vengeful[1]
+			}
+
+			attributes[`repeating_rangedweapons_R_weapon_name`]			= weapon.name
+			attributes[`repeating_rangedweapons_R_weapon_domain`]		= weapon.family
+			attributes[`repeating_rangedweapons_R_weapon_class`]		= weapon.class
+			attributes[`repeating_rangedweapons_R_weapon_range`]		= weapon.range
+			attributes[`repeating_rangedweapons_R_weapon_standard`]		= RoF[0]
+			attributes[`repeating_rangedweapons_R_weapon_burst`]		= RoF[1]
+			attributes[`repeating_rangedweapons_R_weapon_auto`]			= RoF[2]
+			attributes[`repeating_rangedweapons_R_weapon_dam-roll`]		= damage
+			attributes[`repeating_rangedweapons_R_weapon_pen`]			= weapon.pen
+			attributes[`repeating_rangedweapons_R_weapon_type`]			= weapon.type
+			attributes[`repeating_rangedweapons_R_weapon_mag`]			= weapon.clip
+			attributes[`repeating_rangedweapons_R_weapon_mag_max`]		= weapon.clip
+			attributes[`repeating_rangedweapons_R_weapon_reload`]		= weapon.reload
+			attributes[`repeating_rangedweapons_R_weapon_weight`]		= weapon.weight
+			attributes[`repeating_rangedweapons_R_ability_r`]			= weapon.special
+			attributes[`repeating_rangedweapons_R_ability_desc_r`]		= weapon.notes
+
+			setAttrs(attributes)
+		})
+	})
+
+	on('change:repeating_vehiclerangedweapons:V_R_weapon_name', () => {
+		getAttrs(['repeating_vehiclerangedweapons_V_R_weapon_name'], (v) => {
+			let weapon = RANGED_WEAPONS.find( weap => weap.name == v['repeating_vehiclerangedweapons_V_R_weapon_name'])
+			if (!weapon) return
+			let attributes = {}
+			let RoF = weapon.RoF.split('/')
+
+			let damage = weapon.damage
+
+			if (weapon.special.includes('Tearing')) {
+				var redice = /^(\d+)?(d\d+)(.*)?/;
+				let dmg = redice.exec(damage)
+				let dicenum = parseInt(dmg[1], 10) || 1,
+					dicetype = dmg[2],
+					mod = dmg[3]
+				dicenum++
+				damage = `${dicenum}${dicetype}d1${mod}`
+			}
+
+			attributes[`repeating_vehiclerangedweapons_V_R_weapon_max`]		= ''
+			attributes[`repeating_vehiclerangedweapons_V_R_weapon_min`]		= ''
+			attributes[`repeating_vehiclerangedweapons_V_R_weapon_vengeful`]= ''
+
+			if (weapon.special.includes('Primitive')) {
+				let regex = /Primitive \((\d)\)/;
+				let max = regex.exec(weapon.special)
+				attributes[`repeating_vehiclerangedweapons_V_R_weapon_max`]		= max[1]
+			}
+
+			if (weapon.special.includes('Proven')) {
+				let regex = /Proven \((\d)\)/;
+				let min = regex.exec(weapon.special)
+				attributes[`repeating_vehiclerangedweapons_V_R_weapon_min`]		= min[1]
+			}
+
+			if (weapon.special.includes('Vengeful')) {
+				let regex = /Vengeful \((\d)\)/;
+				let vengeful = regex.exec(weapon.special)
+				attributes[`repeating_vehiclerangedweapons_V_R_weapon_vengeful`]= vengeful[1]
+			}
+
+			attributes[`repeating_vehiclerangedweapons_V_R_weapon_name`]		= weapon.name
+			attributes[`repeating_vehiclerangedweapons_V_R_weapon_domain`]		= weapon.family
+			attributes[`repeating_vehiclerangedweapons_V_R_weapon_class`]		= weapon.class
+			attributes[`repeating_vehiclerangedweapons_V_R_weapon_range`]		= weapon.range
+			attributes[`repeating_vehiclerangedweapons_V_R_weapon_standard`]	= RoF[0]
+			attributes[`repeating_vehiclerangedweapons_V_R_weapon_burst`]		= RoF[1]
+			attributes[`repeating_vehiclerangedweapons_V_R_weapon_auto`]		= RoF[2]
+			attributes[`repeating_vehiclerangedweapons_V_R_weapon_dam-roll`]	= damage
+			attributes[`repeating_vehiclerangedweapons_V_R_weapon_pen`]			= weapon.pen
+			attributes[`repeating_vehiclerangedweapons_V_R_weapon_type`]		= weapon.type
+			attributes[`repeating_vehiclerangedweapons_V_R_weapon_mag`]			= weapon.clip
+			attributes[`repeating_vehiclerangedweapons_V_R_weapon_mag_max`]		= weapon.clip
+			attributes[`repeating_vehiclerangedweapons_V_R_weapon_reload`]		= weapon.reload
+			attributes[`repeating_vehiclerangedweapons_V_R_weapon_weight`]		= weapon.weight
+			attributes[`repeating_vehiclerangedweapons_V_R_ability_r`]			= weapon.special
+			attributes[`repeating_vehiclerangedweapons_V_R_ability_desc_r`]		= weapon.notes
+
+			setAttrs(attributes)
+		})
+	})
+
+	const MELEE_WEAPONS = []
+
+	on('change:repeating_meleeweapons:M_weapon_name', () => {
+		getAttrs(['repeating_meleeweapons_M_weapon_name'], (v) => {
+			let weapon = MELEE_WEAPONS.find( weap => weap.name == v['repeating_meleeweapons_M_weapon_name'])
+			if (!weapon) return
+			let attributes = {}
+
+			let damage = weapon.damage
+
+			if (weapon.special.includes('Tearing')) {
+				var redice = /^(\d+)?(d\d+)(.*)?/;
+				let dmg = redice.exec(damage)
+				let dicenum = parseInt(dmg[1], 10) || 1,
+					dicetype = dmg[2],
+					mod = dmg[3]
+				dicenum++
+				damage = `${dicenum}${dicetype}d1${mod}`
+			}
+
+			attributes[`repeating_meleeweapons_M_weapon_max`]		= ''
+			attributes[`repeating_meleeweapons_M_weapon_min`]		= ''
+			attributes[`repeating_meleeweapons_M_weapon_vengeful`]	= ''
+
+			if (weapon.special.includes('Primitive')) {
+				let regex = /Primitive \((\d)\)/;
+				let max = regex.exec(weapon.special)
+				attributes[`repeating_meleeweapons_M_weapon_max`]		= max[1]
+			}
+
+			if (weapon.special.includes('Proven')) {
+				let regex = /Proven \((\d)\)/;
+				let min = regex.exec(weapon.special)
+				attributes[`repeating_meleeweapons_M_weapon_min`]		= min[1]
+			}
+
+			if (weapon.special.includes('Vengeful')) {
+				let regex = /Vengeful \((\d)\)/;
+				let vengeful = regex.exec(weapon.special)
+				attributes[`repeating_meleeweapons_M_weapon_vengeful`]		= vengeful[1]
+			}
+
+			attributes[`repeating_meleeweapons_M_weapon_name`]			= weapon.name
+			attributes[`repeating_meleeweapons_M_weapon_domain`]		= weapon.family
+			attributes[`repeating_meleeweapons_M_weapon_class`]			= weapon.class
+			attributes[`repeating_meleeweapons_M_weapon_reach`]			= weapon.range
+			attributes[`repeating_meleeweapons_M_weapon_dam-roll`]		= damage
+			attributes[`repeating_meleeweapons_M_weapon_pen`]			= weapon.pen
+			attributes[`repeating_meleeweapons_M_weapon_type`]			= weapon.type
+			attributes[`repeating_meleeweapons_M_weapon_weight`]		= weapon.weight
+			attributes[`repeating_meleeweapons_M_ability_r`]			= weapon.special
+			attributes[`repeating_meleeweapons_M_ability_desc_r`]		= weapon.notes
+
+			setAttrs(attributes)
+		})
+	})
+
+
+	on('change:repeating_vehiclemeleeweapons:V_M_weapon_name', () => {
+		getAttrs(['repeating_vehiclemeleeweapon_V_M_weapon_name'], (v) => {
+			let weapon = MELEE_WEAPONS.find( weap => weap.name == v['repeating_vehiclemeleeweapon_V_M_weapon_name'])
+			if (!weapon) return
+			let attributes = {}
+
+			let damage = weapon.damage
+
+			if (weapon.special.includes('Tearing')) {
+				var redice = /^(\d+)?(d\d+)(.*)?/;
+				let dmg = redice.exec(damage)
+				let dicenum = parseInt(dmg[1], 10) || 1,
+					dicetype = dmg[2],
+					mod = dmg[3]
+				dicenum++
+				damage = `${dicenum}${dicetype}d1${mod}`
+			}
+
+			attributes[`repeating_vehiclemeleeweapons_V_M_weapon_max`]		= ''
+			attributes[`repeating_vehiclemeleeweapons_V_M_weapon_min`]		= ''
+			attributes[`repeating_vehiclemeleeweapons_V_M_weapon_vengeful`]	= ''
+
+			if (weapon.special.includes('Primitive')) {
+				let regex = /Primitive \((\d)\)/;
+				let max = regex.exec(weapon.special)
+				attributes[`repeating_vehiclemeleeweapons_V_M_weapon_max`]		= max[1]
+			}
+
+			if (weapon.special.includes('Proven')) {
+				let regex = /Proven \((\d)\)/;
+				let min = regex.exec(weapon.special)
+				attributes[`repeating_vehiclemeleeweapons_V_M_weapon_min`]		= min[1]
+			}
+
+			if (weapon.special.includes('Vengeful')) {
+				let regex = /Vengeful \((\d)\)/;
+				let vengeful = regex.exec(weapon.special)
+				attributes[`repeating_vehiclemeleeweapons_V_M_weapon_vengeful`]		= vengeful[1]
+			}
+
+			attributes[`repeating_vehiclemeleeweapon_V_M_weapon_name`]			= weapon.name
+			attributes[`repeating_vehiclemeleeweapon_V_M_weapon_domain`]		= weapon.family
+			attributes[`repeating_vehiclemeleeweapon_V_M_weapon_class`]			= weapon.class
+			attributes[`repeating_vehiclemeleeweapon_V_M_weapon_reach`]			= weapon.range
+			attributes[`repeating_vehiclemeleeweapon_V_M_weapon_dam-roll`]		= damage
+			attributes[`repeating_vehiclemeleeweapon_V_M_weapon_pen`]			= weapon.pen
+			attributes[`repeating_vehiclemeleeweapon_V_M_weapon_type`]			= weapon.type
+			attributes[`repeating_vehiclemeleeweapon_V_M_weapon_weight`]		= weapon.weight
+			attributes[`repeating_vehiclemeleeweapon_V_M_ability_r`]			= weapon.special
+			attributes[`repeating_vehiclemeleeweapon_V_M_ability_desc_r`]		= weapon.notes
+
+			setAttrs(attributes)
+		})
+	})
+
+
+    //  get repeating objects 
+	
+    /**
+     * get the attributes from a repeating section and pass them in an array of objects
+     * @param {String} section - name of the repeating section
+     * @param {Array} fields - list of the attributes
+     * @param {Function} callback - function to pass the array of objects
+     */
+    const getSectionObjects = (section, fields, callback) => {
+        if (!Array.isArray(fields)) fields = [fields];
+        getSectionIDs(`repeating_${section}`, idArray => {
+            const attrArray = idArray.reduce( (m,id) => [...m, ...(Object.values(fields).map(field => `repeating_${section}_${id}_${(Array.isArray(field) ? field[1] : field)}`))],[]);
+            getAttrs(attrArray, v => {
+                const objects = [];
+                idArray.forEach(id => {
+                    let obj = { _id : id, _source: `repeating_${section}_${id}` };
+                    fields.forEach( field => {
+                        obj[field[0]] = v[`repeating_${section}_${id}_${field[1]}`]
+                    })
+                    objects.push(obj)
+                });
+                callback(objects);
+            });
+        });
+    }
+
+    // 
+    // _______ Importer ________
+    // 
+    on('clicked:import_clear', () => {
+        setAttrs({
+            import_value: ''
+        });
+    });
+    on('clicked:import', () => {
+        getAttrs(['import_value'], (v) => {
+            try {
+                var data = JSON.parse(v.import_value);
+            } catch(e) {
+                setAttrs({import_value: 'ERROR: verify if you have copied the totality of the Export'}); return console.log(e);
+            }
+            console.log('Importing Character');
+            var attributes = {}
+            
+            // emptying the repeating sections
+            const sectionList = [
+                'conditions',
+                'skill',
+                'linguistics',
+                'common-lore',
+                'scholastic-lore',
+                'forbidden-lore',
+                'trade',
+                'abilities',
+                'traits',
+                'rangedweapons',
+                'meleeweapons',
+                'gear',
+                'cybernetics',
+                'aptitudes',
+                'advancements',
+                'disorders',
+                'mutations',
+                'objectives',
+                'notes',
+                'vehicles',
+                'vehiclerangedweapons',
+                'vehiclemeleeweapons',
+                'minormanifestation',
+                'psynotes',
+                'psychicabilities'
+            ];
+            sectionList.forEach( section => {
+                getSectionIDs(`repeating_${section}`, idArray => {
+                    idArray.forEach(id => removeRepeatingRow(`repeating_${section}_${id}`))
+                })
+            })
+
+            // info Block
+            attributes = {...attributes, ...mapInfo(data)}
+
+            // STATS
+            attributes = {...attributes, ...mapStat('WS', data?.weaponSkill)};
+            attributes = {...attributes, ...mapStat('BS', data?.ballisticSkill)};
+            attributes = {...attributes, ...mapStat('STR', data?.strenght)};
+            attributes = {...attributes, ...mapStat('TOU', data?.toughness)};
+            attributes = {...attributes, ...mapStat('AGI', data?.agility)};
+            attributes = {...attributes, ...mapStat('INT', data?.intelligence)};
+            attributes = {...attributes, ...mapStat('PER', data?.perception)};
+            attributes = {...attributes, ...mapStat('WP', data?.willpower)};
+            attributes = {...attributes, ...mapStat('FEL', data?.fellowship)};
+            attributes = {...attributes, ...mapStat('INF', data?.influence)};
+
+            // WOUNDS, FATE, FATIGUE, FORCEFIELD
+            attributes = {...attributes, ...mapWounds(data?.wounds)};
+            attributes = {...attributes, ...mapFate(data?.fate)};
+            attributes = {...attributes, ...mapFatigue(data?.fatigue)};
+            attributes = {...attributes, ...mapForceField(data?.forcefield)};
+
+            // CONDITIONS
+            data?.conditions?.forEach((condition) => {
+                attributes = {...attributes, ...mapCondition(condition)};
+            });
+
+            // SKILLS, REPEATING SKILLS
+            data?.skills?.forEach(skill => {
+                attributes = {...attributes, ...mapSkill(skill)};
+            });
+            data?.lores?.common?.forEach(skill => {
+                attributes = {...attributes, ...mapRepeatingSkill(skill, 'common-lore')};
+            });
+            data?.lores?.scholastic?.forEach(skill => {
+                attributes = {...attributes, ...mapRepeatingSkill(skill, 'scholastic-lore')};
+            });
+            data?.lores?.forbidden?.forEach(skill => {
+                attributes = {...attributes, ...mapRepeatingSkill(skill, 'forbidden-lore')};
+            });
+            data?.linguistics?.forEach(skill => {
+                attributes = {...attributes, ...mapRepeatingSkill(skill, 'linguistics')};
+            });
+            data?.trades?.forEach(skill => {
+                attributes = {...attributes, ...mapRepeatingSkill(skill, 'trade')};
+            });
+
+            // TALENTS, TRAITS
+            data?.abilities?.forEach(ability => {
+                attributes = {...attributes, ...mapAbility(ability, 'abilities')};
+            });
+            data?.traits?.forEach(trait => {
+                attributes = {...attributes, ...mapTrait(trait)};
+            });
+
+            // INVENTORY
+            data?.inventory?.weapons?.ranged?.forEach( weapon => {
+                attributes = {...attributes, ...mapRangedWeapon(weapon)};
+            });
+            data?.inventory?.weapons?.melee?.forEach( weapon => {
+                attributes = {...attributes, ...mapMeleeWeapon(weapon)};
+            });
+            data?.inventory?.gears?.forEach( gear => {
+                attributes = {...attributes, ...mapGear(gear)};
+            });
+            // data?.inventory?.tools?.forEach( tool => {
+            // attributes = {...attributes, ...mapTool(tool)};
+            // });
+            // data?.inventory?.consumables?.forEach( drug => {
+            // attributes = {...attributes, ...mapDrug(drug)};
+            // });
+            attributes = {...attributes, ...mapOldArmor(data?.inventory?.armor)};
+            // data?.inventory?.armors?.forEach( armor => {
+            // attributes = {...attributes, ...mapArmor(armor)};
+            // });
+            // data?.inventory?.ammos?.forEach( ammo => {
+            // attributes = {...attributes, ...mapAmmo(ammo)};
+            // });
+            data?.inventory?.cybernetics?.forEach( cybernetic => {
+                attributes = {...attributes, ...mapCybernetic(cybernetic)};
+            });
+
+            // ADVANCEMENTS
+            attributes = {...attributes, ...mapAptitudes(data?.advancements?.aptitudes)};
+            attributes = {...attributes, ...mapAdvance(data?.advancements?.advances)};
+            for (var training in data?.advancements?.training) {
+                attributes[`weapons_training_${training}`] = data?.advancements?.training[training];
+            }
+
+            // INSANITY, CORRUPTION
+            attributes[`insanity_pts`] = data?.insanity?.points;
+            data?.insanity?.disorders?.forEach( disorder => {
+                attributes = {...attributes, ...mapDisorder(disorder)};
+            })
+            attributes[`corruption_pts`] = data?.corruption?.points;
+            data?.corruption?.mutations?.forEach( mutation => {
+                attributes = {...attributes, ...mapMutation(mutation)};
+            })
+
+            // OBJECTIVES, NOTES
+            data?.objectives?.forEach( objective => {
+                attributes = {...attributes, ...mapObjective(objective)};
+            });
+            data?.notes?.forEach( note => {
+                attributes = {...attributes, ...mapNote(note)};
+            });
+
+            // VEHICLES
+            data?.vehicles?.list?.forEach( vehicle => {
+                attributes = {...attributes, ...mapVehicle(vehicle)};
+            });
+            data?.vehicles?.weapons?.ranged?.forEach( weapon => {
+                attributes = {...attributes, ...mapRangedWeapon(weapon, true)};
+            });
+            data?.vehicles?.weapons?.melee?.forEach( weapon => {
+                attributes = {...attributes, ...mapMeleeWeapon(weapon, true)};
+            });
+
+            // PSYKANA
+            attributes = {...attributes, ...mapPsykana(data?.psykana)};
+            data?.psykana?.minor?.forEach( minor => {
+                attributes = {...attributes, ...mapPsyMinor(minor)}
+            })
+            data?.psykana?.notes?.forEach( note => {
+                attributes = {...attributes, ...mapPsyNote(note)}
+            })
+            data?.psykana?.powers?.forEach( power => {
+                attributes = {...attributes, ...mapPsyPower(power)}
+            })
+
+            console.log('setting attributes');
+            attributes.import_value = 'Success: Character Imported Successfully\n\nRemember to add the token manually';
+            setAttrs(attributes, true);
+        })
+    })
+
+    // Update to new version
+    let deletedVariables = [
+        'gear_carry','gear_name','gear_crafts', 'gear_quantity','gear_avail','gear_weight','gear_pg#','gear_desc',
+		'linguistics_name', 'linguistics_mod2', 'linguistics_mod3',
+		'common-lore_name', 'common-lore_mod2', 'common-lore_mod3',
+		'scholastic-lore_name', 'scholastic-lore_mod2', 'scholastic-lore_mod3',
+		'forbidden-lore_name', 'forbidden-lore_mod2', 'forbidden-lore_mod3',
+		'trade_name', 'trade_mod2', 'trade_mod3',
+		'ability', 'ability_desc',
+		'trait', 'trait_desc',
+		'advancement_nameL','advancement_costL','advancement_nameR','advancement_costR'
+    ]
+    on('sheet:opened', () => {
+		getAttrs(['sheet_version'], v => {
+			var version = v['sheet_version']
+			console.log(`version : ${version}`)
+			if (!version) {
+				version = 'V 1.0.0'
+				getSectionIDs('aptitudes', idArray => {
+					const fieldnames = []
+					idArray.forEach(id => fieldnames.push(
+						`repeating_aptitudes_${id}_aptitude_nameL_r`,
+						`repeating_aptitudes_${id}_aptitude_nameM_r`,
+						`repeating_aptitudes_${id}_aptitude_nameR_r`
+					))
+					fieldnames.push('aptitude_nameL','aptitude_nameM','aptitude_nameR')
+					getAttrs(fieldnames, values => {
+						var attr = []
+						for(const i in values) {
+							attr.push(values[i]);
+							values[i] = ''
+						}
+						attr = mapAptitudes(attr)
+						setAttrs({...attr, ...values})
+						idArray.forEach(id => removeRepeatingRow(`repeating_aptitudes_${id}`))
+					})
+					getAttrs(deletedVariables, values => {
+						var attributes = {} 
+
+						let gear = {carry: values['gear_carry'], name: values['gear_name'], craftsmanship: values['gear_crafts'], quantity: values['gear_quantity'], avail: values['gear_avail'], weight: values['gear_weight'], desc: values['gear_desc']}
+						if (gear.name) attributes = {...attributes, ...mapGear(gear)}
+
+						let linguistic = {name: values['linguistics_name'], modifier: values['linguistics_mod2'],level: values['linguistics_mod3'],}
+						if (linguistic.name) attributes = {...attributes, ...mapRepeatingSkill(linguistic, 'linguistics')}
+
+						let commonLore = {name: values['common-lore_name'], modifier: values['common-lore_mod2'],level: values['common-lore_mod3'],}
+						if (commonLore.name) attributes = {...attributes, ...mapRepeatingSkill (commonLore, 'common-lore')}
+
+						let scholasticLore = {name: values['scholastic-lore_name'], modifier: values['scholastic-lore_mod2'],level: values['scholastic-lore_mod3'],}
+						if (scholasticLore.name) attributes = {...attributes, ...mapRepeatingSkill(scholasticLore, 'scholastic-lore')}
+
+						let forbiddenLore = {name: values['forbidden-lore_name'], modifier: values['forbidden-lore_mod2'],level: values['forbidden-lore_mod3'],}
+						if (forbiddenLore.name) attributes = {...attributes, ...mapRepeatingSkill(forbiddenLore, 'forbidden-lore')}
+
+						let trade = {name: values['trade_name'], modifier: values['trade_mod2'],level: values['trade_mod3'],}
+						if (trade.name) attributes = {...attributes, ...mapRepeatingSkill(trade, 'trade')}
+
+						let ability = {name: values['ability'], description: values['ability_desc']}
+						if (ability.name) attributes = {...attributes, ...mapAbility(ability)}
+
+						let trait = {name: values['trait'], description: values['trait_desc']}
+						if (trait.name) attributes = {...attributes, ...mapTrait(trait)}
+
+						let advances = [
+							{name: values['advancement_nameL'], cost: values['advancement_costL']},
+							{name: values['advancement_nameR'], cost: values['advancement_costR']}
+						]
+						attributes = {...attributes, ...mapAdvance(advances)}
+
+						for(const i in values) {
+							values[i] = ''
+						}
+						setAttrs({...values, ...attributes})
+					})
+				})
+			}
+		})
+    })
+
+    // functions
+    const mapInfo = (data) => {
+        let attr = {};
+        attr['character_name'] = data.name || '';
+        attr['Homeworld'] = data.homeworld || '';
+        attr['Background'] = data.background || '';
+        attr['Role'] = data.role || '';
+        attr['EliteAdvances'] = data.eliteAdvances || '';
+        attr['Notes'] = data.note || '';
+        attr['Player'] = data.player || '';
+        attr['appearance'] = data.appearance || '';
+        attr['Quirks'] = data.quirks || '';
+        attr['Divination'] = data.divination || '';
+        attr['Superstition'] = data.superstition || '';
+        attr['size'] = data.size || '';
+        attr['xp_total'] = data.xp || '';
+        attr['agi_mov_mod'] = data.movementModifier || '';
+        return attr;
+    };
+    const mapStat = (statName, stat) => {
+        let attr = {};
+        attr[`${statName}`] = stat.base || 0;
+        attr[`${statName}_advancement`] = stat.advancement || 0;
+        attr[`${statName}_mod`] = stat.modifier || 0;
+        attr[`${statName}_unnat`] = stat.unnatural || 0;
+        return attr;
+    };
+    const mapWounds = (wounds) => {
+        let attr = {};
+        attr['wounds'] = wounds.current || '';
+        attr['wounds_max'] = wounds.max || '';
+        attr['head'] = wounds.critical?.head || '';
+        attr['body'] = wounds.critical?.body || '';
+        attr['arm_left'] = wounds.critical?.arm_left || '';
+        attr['arm_right'] = wounds.critical?.arm_right || '';
+        attr['leg_left'] = wounds.critical?.leg_left || '';
+        attr['leg_right'] = wounds.critical?.leg_right || '';
+        return attr;
+    };
+    const mapFate = (fate) => {
+        let attr = {};
+        attr['fate'] = fate.current || '';
+        attr['fate_max'] = fate.max || '';
+        attr['settings_fate'] = fate.setting || '';
+        return attr;
+    };
+    const mapFatigue = (fatigue) => {
+        let attr = {};
+        attr['fatigue'] = fatigue.current || '';
+        attr['fatigue_mod'] = fatigue.modifier || '';
+        return attr;
+    };
+    const mapForceField = (forcefield) => {
+        let attr = {};
+        attr['forcefield_name'] = forcefield.name || '';
+        attr['forcefield_protection'] = forcefield.protection || '';
+        attr['forcefield_overload'] = forcefield.overload || '';
+        return attr;
+    };
+    const mapCondition = (condition) => {
+        if (!condition) return ;
+        let attr = {},
+            section = 'condition',
+            id = generateRowID();
+        attr[`repeating_${section}_${id}_condition_r`] = condition.name || '';
+        attr[`repeating_${section}_${id}_condition_desc_r`] = condition.description || '';
+        return attr;
+    };
+    const mapSkill = (skill) => {
+        if (!skill) return ;
+        let attr = {}
+        attr[`mod2_${skill.name}`] = skill.modifier || 0;
+        attr[`mod3_${skill.name}`] = skill.level || 0;
+        return attr;
+    };
+    const mapRepeatingSkill = (skill, section) => {
+        if (!skill) return ;
+        let attr = {},
+            id = generateRowID();
+        attr[`repeating_${section}_${id}_${section}_name`] = skill.name || '';
+        attr[`repeating_${section}_${id}_${section}_r_mod2`] = skill.modifier || '';
+        attr[`repeating_${section}_${id}_${section}_r_mod3`] = skill.level || '';
+        return attr;
+    };
+    const mapAbility = (ability) => {
+        if (!ability) return ;
+        let attr = {},
+            section = 'abilities',
+            id = generateRowID();
+        attr[`repeating_${section}_${id}_ability_r`] = ability.name || '';
+        attr[`repeating_${section}_${id}_ability_desc_r`] = ability.description || '';
+        return attr;
+    };
+    const mapTrait = (trait) => {
+        if (!trait) return ;
+        let attr = {},
+            section = 'traits',
+            id = generateRowID();
+        attr[`repeating_${section}_${id}_trait_r`] = trait.name || '';
+        attr[`repeating_${section}_${id}_trait_desc_r`] = trait.description || '';
+        return attr;
+    }
+    const mapAptitudes = (aptitudes) => {
+        var attr = {};
+        for (var i = 0; i < aptitudes?.length; i ++) {
+            attr[`aptitude_${i+1}`] = aptitudes[i] || '';
+        }
+        return attr;
+    };
+    const mapRangedWeapon = (weapon, vehicle) => {
+        if (!weapon) return ;
+        let attr = {},
+            section = (vehicle) ? 'vehiclerangedweapons' : 'rangedweapons',
+            id = generateRowID();
+        if (vehicle) id += '_V';
+        attr[`repeating_${section}_${id}_R_weapon_name`] = weapon.name || '';
+        attr[`repeating_${section}_${id}_R_weapon_class`] = weapon.class || '';
+        attr[`repeating_${section}_${id}_R_weapon_range`] = weapon.range || '';
+        attr[`repeating_${section}_${id}_R_weapon_dam-roll`] = weapon.damage || '';
+        attr[`repeating_${section}_${id}_R_weapon_pen`] = weapon.pen || '';
+        attr[`repeating_${section}_${id}_R_weapon_type`] = weapon.type || '';
+        attr[`repeating_${section}_${id}_R_weapon_max`] = weapon.max || '';
+        attr[`repeating_${section}_${id}_R_weapon_min`] = weapon.min || '';
+        attr[`repeating_${section}_${id}_R_weapon_vengeful`] = weapon.vengeful || '';
+        attr[`repeating_${section}_${id}_R_weapon_accurate`] = weapon.accurate || '';
+        attr[`repeating_${section}_${id}_R_weapon_burst`] = weapon.burst || '';
+        attr[`repeating_${section}_${id}_R_weapon_auto`] = weapon.auto || '';
+        attr[`repeating_${section}_${id}_R_weapon_mag`] = weapon.mag || '';
+        attr[`repeating_${section}_${id}_R_weapon_mag_max`] = weapon.mag_max || '';
+        attr[`repeating_${section}_${id}_R_weapon_trained`] = weapon.trained || '';
+        attr[`repeating_${section}_${id}_R_weapon_mod1`] = weapon.mod1 || '';
+        attr[`repeating_${section}_${id}_R_weapon_reload`] = weapon.reload || '';
+        attr[`repeating_${section}_${id}_R_weapon_weight`] = weapon.weight || '';
+        attr[`repeating_${section}_${id}_R_weapon_domain`] = weapon.domain || '';
+        attr[`repeating_${section}_${id}_R_weapon_mishap_chance`] = weapon.mishap_chance || '';
+        attr[`repeating_${section}_${id}_R_weapon_carry`] = weapon.carry || '';
+        attr[`repeating_${section}_${id}_R_weapon_ability_r`] = weapon.special || '';
+        attr[`repeating_${section}_${id}_R_weapon_ability_desc_r`] = weapon.description || '';
+        return attr;
+    }
+    const mapMeleeWeapon = (weapon, vehicle) => {
+        if (!weapon) return ;
+        let attr = {},
+            section = (vehicle) ? 'vehiclemeleeweapons' : 'meleeweapons',
+            id = generateRowID();
+        if (vehicle) id += '_V';
+        attr[`repeating_${section}_${id}_M_weapon_name`] = weapon.name || '';
+        attr[`repeating_${section}_${id}_M_weapon_class`] = weapon.class || '';
+        attr[`repeating_${section}_${id}_M_weapon_reach`] = weapon.reach || '';
+        attr[`repeating_${section}_${id}_M_weapon_dam-roll`] = weapon.damage || '';
+        attr[`repeating_${section}_${id}_M_weapon_pen`] = weapon.pen || '';
+        attr[`repeating_${section}_${id}_M_weapon_type`] = weapon.type || '';
+        attr[`repeating_${section}_${id}_M_weapon_max`] = weapon.max || '';
+        attr[`repeating_${section}_${id}_M_weapon_min`] = weapon.min || '';
+        attr[`repeating_${section}_${id}_M_weapon_vengeful`] = weapon.vengeful || '';
+        attr[`repeating_${section}_${id}_M_weapon_trained`] = weapon.trained || '';
+        attr[`repeating_${section}_${id}_M_weapon_mod1`] = weapon.mod1 || '';
+        attr[`repeating_${section}_${id}_M_weapon_weight`] = weapon.weight || '';
+        attr[`repeating_${section}_${id}_M_weapon_domain`] = weapon.domain || '';
+        attr[`repeating_${section}_${id}_M_weapon_carry`] = weapon.carry || '';
+        attr[`repeating_${section}_${id}_M_weapon_ability_r`] = weapon.special || '';
+        attr[`repeating_${section}_${id}_M_weapon_ability_desc_r`] = weapon.description || '';
+        return attr;
+    }
+    const mapGear = (gear) => {
+        if (!gear) return ;
+        let attr = {},
+            section = 'gear',
+            id = generateRowID();
+        attr[`repeating_${section}_${id}_gear_carry`] = gear.carry || '';
+        attr[`repeating_${section}_${id}_gear_name_r`] = gear.name || '';
+        attr[`repeating_${section}_${id}_gear_crafts_r`] = gear.craftsmanship || '';
+        attr[`repeating_${section}_${id}_gear_quantity_r`] = gear.quantity || '';
+        attr[`repeating_${section}_${id}_gear_avail_r`] = gear.availability || '';
+        attr[`repeating_${section}_${id}_gear_weight_r`] = gear.weight || '';
+        attr[`repeating_${section}_${id}_ability_desc_r`] = gear.description || '';
+        return attr;
+    }
+    const mapCybernetic = (cybernetic) => {
+        if (!cybernetic) return ;
+        let attr = {},
+            section = 'cybernetics',
+            id = generateRowID();
+        attr[`repeating_${section}_${id}_cybernetic_name_r`] = cybernetic.name || '';
+        attr[`repeating_${section}_${id}_cybernetic_location_r`] = cybernetic.location || '';
+        attr[`repeating_${section}_${id}_cybernetic_desc_r`] = cybernetic.description || '';
+        return attr;
+    }
+    const mapOldArmor = (armor) => {
+        let attr = {};
+        attr.armor_AGI = armor.maxAgi || '';
+        attr.armor_limit = armor.limit || '';
+        attr.armor_head = armor.head || '';
+        attr.armor_body = armor.body || '';
+        attr.armor_arm_right = armor.arm_right || '';
+        attr.armor_arm_left = armor.arm_left || '';
+        attr.armor_leg_right = armor.leg_right || '';
+        attr.armor_leg_left = armor.leg_left || '';
+        attr.armor_name = armor.description || '';
+        return attr;
+    }
+    const mapAdvance = (advances) => {
+		advances = advances.filter(advance => !!advance.name)
+        var attr = {};
+        var	section = 'advancements';
+        for (var i = 0; i < advances?.length; i += 2) {
+            let id = generateRowID();
+            attr[`repeating_${section}_${id}_advancement_nameL_r`] = advances[i]?.name || '';
+            attr[`repeating_${section}_${id}_advancement_costL_r`] = advances[i]?.cost || '';
+            attr[`repeating_${section}_${id}_advancement_nameR_r`] = advances[i+1]?.name || '';
+            attr[`repeating_${section}_${id}_advancement_costR_r`] = advances[i+1]?.cost || '';
+        }
+        return attr;
+    };
+    const mapDisorder = (disorder) => {
+        if (!disorder) return;
+        let attr = {},
+            section = 'disorders',
+            id = generateRowID();
+        attr[`repeating_${section}_${id}_disorder_r`] = disorder.name || '';
+        attr[`repeating_${section}_${id}_disorder_desc_r`] = disorder.description || '';
+        return attr;
+    }
+    const mapMutation = (mutation) => {
+        if (!mutation) return;
+        let attr = {},
+            section = 'mutations',
+            id = generateRowID();
+        attr[`repeating_${section}_${id}_mutation_r`] = mutation.name || '';
+        attr[`repeating_${section}_${id}_mutation_desc_r`] = mutation.description || '';
+        return attr;
+    }
+    const mapObjective = (objective) => {
+        if (!objective) return;
+        let attr = {},
+            section = 'objectives',
+            id = generateRowID();
+        attr[`repeating_${section}_${id}_objective_r`] = objective.name || '';
+        attr[`repeating_${section}_${id}_objective_completed`] = objective.complete || '';
+        return attr;
+    }
+    const mapNote = (note) => {
+        if (!note) return;
+        let attr = {},
+            section = 'notes',
+            id = generateRowID();
+        attr[`repeating_${section}_${id}_notes`] = note.name || note || '';
+        return attr;
+    }
+    const mapVehicle = (vehicle) => {
+        if (!vehicle) return;
+        let attr = {},
+            section = 'vehicles',
+            id = generateRowID();
+        attr[`repeating_${section}_${id}_vehicle-name`] = vehicle.name || '';
+        attr[`repeating_${section}_${id}_vehicle-size`] = vehicle.size || '';
+        attr[`repeating_${section}_${id}_vehicle-world`] = vehicle.world || '';
+        attr[`repeating_${section}_${id}_vehicle-type`] = vehicle.type || '';
+        attr[`repeating_${section}_${id}_vehicle-tactical`] = vehicle.tactical || '';
+        attr[`repeating_${section}_${id}_vehicle-cruising`] = vehicle.cruising || '';
+        attr[`repeating_${section}_${id}_vehicle-maneuver`] = vehicle.maneuver || '';
+        attr[`repeating_${section}_${id}_vehicle-crew`] = vehicle.crew || '';
+        attr[`repeating_${section}_${id}_vehicle-compliment`] = vehicle.compliment || '';
+        attr[`repeating_${section}_${id}_vehicle-integrity`] = vehicle.integrity || '';
+        attr[`repeating_${section}_${id}_vehicle-integrity_max`] = vehicle.integrity_max || '';
+        attr[`repeating_${section}_${id}_vehicle-armor-front`] = vehicle['armor-front'] || '';
+        attr[`repeating_${section}_${id}_vehicle-armor-side`] = vehicle['armor-side'] || '';
+        attr[`repeating_${section}_${id}_vehicle-armor-rear`] = vehicle['armor-rear'] || '';
+        attr[`repeating_${section}_${id}_armaments`] = vehicle.armaments || '';
+        attr[`repeating_${section}_${id}_armaments_desc`] = vehicle.armaments_desc || '';
+        attr[`repeating_${section}_${id}_vehicle_traits`] = vehicle.traits || '';
+        attr[`repeating_${section}_${id}_vehicle_traits_desc`] = vehicle.traits_desc || '';
+        attr[`repeating_${section}_${id}_modifications`] = vehicle.modifications || '';
+        attr[`repeating_${section}_${id}_modifications_desc`] = vehicle.modifications_desc || '';
+        return attr;
+    }
+    const mapPsykana = (psykana) => {
+        let attr = {};
+        attr[`psykana_class`] = psykana.class || '';
+        attr[`psykana_limit`] = psykana.limit || '';
+        attr[`psy_rating`] = psykana.rating || '';
+        attr[`psy_push`] = psykana.push || '';
+        attr[`psykana_sustain`] = psykana.sustain || '';
+        attr[`focus_mod`] = psykana.focus_mod || '';
+        attr[`psykana_sustain_count`] = psykana.sustain_count || '';
+        return attr;
+    };
+    const mapPsyMinor = (minor) => {
+        if (!minor) return
+        let attr = {},
+            section = 'minormanifestation',
+            id = generateRowID();
+        attr[`repeating_${section}_${id}_P_minor_r`] = minor.name || '';
+        attr[`repeating_${section}_${id}_P_minor_desc_r`] = minor.description || '';
+        return attr;
+    }
+    const mapPsyNote = (note) => {
+        if (!note) return
+        let attr = {},
+            section = 'psynotes',
+            id = generateRowID();
+        attr[`repeating_${section}_${id}_P_note_r`] = note.name || '';
+        attr[`repeating_${section}_${id}_P_note_desc_r`] = note.description || '';
+        return attr;
+    }
+    const mapPsyPower = (power) => {
+        if (!power) return;
+        let attr = {},
+            section = 'psychicabilities',
+            id = generateRowID();
+        attr[`repeating_${section}_${id}_P_name`] = power.name || '';
+        attr[`repeating_${section}_${id}_P_subtype`] = power.subtype || '';
+        attr[`repeating_${section}_${id}_P_range`] = power.range || '';
+        attr[`repeating_${section}_${id}_P_dam-roll`] = power.damage || '';
+        attr[`repeating_${section}_${id}_P_type`] = power.type || '';
+        attr[`repeating_${section}_${id}_P_pen`] = power.pen || '';
+        attr[`repeating_${section}_${id}_P_focus`] = power.focus || '';
+        attr[`repeating_${section}_${id}_P_mod1`] = power.mod || '';
+        attr[`repeating_${section}_${id}_P_multi`] = power.multi || '';
+        attr[`repeating_${section}_${id}_P_action`] = power.action || '';
+        attr[`repeating_${section}_${id}_P_sustained`] = power.sustained || '';
+        attr[`repeating_${section}_${id}_P_hitloc`] = power.hitloc || '';
+        attr[`repeating_${section}_${id}_P_ability_r`] = power.ability || '';
+        attr[`repeating_${section}_${id}_P_desc_r`] = power.desc || '';
+        return attr;
+    }
+	
+
+	// charactermancer
+
+	const GENOS = []
+	const HOMEWORLDS = []
+	const BACKGROUNDS = []
+	const ROLES = []
+
+	on(`clicked:charmancer`, (eventinfo) => {
+		//startCharactermancer('intro')
+		console.log(eventinfo)
+	});
+
+	on("mancer:cancel", (eventinfo) => {
+		deleteCharmancerData(['genos', 'homeworld', 'background', 'role', 'aptitudes', 'equipments', 'talents', 'skills'])
+	})
+
+
+	// GENOS
+
+	function getGenos() {
+		return GENOS.find(race => race.name === getCharmancerData()?.genos?.values?.genos)
+	}
+
+	function generateGenos(name) {
+		let genos = GENOS.find(genos => genos.name === name)
+		if (!genos) return ('<h2>Something went wrong</h2>')
+		var text = ''
+		text += `<h3>Characteristics</h3>`
+		text += `<p/>+${genos.stats.WS} Weapon Skill, +${genos.stats.BS} Ballistic Skill, +${genos.stats.STR} Strength, +${genos.stats.TOU} Toughness, +${genos.stats.AGI} Agility, +${genos.stats.INT} Intelligence, +${genos.stats.PER} Perception, +${genos.stats.WP} Willpower, +${genos.stats.FEL} Fellowship, +${genos.stats.INF} Influence</p>`
+		text += `<h3>Genos Traits</h3>`
+		text += `<p/>`
+		genos.traits.forEach(trait => {
+			text += `${trait}, `
+		})
+		text += `<p/>`
+		text += `<h3>Genos Bonus</h3>`
+		genos.bonus.forEach(bonus => {
+			text += `<p/> ${bonus.name}: ${bonus.desc}<p/>`
+		})
+		text += `<h3>Genos Aptitude</h3>`
+		text += (genos.aptitudes.length) ? `<p>${genos.aptitudes[0]} or ${genos.aptitudes[1]}</p>` : `<p>Any one Aptitude of the player’s choice</p>`
+		text += `<h3>Base Vitality</h3>`
+		text += `<p>${genos.wounds}</p>`
+		return text
+	}
+
+	on("page:genos", (eventinfo) => {
+		setCharmancerText({"genos_infos":generateGenos('Human')})
+	})
+
+	on("mancerchange:genos", (eventinfo) => {
+		setCharmancerText({"genos_infos":generateGenos(eventinfo.newValue)})
+	});
+
+	// STATS
+
+	function assignRolls(rolls) {
+		let attrs = {}
+		rolls.forEach((roll, i) => {
+		attrs[`roll_${i}_value`] = roll.result
+		})
+		return attrs
+	}
+
+	on("page:stats", (eventinfo) => {
+		let genos = getCharmancerData()?.genos?.values?.genos
+		let stats = GENOS.find(race => race.name === genos)?.stats
+		let points = (genos === 'Human') ? 5 : 0
+		let rolled = getCharmancerData()?.stats?.values?.rolled ?? false
+		let rerolled = getCharmancerData()?.stats?.values?.rerolled ?? false
+		let points_spent = getCharmancerData()?.stats?.values?.points_spent ?? 0
+		if (rolled) setCharmancerText({"rolled":''})
+		setAttrs({...stats, 'points': points, 'rolled': rolled, 'rerolled': rerolled, 'points_spent': points_spent})
+	})
+
+	on("mancerchange:points_spent", (eventinfo) => {
+		let points_spent = eventinfo.newValue ?? 0
+		let points = (getCharmancerData()?.genos?.values?.genos === 'Human') ? 5 : 0
+		let points_left = points - parseInt(points_spent,10)
+		setAttrs({"points": points_left})
+	});
+
+	on("mancerchange:points", (eventinfo) => {
+		let points = eventinfo.newValue
+		let points_left = (points > 0) ? `<p>You have <b>${points} points</b> left to spend</p>` : ''
+		setCharmancerText({"points_left": points_left})
+	});
+
+	on("mancerroll:standard", e => {
+		setCharmancerText({"roll_low":''})
+		var rolls = e.roll
+		var minimum = 110
+		var total = rolls.reduce((total, roll) => total + roll.result, 0)
+		if (total < minimum) return setCharmancerText({"roll_low":'<h2>Dice roll was too low, please try again</h2>'})
+		setCharmancerText({"rolled":''})
+		setAttrs({...assignRolls(rolls), 'rolled': 'true'})
+	})
+
+	for (let i = 0; i < 10; i++) {
+		on(`mancerroll:reroll_${i}`, e => {
+			let reroll = getCharmancerData()?.stats?.values?.rerolled
+			if (reroll === 'true') return setCharmancerText({"rolled":'<h2>You already rerolled one of the dice</h2>'})
+			let attr = {}
+			attr[`roll_${i}_value`] = e.roll[0].result
+			attr[`rerolled`] = 'true'
+			setAttrs(attr)
+		})
+
+		on(`mancerchange:roll_${i}_char`, e => {
+			let diceCharacteristics = getCharmancerData()?.stats?.values
+			for (let j = 0; j < 10; j++) {
+				if (!diceCharacteristics[`roll_${i}_char`]) break
+				if (i == j) continue
+				if (diceCharacteristics[`roll_${i}_char`] === diceCharacteristics[`roll_${j}_char`]) {
+					let attr = {}
+					attr[`roll_${j}_char`] = ''
+					setAttrs(attr)
+				}
+			}
+			assignRollToCharacteristics()
+		})
+	}
+
+	function assignRollToCharacteristics() {
+		let genos = GENOS.find(genos => genos.name === getCharmancerData()?.genos?.values?.genos)?.stats
+		let rolls = getCharmancerData()?.stats?.values
+		let stats = {...genos}
+		for (let i = 0; i < 10; i++) {
+			if (rolls[`roll_${i}_char`] === 'WS' ) stats.WS  += parseInt(rolls[`roll_${i}_value`], 10)
+			if (rolls[`roll_${i}_char`] === 'BS' ) stats.BS  += parseInt(rolls[`roll_${i}_value`], 10)
+			if (rolls[`roll_${i}_char`] === 'STR') stats.STR += parseInt(rolls[`roll_${i}_value`], 10)
+			if (rolls[`roll_${i}_char`] === 'TOU') stats.TOU += parseInt(rolls[`roll_${i}_value`], 10)
+			if (rolls[`roll_${i}_char`] === 'AGI') stats.AGI += parseInt(rolls[`roll_${i}_value`], 10)
+			if (rolls[`roll_${i}_char`] === 'INT') stats.INT += parseInt(rolls[`roll_${i}_value`], 10)
+			if (rolls[`roll_${i}_char`] === 'PER') stats.PER += parseInt(rolls[`roll_${i}_value`], 10)
+			if (rolls[`roll_${i}_char`] === 'WP' ) stats.WP  += parseInt(rolls[`roll_${i}_value`], 10)
+			if (rolls[`roll_${i}_char`] === 'FEL') stats.FEL += parseInt(rolls[`roll_${i}_value`], 10)
+			if (rolls[`roll_${i}_char`] === 'INF') stats.INF += parseInt(rolls[`roll_${i}_value`], 10)
+		}
+		setAttrs({...stats, 'points_spent': 0})
+	}
+
+	['WS', 'BS', 'STR', 'TOU', 'AGI', 'INT', 'PER', 'WP', 'FEL', 'INF'].forEach(characteristic => {
+		on(`clicked:decrease_${characteristic}`, () => {
+			setCharmancerText({"roll_low":''})
+			let points_spent = parseInt(getCharmancerData()?.stats?.values?.points_spent, 10)
+			let char_points_spent = parseInt(getCharmancerData()?.stats?.values?.[`${characteristic}_points`], 10)
+			if (!char_points_spent || !points_spent) return setCharmancerText({"roll_low":'<h2>You can\'t do that</h2>'})
+
+			let attr = {}
+			attr[characteristic] = parseInt(getCharmancerData()?.stats?.values?.[characteristic], 10) -1
+			attr[`${characteristic}_points`] = char_points_spent -1
+			attr['points_spent'] = points_spent -1
+
+			setAttrs(attr)
+		})
+		on(`clicked:increase_${characteristic}`, () => {
+			setCharmancerText({"roll_low":''})
+			let points_left = parseInt(getCharmancerData()?.stats?.values?.points, 10)
+			let char = parseInt(getCharmancerData()?.stats?.values?.[characteristic], 10)
+			if (!points_left || char >= 40) return setCharmancerText({"roll_low":'<h2>You can\'t do that</h2>'})
+
+			let char_points_spent = parseInt(getCharmancerData()?.stats?.values?.[`${characteristic}_points`], 10) || 0
+			let points_spent = parseInt(getCharmancerData()?.stats?.values?.points_spent, 10)
+			let attr = {}
+			attr[characteristic] = parseInt(getCharmancerData()?.stats?.values?.[characteristic], 10) +1
+			attr[`${characteristic}_points`] = char_points_spent +1
+			attr['points_spent'] = points_spent +1
+
+			setAttrs(attr)
+		})
+	})
+
+	// HOMEWORLDS
+
+	function getHomeworld() {
+		return HOMEWORLDS.find(world => world.name === getCharmancerData()?.homeworld?.values?.homeworld)
+	}
+
+	function generateHomeworld(name) {
+		let world = HOMEWORLDS.find(world => world.name === name)
+		if (!world) return ('<h2>Something went wrong</h2>')
+		var text = ''
+		text += `<h3>Aptitude</h3>`
+		text += `<p>${world.aptitudes[0]} or ${world.aptitudes[1]}</p>`
+		text += `<h3>Characteristics</h3>`
+		text += `<p>`
+			for (const key in world.characteristics) {
+				if (Object.hasOwnProperty.call(world.characteristics, key)) {
+					text += `${key} : ${world.characteristics[key]}`
+				}
+			}
+			text += `</p>`
+		text += `<h3>World Bonus</h3>`
+		text += `
+		<p /> ${world.bonus.name}: ${world.bonus.desc}
+		<p />`
+		text += `<h3>Fate</h3>`
+		text += `<p>${world.fate}</p>`
+		text += `<p>Emperor BLessing : ${world.empBlessing}</p>`
+		text += `<h3>Vitality</h3>`
+		text += `<p>+${world.wounds}</p>`
+		return text
+	}
+
+	on("page:homeworld", (eventinfo) => {
+		let list = ''
+		HOMEWORLDS.forEach(homeworld => {
+			list += ` <option value="${homeworld.name}">${homeworld.name}</option>`
+		})
+		setCharmancerText({"homeworld_choices": list})
+		setCharmancerText({"homeworld_infos":generateBackground(HOMEWORLDS[0].name)})
+	})
+
+	on("mancerchange:homeworld", (eventinfo) => {
+		setCharmancerText({"homeworld_infos":generateHomeworld(eventinfo.newValue)})
+	});
+
+	// BACKGROUNDS
+
+	function getBackground() {
+		return background = BACKGROUNDS.find(background => background.name === getCharmancerData()?.background?.values?.background)
+	}
+
+	function generateBackground(name) {
+		let background = BACKGROUNDS.find(background => background.name === name)
+		if (!background) return ('<h2>Something went wrong</h2>')
+		var text = ''
+		text += `<h3>Aptitude</h3>`
+		text += `<p>${background.aptitudes[0]} or ${background.aptitudes[1]}</p>`
+		text += `<h3>Talents</h3>`
+		text += `<p>`
+			background.talents.forEach(talent => {
+				if (Array.isArray(talent)) {
+					for (let i = 0; i < talent.length; i++) {
+						if (i > 0) text += ' or '
+						if (Array.isArray(talent[i])) {
+							text += talent[i].join(' and ')
+						} else {
+							text += `${talent[i]}, `
+						}
+					}
+				} else {
+					text += `${talent}, `
+				}
+			})
+		text += `</p>`
+		text += `<h3>Skills</h3>`
+		text += `<p>`
+		background.skills.forEach(skill => {
+			if (Array.isArray(skill)) {
+				for (let i = 0; i < skill.length; i++) { 
+					if (i> 0) text += ' or '
+					if (Array.isArray(skill[i])) {
+						text += skill[i].join(' and ')
+					} else {
+						text += `${skill[i]}, `
+					}
+				}
+			} else {
+				text += `${skill}, `
+			}
+		})
+		text += `</p>`
+		if (background.traits.length) {
+			text += `<h3>Traits</h3><p>`
+			background.traits.forEach(trait => text += `${trait}, `)
+			text += `</p>`
+		}
+		text += `</p>`
+			if (background.malignancies.length) {
+			text += `<h3>Malignacies</h3><p>`
+				background.malignancies.forEach(malignancy => text += `${malignancy}, `)
+				text += `</p>`
+		}
+		text += `<h3>Bonus</h3>`
+		text += `<p> ${background.bonus.name}: ${background.bonus.desc}	</p>`
+		text += `<h3>Equipment</h3>`
+		text += `<p>`
+		background.equipment.forEach(equipment => {
+			if (Array.isArray(equipment)) {
+				for (let i = 0; i < equipment.length; i++) { 
+					if (i> 0) text += ' or '
+					if (Array.isArray(equipment[i])) {
+						text += equipment[i].join(' and ')
+					} else {
+						text += `${equipment[i]}, `
+					}
+				}
+			} else {
+				text += `${equipment}, `
+			}
+		})
+		text += `</p>`
+		if (background.wounds) text += `<h3>Bonus Vitality: ${background.wounds}</h3> `
+		return text
+	}
+
+	on("page:background", (eventinfo) => {
+		let backgrounds = BACKGROUNDS.filter(background => (background.restrictions.length === 0 || background.restrictions.includes(getCharmancerData()?.genos?.values?.genos)))
+		let list = ''
+		backgrounds.forEach(background => {
+			list += ` <option value="${background.name}">${background.name}</option>`
+		})
+		setCharmancerText({"background_choices": list})
+		setCharmancerText({"background_infos":generateBackground(backgrounds[0].name)})
+	})
+
+	on("mancerchange:background", (eventinfo) => {
+		setCharmancerText({"background_infos":generateBackground(eventinfo.newValue)})
+	});
+
+	// ROLES
+
+	function getRole() {
+		return ROLES.find(role => role.name === getCharmancerData()?.role?.values?.role)
+	}
+
+	function generateRoles(name) {
+		let role = ROLES.find(role => role.name === name)
+		if (!role) return ('<h2>Something went wrong</h2>')
+		var text = ''
+		text += `<h3>Aptitude</h3>`
+		text += `<p>`
+		role.aptitudes.forEach(aptitude => {
+			if (Array.isArray(aptitude)) {
+				text += aptitude.join(' or ') + ', '
+			} else {
+				text += `${aptitude}, `
+			}
+		})
+		text += `</p>`
+		text += `<h3>Talents</h3>`
+		text += `<p>`
+		role.talents.forEach(talent => {
+			if (Array.isArray(talent)) {
+				text += talent.join(' or ') + ', '
+			} else {
+				text += `${talent}, `
+			}
+		})
+		text += `</p>`
+		text += `<h3>Bonus</h3>`
+		role.bonus.forEach(bonus => {
+			text += `<p> ${bonus.name}: ${bonus.desc}</p>`
+		})
+		return text
+		}
+
+	on("page:role", (eventinfo) => {
+		let roles = ROLES.filter(role => (role.restrictions.length === 0 || role.restrictions.includes(getCharmancerData()?.genos?.values?.genos)))
+		let list = ''
+		roles.forEach(role => {
+			list += ` <option value="${role.name}">${role.name}</option>`
+		})
+		setCharmancerText({"role_choices": list})
+		setCharmancerText({"role_infos":generateRoles(roles[0].name)})
+	})
+
+	on("mancerchange:role", (eventinfo) => {
+		setCharmancerText({"role_infos":generateRoles(eventinfo.newValue)})
+	});
+
+	// APTITUDES 
+	
+	on("page:aptitudes", e => {
+		let genos = getGenos().aptitudes,
+			homeworld = getHomeworld().aptitudes,
+			background = getBackground().aptitudes,
+			role = getRole().aptitudes
+		
+		let aptitudes = [genos, homeworld, background, ...role]
+
+		let text = ''
+		let attr = {}
+		aptitudes.forEach((aptitude, i) => {
+			if (Array.isArray(aptitude)) {
+				if (aptitude.length > 0) {
+					text += `<select name="comp_aptitude_${i+1}" class="sheet-full_width role_choices" required>`
+					text += ` <option value=''> -- </option> `
+					text += ` <option value='${aptitude[0]}'>${aptitude[0]}</option> `
+					text += ` <option value='${aptitude[1]}'>${aptitude[1]}</option> `
+					text += '</select>'
+				} else {
+					text += `<input type='text' list='Aptitudes' name="comp_aptitude_${i+1}" class="sheet-full_width role_choices" required />`
+				}
+			} else {
+				text += `<p>${aptitude}</p>`
+				attr[`aptitude_${i+1}`] = aptitude
+			}
+		})
+		attr['aptitude_9'] = 'General'
+		setAttrs(attr)
+		setCharmancerText({"aptitudes_block": text})
+	})
+
+	// TALENTS 
+	
+	on("page:talents", e => {
+		let background = getBackground().talents,
+			role = getRole().talents
+
+		let talents = [...background, ...role]
+		
+		let text = ''
+		let attr = {}
+		talents.forEach((talent, i) => {
+			if (Array.isArray(talent)) {
+				if (talent.length > 0) {
+					text += `<select name="comp_talent_${i+1}" class="sheet-full_width role_choices" required>`
+					text += ` <option value=''> -- </option> `
+					text += ` <option value='${talent[0]}'>${talent[0]}</option> `
+					text += ` <option value='${talent[1]}'>${talent[1]}</option> `
+					text += '</select>'
+				} else {
+					text += `<input type='text' list='Aptitudes' name="comp_talent_${i+1}" class="sheet-full_width role_choices" required />`
+				}
+			} else {
+				text += `<p>${talent}</p>`
+				attr[`talent_${i+1}`] = talent
+			}
+		})
+		setAttrs(attr)
+		setCharmancerText({"talents_block": text})
+	})
+
+	// EQUIPMENTS 
+	
+	on("page:equipments", e => {
+		let equipments = getBackground().equipment
+		
+		let text = ''
+		let attr = {}
+		equipments.forEach((equipment, i) => {
+			if (Array.isArray(equipment)) {
+				if (equipment.length > 0) {
+					text += `<select name="comp_equipment_${i+1}" class="sheet-full_width role_choices" required>`
+					text += ` <option value=''> -- </option> `
+					text += ` <option value='${equipment[0]}'>${equipment[0]}</option> `
+					text += ` <option value='${equipment[1]}'>${equipment[1]}</option> `
+					text += '</select>'
+				} else {
+					text += `<input type='text' list='Aptitudes' name="comp_equipment_${i+1}" class="sheet-full_width role_choices" required />`
+				}
+			} else {
+				text += `<p>${equipment}</p>`
+				attr[`equipment_${i+1}`] = equipment
+			}
+		})
+		setAttrs(attr)
+		setCharmancerText({"equipments_block": text})
+	})
+
+	// SKILLS 
+	
+	on("page:skills", e => {
+		let skills = getBackground().skills
+		
+		let text = ''
+		let attr = {}
+		skills.forEach((skill, i) => {
+			if (Array.isArray(skill)) {
+				if (skill.length > 0) {
+					text += `<select name="comp_skill_${i+1}" class="sheet-full_width role_choices" required>`
+					text += ` <option value=''> -- </option> `
+					text += ` <option value='${skill[0]}'>${skill[0]}</option> `
+					text += ` <option value='${skill[1]}'>${skill[1]}</option> `
+					text += '</select>'
+				} else {
+					text += `<input type='text' list='Aptitudes' name="comp_skill_${i+1}" class="sheet-full_width role_choices" required />`
+				}
+			} else {
+				text += `<p>${skill}</p>`
+				attr[`skill_${i+1}`] = skill
+			}
+		})
+		setAttrs(attr)
+		setCharmancerText({"skills_block": text})
+	})
+
+	// WOUNDS
+
+	on("page:wounds", (eventinfo) => {
+		let genos = getGenos().wounds
+		let homeworld = getHomeworld()
+		let background = getBackground().wounds
+		let wounds_max = getCharmancerData()?.wounds?.values?.wounds ?? ''
+		let fate_max = getCharmancerData()?.wounds?.values?.fate ?? ''
+		let divination = getCharmancerData()?.wounds?.values?.divination ?? ''
+		
+		let wounds = genos + homeworld.wounds + background
+		let fate = homeworld.fate
+		let empBlessing = homeworld.empBlessing
+
+		setAttrs({'wounds': wounds_max, 'fate': fate_max, 'divination': divination})
+		setCharmancerText({'wounds':wounds, 'fate': fate, 'empBlessing': empBlessing, 'wounds_max': wounds_max, 'fate_max': fate_max, 'divination': divination})
+	})
+	
+	on("mancerroll:wounds", e => {
+		let wounds_max = getCharmancerData()?.wounds?.values?.wounds ?? ''
+		if (wounds_max) return
+		var roll = e.roll[0].result
+		let wounds = roll + getGenos().wounds + getBackground().wounds + getHomeworld().wounds
+		setCharmancerText({"wounds_max": wounds})
+		setAttrs({'wounds': wounds})
+	})
+	
+	on("mancerroll:fate", e => {
+		let fate_max = getCharmancerData()?.wounds?.values?.fate ?? ''
+		if (fate_max) return
+		var roll = e.roll[0].result
+		let { fate, empBlessing } = getHomeworld()
+
+		if (roll >= empBlessing) fate++
+		
+		setCharmancerText({"fate_max": fate})
+		setAttrs({'fate': fate})
+	})
+	
+	on("mancerroll:divination", e => {
+		let divination = getCharmancerData()?.wounds?.values?.divination ?? ''
+		if (divination) return
+		divination = e.roll[0].result
+		
+		setCharmancerText({"divination": divination})
+		setAttrs({'divination': divination})
+	})
+
+	// MANCER FINISH
+
+	on("mancerfinish:recap", data => {
+		data = data.data
+		console.log(data)
+		setCharmancerText({'recap_progress': `<progress value="0" max="100" style="width:100%;">0%</progress>`})
+
+		let genos = data.genos.values.genos
+		let stats = data.stats.values
+		let homeworld = data.homeworld.values.homeworld
+		let background = data.background.values.background
+		let role = data.role.values.role
+		let aptitudes = data.aptitudes.values
+		let skills = Object.values(data.skills.values)
+		let talents = Object.values(data.talents.values)
+		let equipments = Object.values(data.equipments.values)
+		let { wounds, fate, divination } = data.wounds.values
+
+		let text = ''
+
+		text += `Genos : ${genos}\n`
+		text += `Homeworld : ${homeworld}\n`
+		text += `Background : ${background}\n`
+		text += `Role : ${role}\n`
+		text += `\n`
+		text += `Stats : \n`
+		text += `WS : ${stats.WS}\n`
+		text += `BS : ${stats.BS}\n`
+		text += `STR : ${stats.STR}\n`
+		text += `TOU : ${stats.TOU}\n`
+		text += `AGI : ${stats.AGI}\n`
+		text += `INT : ${stats.INT}\n`
+		text += `PER : ${stats.PER}\n`
+		text += `WP : ${stats.WP}\n`
+		text += `FEL : ${stats.FEL}\n`
+		text += `INF : ${stats.INF}\n`
+		text += `\n`
+		text += `Aptitudes : ${Object.values(aptitudes).join(', ')}\n`
+		text += `\n`
+		text += `Skills : ${skills.join(', ')}\n`
+		text += `\n`
+		text += `Talents : ${talents.join(', ')}\n`
+		text += `\n`
+		text += `Equipment : ${equipments.join(', ')}\n`
+		text += `\n`
+		text += `Wounds : ${wounds}\n`
+		text += `Fate : ${fate}\n`
+		text += `Divination : ${divination}\n`
+
+		console.log(text)
+
+		setAttrs({...mapNote(text), 'sheetTab' : 'journal'})
+		finishCharactermancer()
+
+	})
+
+	on("mancerfinish:random", eventinfo => {
+		// TODO : random character generator
+		let random = (max) => Math.floor(Math.random() * max)
+
+		let genos = GENOS[random(GENOS.length)]
+
+		let stats = {}
+		stats.WS  = genos.stats.WS  + random(11) + random(11)
+		stats.BS  = genos.stats.BS  + random(11) + random(11)
+		stats.STR = genos.stats.STR + random(11) + random(11)
+		stats.TOU = genos.stats.TOU + random(11) + random(11)
+		stats.AGI = genos.stats.AGI + random(11) + random(11)
+		stats.INT = genos.stats.INT + random(11) + random(11)
+		stats.PER = genos.stats.PER + random(11) + random(11)
+		stats.WP  = genos.stats.WP  + random(11) + random(11)
+		stats.FEL = genos.stats.FEL + random(11) + random(11)
+		stats.INF = genos.stats.INF + random(11) + random(11)
+
+		let homeworld = HOMEWORLDS[random(HOMEWORLDS.length)]
+		let background = BACKGROUNDS[random(BACKGROUNDS.length)]
+		let role = ROLES[random(ROLES.length)]
+
+		const APTITUDES = [
+			"Agility",
+			"Ballistic Skill",
+			"Defence",
+			"Fellowship",
+			"Fieldcraft",
+			"Finesse",
+			"General",
+			"Intelligence",
+			"Knowledge",
+			"Leadership",
+			"Offence",
+			"Perception",
+			"Psyker",
+			"Social",
+			"Strength",
+			"Tech",
+			"Toughness",
+			"Weapon Skill",
+			"Willpower"
+		]
+
+		let TempAptitudes = [genos.aptitudes, homeworld.aptitudes, background.aptitudes, ...role.aptitudes]
+
+		let aptitudes = []
+		console.log(TempAptitudes)
+
+		TempAptitudes.forEach((aptitude, i) => {
+			if (Array.isArray(aptitude)) {
+				if (aptitude.length > 0) {
+					aptitudes.push(aptitude[random(aptitude.length)])
+				} else {
+					aptitudes.push(APTITUDES[random(APTITUDES.length)])
+				}
+			} else {
+				aptitudes.push(aptitude)
+			}
+		})
+
+		let skills = []
+		let TempSkills = background.skills
+		console.log(TempSkills)
+
+
+		TempSkills.forEach((skill, i) => {
+			if (Array.isArray(skill)) {
+				if (skill.length > 0) {
+					skills.push(skill[random(skill.length)])
+				} else {
+					skills.push('AN ERROR OCCURED')
+				}
+			} else {
+				skills.push(skill)
+			}
+		})
+
+
+		let talents = []
+		let TempTalents = [...background.talents, ...role.talents]
+		console.log(TempTalents)
+
+
+		TempTalents.forEach((talent, i) => {
+			if (Array.isArray(talent)) {
+				if (talent.length > 0) {
+					talents.push(talent[random(talent.length)])
+				} else {
+					talents.push('AN ERROR OCCURED')
+				}
+			} else {
+				talents.push(talent)
+			}
+		})
+
+		let equipments = []
+		let TempEquipments = background.equipment
+		console.log(TempEquipments)
+
+
+		TempEquipments.forEach((equipment, i) => {
+			if (Array.isArray(equipment)) {
+				if (equipment.length > 0) {
+					equipments.push(equipment[random(equipment.length)])
+				} else {
+					equipments.push('AN ERROR OCCURED')
+				}
+			} else {
+				equipments.push(equipment)
+			}
+		})
+		let wounds = genos.wounds + homeworld.wounds + background.wounds + random(5)+1
+		let fate = homeworld.fate
+		if (random(10)+1 > homeworld.empBlessing) fate++
+		let divination = random(100)+1
+
+		let text = ''
+
+		text += `Genos : ${genos.name}\n`
+		text += `Homeworld : ${homeworld.name}\n`
+		text += `Background : ${background.name}\n`
+		text += `Role : ${role.name}\n`
+		text += `\n`
+		text += `Stats : \n`
+		text += `WS : ${stats.WS}\n`
+		text += `BS : ${stats.BS}\n`
+		text += `STR : ${stats.STR}\n`
+		text += `TOU : ${stats.TOU}\n`
+		text += `AGI : ${stats.AGI}\n`
+		text += `INT : ${stats.INT}\n`
+		text += `PER : ${stats.PER}\n`
+		text += `WP : ${stats.WP}\n`
+		text += `FEL : ${stats.FEL}\n`
+		text += `INF : ${stats.INF}\n`
+		text += `\n`
+		text += `Aptitudes : ${aptitudes.join(', ')}\n`
+		text += `\n`
+		text += `Skills : ${skills.join(', ')}\n`
+		text += `\n`
+		text += `Talents : ${talents.join(', ')}\n`
+		text += `\n`
+		text += `Equipment : ${equipments.join(', ')}\n`
+		text += `\n`
+		text += `Wounds : ${wounds}\n`
+		text += `Fate : ${fate}\n`
+		text += `Divination : ${divination}\n`
+
+		console.log(text)
+
+		setAttrs({...mapNote(text), 'sheetTab' : 'journal'})
+		finishCharactermancer()
+	})
+
+
+</script>
